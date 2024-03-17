@@ -8,8 +8,15 @@
     Title="QrToPay">
 
     <ShellContent
-        Title="Home"
+        Title=""
+        ContentTemplate="{DataTemplate local:LoginPage}"
+        Shell.NavBarIsVisible="False"
+        Route="LoginPage" />
+
+    <ShellContent
+        Title=""
         ContentTemplate="{DataTemplate local:MainPage}"
+        Shell.NavBarIsVisible="False"
         Route="MainPage" />
 
 </Shell>
