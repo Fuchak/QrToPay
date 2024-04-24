@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:QrToPay.ViewModels"
+             x:Class="QrToPay.View.MainPage"
+             x:DataType="vm:MainViewModel">
+    
+    <Shell.TitleView>
+        <StackLayout Orientation="Horizontal" Spacing="10" Padding="50,0,0,0">
+            <Image Source="logo.png" HeightRequest="120" WidthRequest="120"/>
+        </StackLayout>
+    </Shell.TitleView>
+    
+    <Grid>
+        <Border Grid.Row="0" BackgroundColor="Black" 
+                HeightRequest="2" 
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="Start">
+            <Border.Shadow>
+                <Shadow Brush="Black"
+                        Offset="0,5"
+                        Radius="10"
+                        Opacity="0.8" />
+            </Border.Shadow>
+        </Border>
+
+        <VerticalStackLayout Grid.Row="1" Spacing="25" Padding="30">
+
+        <!-- Górna sekcja z tytułem i stanem konta do przerobienia pod bazę danych -->
+            <StackLayout>
+                <Label Text="518050511"
+                       HorizontalOptions="Center"/>
+                <Label Text="STAN KONTA"
+                       FontSize="Large"
+                       HorizontalOptions="Center"/>
+                <Label Text="0 PLN"
+                       FontSize="Large"
+                       HorizontalOptions="Center"/>
+            </StackLayout>
+
+            <!-- Ikonki menu -->
+            <Grid ColumnDefinitions="*,*" RowDefinitions="*,*"
+                  RowSpacing="20" ColumnSpacing="20">
+
+                <!-- Ikona 1 -->
+                <Frame Grid.Row="0" Grid.Column="0"
+                       CornerRadius="20"
+                       BorderColor="{StaticResource Orange}"
+                       BackgroundColor="{StaticResource Orange}"
+                       HorizontalOptions="FillAndExpand"
+                       VerticalOptions="FillAndExpand"
+                       IsEnabled="{Binding IsNotBusy}">
+                    <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding NavigateToSkiPageCommand}"/>
+                    </Frame.GestureRecognizers>
+                    <StackLayout>
+                        <Image Source="stok.png" HeightRequest="100" HorizontalOptions="Center"/>
+                        <Label Text="STOKI &#10;NARCIARSKIE"
+                               TextColor="White"
+                               HorizontalTextAlignment="Center"/>
+                    </StackLayout>
+                </Frame>
+
+                <!-- Ikona 2 -->
+                <Frame Grid.Row="0" Grid.Column="1"
+                       CornerRadius="20"
+                       BorderColor="{StaticResource Orange}"
+                       BackgroundColor="{StaticResource Orange}"
+                       HorizontalOptions="FillAndExpand"
+                       VerticalOptions="FillAndExpand"
+                       IsEnabled="{Binding IsNotBusy}">
+                    <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding NavigateToFunfairCommand}"/>
+                    </Frame.GestureRecognizers>
+                    <StackLayout>
+                        <Image Source="miasteczko.png" HeightRequest="100" HorizontalOptions="Center"/>
+                        <Label Text="WESOŁE &#10;MIASTECZKA"
+                               TextColor="White"
+                               HorizontalTextAlignment="Center"/>
+                    </StackLayout>
+                </Frame>
+
+                <!-- Ikona 3 -->
+                <Frame Grid.Row="1" Grid.Column="0"
+                       CornerRadius="20"
+                       BorderColor="{StaticResource Orange}"
+                       BackgroundColor="{StaticResource Orange}"
+                       HorizontalOptions="FillAndExpand"
+                       VerticalOptions="FillAndExpand">
+                    <StackLayout>
+                        <Image Source="icon3.png" HeightRequest="0" HorizontalOptions="Center"/>
+                        <Label Text="Coming &#10;SOON!"
+                               TextColor="White"
+                               FontSize="25"
+                               HorizontalTextAlignment="Center"
+                               Margin="0,35,0,35"/>
+                    </StackLayout>
+                </Frame>
+
+                <!-- Ikona 4 -->
+                <Frame Grid.Row="1" Grid.Column="1"
+                       CornerRadius="20"
+                       BorderColor="{StaticResource Orange}"
+                       BackgroundColor="{StaticResource Orange}"
+                       HorizontalOptions="FillAndExpand"
+                       VerticalOptions="FillAndExpand">
+                    <StackLayout>
+                        <Image Source="icon4.png" HeightRequest="0" HorizontalOptions="Center"/>
+                        <Label Text="Coming &#10;SOON!"
+                               TextColor="White"
+                               FontSize="25"
+                               HorizontalTextAlignment="Center"
+                               Margin="0,35,0,35"/>
+                    </StackLayout>
+                </Frame>
+            </Grid>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

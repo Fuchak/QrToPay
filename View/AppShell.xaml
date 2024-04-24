@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:QrToPay.View"
+    xmlns:vm="clr-namespace:QrToPay.ViewModels"
+    x:Class="QrToPay.View.AppShell"
+    x:DataType="vm:ShellViewModel"
+    Shell.FlyoutBackgroundColor="White"
+    FlyoutBehavior="Flyout"
+    FlyoutWidth="250"
+    Title="QrToPay">
+
+    <!-- Strona ładowania (sprawdzanie zalogowania użytkownika) tymczasowe? -->
+    <ShellItem Route="loading" FlyoutItemIsVisible="False">
+        <ShellContent
+            ContentTemplate="{DataTemplate local:LoadingPage}"
+            Route="LoadingPage"
+            Shell.NavBarIsVisible="False"
+            Shell.FlyoutBehavior="Disabled"/>
+    </ShellItem>
+    <!-- Strona logowania -->
+    <ShellItem Route="login" FlyoutItemIsVisible="False">
+        <ShellContent
+            ContentTemplate="{DataTemplate local:LoginPage}"
+            Route="LoginPage"
+            Shell.NavBarIsVisible="False"
+            Shell.FlyoutBehavior="Disabled"/>
+    </ShellItem>
+    <!-- Główna strona -->
+    <ShellItem Route="main" FlyoutItemIsVisible="False">
+        <ShellContent
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="MainPage"
+            Shell.NavBarIsVisible="True"
+            Shell.FlyoutBehavior="Flyout"/>
+    </ShellItem>
+
+    <!-- Header menu bocznego -->
+    <Shell.FlyoutHeader>
+        <StackLayout>
+            <Image 
+            Source="logo.png" 
+            HeightRequest="60" 
+            WidthRequest="120"
+            HorizontalOptions="Center" 
+            VerticalOptions="Center"/>
+        </StackLayout>
+    </Shell.FlyoutHeader>
+    <!-- Menu boczne-->
+    <Shell.FlyoutContent>
+        <StackLayout Spacing="10">
+            <Button Text="Konto" Command="{Binding NavigateToPageCommand}" CommandParameter="AccountPage" IsEnabled="{Binding IsNotBusy}" />
+            <Button Text="Historia transakcji"  />
+            <Button Text="Doładuj konto"  />
+            <Button Text="Ustawienia"  />
+            <Button Text="Pomoc"  />
+            <Button Text="Wyloguj" Command="{Binding LogoutCommand}"  />
+        </StackLayout>
+    </Shell.FlyoutContent>
+    <Shell.FlyoutFooter>
+        <StackLayout>
+            <Label Text="QrtoPay &#10;wersja 1.0" HorizontalTextAlignment="Center"/>
+        </StackLayout>
+    </Shell.FlyoutFooter>
+</Shell>
