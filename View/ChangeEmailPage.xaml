@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:QrToPay.ViewModels"
+             x:Class="QrToPay.View.ChangeEmailPage"
+             x:DataType="vm:ChangeEmailViewModel"
+             Title="ChangeEmailPage">
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <!-- Place for back button -->
+            <BoxView Grid.Column="0" WidthRequest="0" Opacity="0"/>
+            <!-- Centered Title -->
+            <Label Grid.Column="1"
+                   FontFamily="Arial"
+                   Text="Zmień Email" 
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" 
+                   HorizontalTextAlignment="Center" 
+                   VerticalOptions="Center"/>
+            <!-- Place on right side of title to align title to center -->
+            <BoxView Grid.Column="2" WidthRequest="70" Opacity="0" BackgroundColor="White"/>
+        </Grid>
+    </Shell.TitleView>
+    <Grid>
+        <Border Grid.Row="0" 
+           HorizontalOptions="FillAndExpand"
+           VerticalOptions="Start">
+            <Border.Shadow>
+                <Shadow Brush="Black"
+                       Offset="0,5"
+                       Radius="7"
+                       Opacity="0.8"/>
+            </Border.Shadow>
+        </Border>
+        <VerticalStackLayout Grid.Row="1" Padding="30,25,30,0" Spacing="10">
+
+            <Label
+                Text="Wpisz nowy adres email:"
+                Style="{StaticResource SubHeadline}" 
+                FontAttributes="Bold"/>
+            <Frame>
+                <Entry
+                    x:Name="EmailEntry"
+                    Placeholder="Email"
+                    Text="{Binding NewEmail, Mode=TwoWay}" />
+            </Frame>
+
+            <Label
+                Text="Wpisz hasło:"
+                Style="{StaticResource SubHeadline}" />
+            <Frame>
+                <Entry
+                    x:Name="PasswordEntry"
+                    Placeholder="Hasło"
+                    Text="{Binding Password, Mode=TwoWay}"/>
+            </Frame>
+
+            <Button
+                Text="Zmień email" 
+                Command="{Binding DisplayPopupCommand}"/>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

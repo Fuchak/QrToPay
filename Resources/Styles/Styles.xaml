@@ -19,7 +19,7 @@
     </Style>
 
     <Style TargetType="Border">
-        <Setter Property="Stroke" Value="Black" />
+        <Setter Property="Stroke" Value="White" />
         <Setter Property="StrokeShape" Value="Rectangle"/>
         <Setter Property="StrokeThickness" Value="1"/>
     </Style>
@@ -204,6 +204,7 @@
         <Setter Property="HorizontalOptions" Value="Start" />
         <Setter Property="HorizontalTextAlignment" Value="Start" />
         <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="Padding" Value="0,0,0,10"/>
     </Style>
 
     <Style TargetType="ListView">
@@ -320,7 +321,7 @@
         </Setter>
     </Style>
 
-    <!-- Te style nie są dziedziczone nie wiadomo czemu błąd z tym jest na necie -->
+    <!-- Te style nie są dziedziczone nie wiadomo czemu błąd z tym jest na necie nadal Open błąd-->
     <Style TargetType="Shadow">
         <Setter Property="Radius" Value="15" />
         <Setter Property="Opacity" Value="0.5" />

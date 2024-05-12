@@ -9,27 +9,36 @@
             <Image Source="logo.png" HeightRequest="120" WidthRequest="120"/>
         </StackLayout>
     </Shell.TitleView>
-    <VerticalStackLayout
-        Padding="30,90,30,0"
-        Spacing="10">
-        <!-- Wpisz kod weryfikacyjny-->
-        <Label
-            Padding="0,0,0,10"
+    <Grid>
+        <Border Grid.Row="0" 
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="Start">
+            <Border.Shadow>
+                <Shadow Brush="Black"
+                        Offset="0,5"
+                        Radius="7"
+                        Opacity="0.8"/>
+            </Border.Shadow>
+        </Border>
+        <VerticalStackLayout Grid.Row="1" Padding="30,90,30,0" Spacing="10">
+            <!-- Wpisz kod weryfikacyjny-->
+            <Label
             Text="Wpisz kod weryfikacyjny:"
             Style="{StaticResource SubHeadline}"/>
-        <Frame>
-            <Entry
+            <Frame>
+                <Entry
             x:Name="CodeEntry"
             Placeholder="Kod weryfikacyjny"
             Text="{Binding Code, Mode=TwoWay}"
             HorizontalOptions="Fill" />
-        </Frame>
+            </Frame>
 
-        <Button
+            <Button
             Text="KONTYNUUJ" 
             SemanticProperties.Hint="Confirm"
             Command="{Binding ConfirmCommand}"
             IsEnabled="{Binding IsNotBusy}"
             HorizontalOptions="Fill" />
-    </VerticalStackLayout>
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>

@@ -6,7 +6,7 @@ namespace QrToPay.Services
         private const string AuthStateKey = "AuthState";
         public async Task<bool> IsAuthenticatedAsync()
         {
-            await Task.Delay(1000);
+            await Task.Delay(200);
 
             var authState = Preferences.Default.Get<bool>(AuthStateKey, false);
 

@@ -13,6 +13,13 @@ public static class ViewModelExtensions
         builder.Services.AddTransient<ResetPasswordConfirmViewModel>();
         builder.Services.AddTransient<SkiViewModel>();
         builder.Services.AddTransient<AccountViewModel>();
+        builder.Services.AddTransient<HelpViewModel>();
+        builder.Services.AddTransient<TopUpAccountViewModel>();
+        builder.Services.AddTransient<SettingsViewModel>();
+        builder.Services.AddTransient<ChangePasswordViewModel>();
+        builder.Services.AddTransient<ChangePhoneViewModel>();
+        builder.Services.AddTransient<ChangeEmailViewModel>();
+        builder.Services.AddTransient<HistoryViewModel>();
         
         return builder;
     }

@@ -18,6 +18,14 @@ namespace QrToPay
             Routing.RegisterRoute("ResetPasswordConfirmPage", typeof(ResetPasswordConfirmPage));
             Routing.RegisterRoute("SkiPage", typeof(SkiPage));
             Routing.RegisterRoute("AccountPage", typeof(AccountPage));
+            Routing.RegisterRoute("HelpPage", typeof(HelpPage));
+            Routing.RegisterRoute("TopUpAccountPage", typeof(TopUpAccountPage));
+            Routing.RegisterRoute("SettingsPage", typeof(SettingsPage));
+            Routing.RegisterRoute("ChangePasswordPage", typeof(ChangePasswordPage));
+            Routing.RegisterRoute("ChangePhonePage", typeof(ChangePhonePage));
+            Routing.RegisterRoute("ChangeEmailPage", typeof(ChangeEmailPage));
+            Routing.RegisterRoute("HistoryPage", typeof(HistoryPage));
+
         }
     }
 }

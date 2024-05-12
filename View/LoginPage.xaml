@@ -10,9 +10,7 @@
         <toolkit:StatusBarBehavior StatusBarColor="White" StatusBarStyle="DarkContent" />
     </ContentPage.Behaviors>
     
-    <VerticalStackLayout
-        Padding="30,90,30,0"
-        Spacing="10">
+    <VerticalStackLayout Padding="30,90,30,0" Spacing="10">
         <Image
             Source="logo.png"
             HeightRequest="130"
@@ -21,18 +19,15 @@
             Aspect="AspectFit" />
 
         <Label
-            Padding="0,0,0,10"
             Text="E-mail lub numer telefonu:"
             Style="{StaticResource SubHeadline}"/>
         <Frame>
             <Entry
             x:Name="LoginEntry"
             Placeholder="E-mail/telefon"
-            Text="{Binding EmailPhone, Mode=TwoWay}"
-            HorizontalOptions="Fill" />
+            Text="{Binding EmailPhone, Mode=TwoWay}"/>
         </Frame>
         <Label
-            Padding="0,0,0,10"
             Text="Hasło:"
             Style="{StaticResource SubHeadline}"/>
         <Frame>
@@ -40,30 +35,26 @@
             x:Name="PassEntry"
             Placeholder="Hasło"
             Text="{Binding Password, Mode=TwoWay}"
-            IsPassword="True"
-            HorizontalOptions="Fill" />
+            IsPassword="True"/>
         </Frame>
 
         <Button
             Text="ZALOGUJ SIĘ" 
             SemanticProperties.Hint="Login in button"
             Command="{Binding LoginCommand}"
-            IsEnabled="{Binding IsNotBusy}"
-            HorizontalOptions="Fill" />
+            IsEnabled="{Binding IsNotBusy}"/>
 
         <Button
             Text="ZAREJESTRUJ SIĘ" 
             SemanticProperties.Hint="Register button"
             Command="{Binding RegisterCommand}"
-            IsEnabled="{Binding IsNotBusy}"
-            HorizontalOptions="Fill" />
+            IsEnabled="{Binding IsNotBusy}"/>
 
         <Button
             Text="ZAPOMNIAŁEM HASŁA" 
             SemanticProperties.Hint="Forgot password button"
             Command="{Binding ForgotPasswordCommand}"
-            IsEnabled="{Binding IsNotBusy}"
-            HorizontalOptions="Fill" />
+            IsEnabled="{Binding IsNotBusy}"/>
 
     </VerticalStackLayout>
 </ContentPage>

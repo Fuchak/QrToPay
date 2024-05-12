@@ -4,7 +4,33 @@
              xmlns:vm="clr-namespace:QrToPay.ViewModels"
              x:Class="QrToPay.View.MainPage"
              x:DataType="vm:MainViewModel">
-    
+
+    <!-- Styles for buttons in menu -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <!-- Styles for frames-->
+            <Style TargetType="Frame" x:Key="ButtonsFrameStyle">
+                <Setter Property="CornerRadius" Value="20"/>
+                <Setter Property="BackgroundColor" Value="{StaticResource Orange}"/>
+                <Setter Property="BorderColor" Value="{StaticResource Orange}"/>
+                <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
+                <Setter Property="VerticalOptions" Value="FillAndExpand"/>
+            </Style>
+            <!-- Styles for labels in frames  -->
+            <Style TargetType="Label" x:Key="LabelFrameStyle">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+            </Style>
+            <!-- Styles for labels in frames coming soon -->
+            <Style TargetType="Label" x:Key="LabelComingFrameStyle">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+                <Setter Property="FontSize" Value="25"/>
+                <Setter Property="Margin" Value="0,35,0,35"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <Shell.TitleView>
         <StackLayout Orientation="Horizontal" Spacing="10" Padding="50,0,0,0">
             <Image Source="logo.png" HeightRequest="120" WidthRequest="120"/>
@@ -12,14 +38,13 @@
     </Shell.TitleView>
     
     <Grid>
-        <Border Grid.Row="0" BackgroundColor="Black" 
-                HeightRequest="2" 
+        <Border Grid.Row="0" 
                 HorizontalOptions="FillAndExpand"
                 VerticalOptions="Start">
             <Border.Shadow>
                 <Shadow Brush="Black"
                         Offset="0,5"
-                        Radius="10"
+                        Radius="7"
                         Opacity="0.8" />
             </Border.Shadow>
         </Border>
@@ -28,8 +53,6 @@
 
         <!-- Górna sekcja z tytułem i stanem konta do przerobienia pod bazę danych -->
             <StackLayout>
-                <Label Text="518050511"
-                       HorizontalOptions="Center"/>
                 <Label Text="STAN KONTA"
                        FontSize="Large"
                        HorizontalOptions="Center"/>
@@ -38,79 +61,55 @@
                        HorizontalOptions="Center"/>
             </StackLayout>
 
-            <!-- Ikonki menu -->
+            <!-- Menu icons -->
             <Grid ColumnDefinitions="*,*" RowDefinitions="*,*"
                   RowSpacing="20" ColumnSpacing="20">
 
-                <!-- Ikona 1 -->
+                <!-- Icon 1 -->
                 <Frame Grid.Row="0" Grid.Column="0"
-                       CornerRadius="20"
-                       BorderColor="{StaticResource Orange}"
-                       BackgroundColor="{StaticResource Orange}"
-                       HorizontalOptions="FillAndExpand"
-                       VerticalOptions="FillAndExpand"
+                       Style="{StaticResource ButtonsFrameStyle}"
                        IsEnabled="{Binding IsNotBusy}">
                     <Frame.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding NavigateToSkiPageCommand}"/>
+                        <TapGestureRecognizer Command="{Binding NavigateToSkiPageCommand}"/>
                     </Frame.GestureRecognizers>
                     <StackLayout>
                         <Image Source="stok.png" HeightRequest="100" HorizontalOptions="Center"/>
                         <Label Text="STOKI &#10;NARCIARSKIE"
-                               TextColor="White"
-                               HorizontalTextAlignment="Center"/>
+                               Style="{StaticResource LabelFrameStyle}"/>
                     </StackLayout>
                 </Frame>
 
-                <!-- Ikona 2 -->
+                <!-- Icon 2 -->
                 <Frame Grid.Row="0" Grid.Column="1"
-                       CornerRadius="20"
-                       BorderColor="{StaticResource Orange}"
-                       BackgroundColor="{StaticResource Orange}"
-                       HorizontalOptions="FillAndExpand"
-                       VerticalOptions="FillAndExpand"
+                       Style="{StaticResource ButtonsFrameStyle}"
                        IsEnabled="{Binding IsNotBusy}">
                     <Frame.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding NavigateToFunfairCommand}"/>
+                        <TapGestureRecognizer Command="{Binding NavigateToFunfairCommand}"/>
                     </Frame.GestureRecognizers>
                     <StackLayout>
                         <Image Source="miasteczko.png" HeightRequest="100" HorizontalOptions="Center"/>
                         <Label Text="WESOŁE &#10;MIASTECZKA"
-                               TextColor="White"
-                               HorizontalTextAlignment="Center"/>
+                               Style="{StaticResource LabelFrameStyle}"/>
                     </StackLayout>
                 </Frame>
 
-                <!-- Ikona 3 -->
+                <!-- Icon 3 -->
                 <Frame Grid.Row="1" Grid.Column="0"
-                       CornerRadius="20"
-                       BorderColor="{StaticResource Orange}"
-                       BackgroundColor="{StaticResource Orange}"
-                       HorizontalOptions="FillAndExpand"
-                       VerticalOptions="FillAndExpand">
+                    Style="{StaticResource ButtonsFrameStyle}">
                     <StackLayout>
                         <Image Source="icon3.png" HeightRequest="0" HorizontalOptions="Center"/>
                         <Label Text="Coming &#10;SOON!"
-                               TextColor="White"
-                               FontSize="25"
-                               HorizontalTextAlignment="Center"
-                               Margin="0,35,0,35"/>
+                               Style="{StaticResource LabelComingFrameStyle}"/>
                     </StackLayout>
                 </Frame>
 
-                <!-- Ikona 4 -->
+                <!-- Icon 4 -->
                 <Frame Grid.Row="1" Grid.Column="1"
-                       CornerRadius="20"
-                       BorderColor="{StaticResource Orange}"
-                       BackgroundColor="{StaticResource Orange}"
-                       HorizontalOptions="FillAndExpand"
-                       VerticalOptions="FillAndExpand">
+                        Style="{StaticResource ButtonsFrameStyle}">
                     <StackLayout>
                         <Image Source="icon4.png" HeightRequest="0" HorizontalOptions="Center"/>
                         <Label Text="Coming &#10;SOON!"
-                               TextColor="White"
-                               FontSize="25"
-                               HorizontalTextAlignment="Center"
-                               Margin="0,35,0,35"/>
+                               Style="{StaticResource LabelComingFrameStyle}"/>
                     </StackLayout>
                 </Frame>
             </Grid>

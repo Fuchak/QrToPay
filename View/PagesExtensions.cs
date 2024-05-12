@@ -13,6 +13,13 @@ public static class PagesExtensions
             builder.Services.AddTransient<ResetPasswordConfirmPage>();
             builder.Services.AddTransient<SkiPage>();
             builder.Services.AddTransient<AccountPage>();
+            builder.Services.AddTransient<HelpPage>();
+            builder.Services.AddTransient<TopUpAccountPage>();
+            builder.Services.AddTransient<SettingsPage>();
+            builder.Services.AddTransient<ChangePasswordPage>();
+            builder.Services.AddTransient<ChangePhonePage>();
+            builder.Services.AddTransient<ChangeEmailPage>();
+            builder.Services.AddTransient<HistoryPage>();
 
             return builder;
         }   

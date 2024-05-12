@@ -9,60 +9,62 @@
             <Image Source="logo.png" HeightRequest="120" WidthRequest="120"/>
         </StackLayout>
     </Shell.TitleView>
-    <VerticalStackLayout
-        Padding="30,90,30,0"
-        Spacing="10">
-        <!-- Wpisz email/numer telefonu-->
-        <Label
-            Padding="0,0,0,10"
+    <Grid>
+        <Border Grid.Row="0" 
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="Start">
+            <Border.Shadow>
+                <Shadow Brush="Black"
+                        Offset="0,5"
+                        Radius="7"
+                        Opacity="0.8"/>
+            </Border.Shadow>
+        </Border>
+        <VerticalStackLayout Grid.Row="1" Padding="30,90,30,0" Spacing="10">
+            <!-- Wpisz email/numer telefonu-->
+            <Label
             Text="Podaj email/numer telefonu:"
             Style="{StaticResource SubHeadline}" 
             FontAttributes="Bold"/>
-        <Frame>
-            <Entry
-            x:Name="EmailPhoneEntry"
-            Placeholder="E-mail/Telefon"
-            Text="{Binding EmailPhone, Mode=TwoWay}"
-            HorizontalOptions="Fill" />
-        </Frame>
-        <!-- Wpisz hasło-->
-        <Label
-            Padding="0,0,0,10"
+            <Frame>
+                <Entry
+                x:Name="EmailPhoneEntry"
+                Placeholder="E-mail/Telefon"
+                Text="{Binding EmailPhone, Mode=TwoWay}" />
+            </Frame>
+            <!-- Wpisz hasło-->
+            <Label
             Text="Wpisz hasło:"
             Style="{StaticResource SubHeadline}" />
-        <Frame>
-            <Entry
+            <Frame>
+                <Entry
             x:Name="PasswordEntry"
             Placeholder="Hasło"
-            Text="{Binding Password, Mode=TwoWay}"
-            HorizontalOptions="Fill" />
-        </Frame>
-        <!-- Wymagania hasła -->
-        <Label 
-            TextColor="Black"
-            Text="Hasło musi zawierać co najmniej 8 znaków, w tym:
-            &#10;   • jedną cyfrę, 
-            &#10;   • jedną dużą literę, 
-            &#10;   • jeden znak specjalny, np. @, $, !"
-            FontSize="12"/>
-        <!-- Potwierdz hasło -->
-        <Label
-            Padding="0,0,0,10"
+            Text="{Binding Password, Mode=TwoWay}"/>
+            </Frame>
+            <!-- Wymagania hasła -->
+            <Label 
+                TextColor="Black"
+                Text="Hasło musi zawierać co najmniej 8 znaków, w tym:
+                &#10;   • jedną cyfrę, 
+                &#10;   • jedną dużą literę, 
+                &#10;   • jeden znak specjalny, np. @, $, !"
+                FontSize="12"/>
+            <!-- Potwierdz hasło -->
+            <Label
             Text="Potwierdz hasło:"
             Style="{StaticResource SubHeadline}"/>
-        <Frame>
-            <Entry
-            x:Name="PasswordConfirm"
-            Placeholder="Hasło"
-                Text="{Binding PasswordConfirm, Mode=TwoWay}"
-            HorizontalOptions="Fill" />
-        </Frame>
+            <Frame>
+                <Entry
+                x:Name="PasswordConfirm"
+                Placeholder="Hasło"
+                Text="{Binding PasswordConfirm, Mode=TwoWay}"/>
+            </Frame>
 
-        <Button
+            <Button
             Text="ZAREJESTRUJ" 
-            SemanticProperties.Hint="Register"
             Command="{Binding ConfirmCommand}"
-            IsEnabled="{Binding IsNotBusy}"
-            HorizontalOptions="Fill" />
-    </VerticalStackLayout>
+            IsEnabled="{Binding IsNotBusy}"/>
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>

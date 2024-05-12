@@ -2,7 +2,7 @@
 
 public partial class ViewModelBase : ObservableObject
 {
-    private static bool _isNavigating;
+    private bool _isNavigating;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsNotBusy))]

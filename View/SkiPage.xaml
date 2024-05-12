@@ -4,15 +4,38 @@
              xmlns:vm="clr-namespace:QrToPay.ViewModels"
              x:Class="QrToPay.View.SkiPage"
              x:DataType="vm:SkiViewModel">
+
     <Shell.TitleView>
         <StackLayout Orientation="Horizontal" Spacing="10" Padding="50,0,0,0">
             <Image Source="logo.png" HeightRequest="120" WidthRequest="120"/>
         </StackLayout>
     </Shell.TitleView>
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <Grid>
+        <Border Grid.Row="0" 
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="Start">
+            <Border.Shadow>
+                <Shadow Brush="Black"
+                        Offset="0,5"
+                        Radius="7"
+                        Opacity="0.8"/>
+            </Border.Shadow>
+        </Border>
+        <VerticalStackLayout>
+            <Label 
+                Text="  Nie wiem jakiś wybór pomiędzy zrobieniem zdj qr 
+                &#10;a wygenerowaniem kodu qr, może też jakis 
+                &#10;wybór danego stoku? Chyba że założymy że to działa 
+                &#10;narazie tylko dla jednego to też możemy dodać 
+                &#10;przycisk który będzie jakby tabowany?"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"
+                Padding="0,0,0,20"/>
+            <Label 
+                Text="Załóżmy narazie że tylko wybór między wygeneruj kod 
+                &#10;a zeskanuj jako beta zobaczymy jak baza będzie z tym działać."
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" />
+         </VerticalStackLayout>
+    </Grid>
 </ContentPage>

@@ -41,6 +41,7 @@ namespace QrToPay
 
 
             builder.Services.AddTransient<AuthService>();
+            builder.Services.AddTransientPopup<VerificationCodePopup, VerificationCodePopupViewModel>();
 
 
             return builder.Build();

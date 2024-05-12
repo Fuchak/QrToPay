@@ -2,25 +2,23 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:QrToPay.ViewModels"
-             x:Class="QrToPay.View.AccountPage"
-             x:DataType="vm:AccountViewModel"
-             Title="Konto">
+             x:Class="QrToPay.View.HistoryPage"
+             x:DataType="vm:HistoryViewModel">
     
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style TargetType="Label" x:Key="AccountLabelStyle">
-                <Setter Property="Margin" Value="0,0,0,10"/>
                 <Setter Property="FontSize" Value="18"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
             </Style>
             <Style TargetType="Label" x:Key="AccountLabelMiniStyle">
-                <Setter Property="Margin" Value="0,0,0,10"/>
                 <Setter Property="FontSize" Value="Medium"/>
             </Style>
             <Style TargetType="BoxView" x:Key="AccountBoxViewStyle">
                 <Setter Property="HeightRequest" Value="2"/>
                 <Setter Property="Color" Value="LightGray"/>
                 <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
+                <Setter Property="Margin" Value="0,10,0,10"/>
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -36,59 +34,56 @@
             <BoxView Grid.Column="0" WidthRequest="0" Opacity="0"/>
             <!-- Centered Title -->
             <Label Grid.Column="1"
-                   FontFamily="Arial"
-                   Text="Konto" 
-                   FontSize="20"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center" 
-                   HorizontalTextAlignment="Center" 
-                   VerticalOptions="Center"/>
+                FontFamily="Arial"
+                Text="Historia" 
+                FontSize="20"
+                FontAttributes="Bold"
+                HorizontalOptions="Center" 
+                HorizontalTextAlignment="Center" 
+                VerticalOptions="Center"/>
             <!-- Place on right side of title to align title to center -->
             <BoxView Grid.Column="2" WidthRequest="70" Opacity="0" BackgroundColor="White"/>
         </Grid>
     </Shell.TitleView>
 
+
     <Grid>
+
         <Border Grid.Row="0" 
-            HorizontalOptions="FillAndExpand"
-            VerticalOptions="Start">
+        HorizontalOptions="FillAndExpand"
+        VerticalOptions="Start">
             <Border.Shadow>
                 <Shadow Brush="Black"
-                        Offset="0,5"
-                        Radius="7"
-                        Opacity="0.8"/>
+                    Offset="0,5"
+                    Radius="7"
+                    Opacity="0.8"/>
             </Border.Shadow>
         </Border>
-        <VerticalStackLayout  Grid.Row="1" Spacing="10" Padding="20">
-             <!-- Sekcje informacji o użytkowniku -->
+
+        <VerticalStackLayout  Grid.Row="1" Padding="20" >
             <StackLayout>
-                <Label Text="UserID" Style="{StaticResource AccountLabelStyle}"/>
-                <Label Text="#007" Style="{StaticResource AccountLabelMiniStyle}"/>
+                <Label Text="29.02.2024" Style="{StaticResource AccountLabelStyle}"/>
+                <Label Text="WESOŁE MIASTECZKO" Style="{StaticResource AccountLabelStyle}"/>
+                <Label Text="Boxer" Style="{StaticResource AccountLabelMiniStyle}"/>
+                <Label Text="-5 zł" Style="{StaticResource AccountLabelStyle}"/>
                 <BoxView Style="{StaticResource AccountBoxViewStyle}"/>
             </StackLayout>
 
             <StackLayout>
-                <Label Text="Numer telefonu" Style="{StaticResource AccountLabelStyle}"/>
-                <Label Text="518050511 / brak" Style="{StaticResource AccountLabelMiniStyle}"/>
+                <Label Text="29.02.2024" Style="{StaticResource AccountLabelStyle}"/>
+                <Label Text="DOŁADOWANIE" Style="{StaticResource AccountLabelStyle}"/>
+                <Label Text="Konto" Style="{StaticResource AccountLabelMiniStyle}"/>
+                <Label Text="+200 zł" Style="{StaticResource AccountLabelStyle}"/>
                 <BoxView Style="{StaticResource AccountBoxViewStyle}"/>
             </StackLayout>
 
             <StackLayout>
-                <Label Text="Email" Style="{StaticResource AccountLabelStyle}"/>
-                <Label Text="fufutrzak@vp.pl / brak" Style="{StaticResource AccountLabelMiniStyle}"/>
+                <Label Text="29.02.2024" Style="{StaticResource AccountLabelStyle}"/>
+                <Label Text="STOK NARCIARSKI" Style="{StaticResource AccountLabelStyle}"/>
+                <Label Text="Boxer" Style="{StaticResource AccountLabelMiniStyle}"/>
+                <Label Text="-20 zł" Style="{StaticResource AccountLabelStyle}"/>
                 <BoxView Style="{StaticResource AccountBoxViewStyle}"/>
             </StackLayout>
-            <!-- 
-                <StackLayout>
-                    <Label Text="Numery rejestracyjne" Style="{StaticResource AccountLabelStyle}"/>
-                    <Label Text="TKA 44RN" Style="{StaticResource AccountLabelMiniStyle}"/>
-                    <Label Text="KBC FG54" Style="{StaticResource AccountLabelMiniStyle}"/>
-                    <BoxView Style="{StaticResource AccountBoxViewStyle}"/>
-                </StackLayout>
-            
-                Jeśli byłyby parking to taka dodatkowa opcja te numery rejestracyjne.
-                A te brak to w sumie jesli brak to mozna całego stacklayota poprostu nie pokazywać
-            -->
         </VerticalStackLayout>
     </Grid>
 </ContentPage>
