@@ -26,4 +26,10 @@ public partial class ViewModelBase : ObservableObject
             _isNavigating = false;
         }
     }
+
+    [RelayCommand]
+    private async Task GoBack()
+    {
+        await Shell.Current.GoToAsync("..", false);
+    }
 }

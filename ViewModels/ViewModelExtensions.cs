@@ -12,6 +12,7 @@ public static class ViewModelExtensions
         builder.Services.AddTransient<ResetPasswordViewModel>();
         builder.Services.AddTransient<ResetPasswordConfirmViewModel>();
         builder.Services.AddTransient<SkiViewModel>();
+        builder.Services.AddTransient<FunFairViewModel>();
         builder.Services.AddTransient<AccountViewModel>();
         builder.Services.AddTransient<HelpViewModel>();
         builder.Services.AddTransient<TopUpAccountViewModel>();
@@ -20,6 +21,11 @@ public static class ViewModelExtensions
         builder.Services.AddTransient<ChangePhoneViewModel>();
         builder.Services.AddTransient<ChangeEmailViewModel>();
         builder.Services.AddTransient<HistoryViewModel>();
+        builder.Services.AddTransient<ScanQrCodeViewModel>();
+        builder.Services.AddTransient<SkiResortViewModel>();
+        builder.Services.AddTransient<SkiResortBuyViewModel>();
+        builder.Services.AddTransient<ActiveBiletsViewModel>();
+
         
         return builder;
     }

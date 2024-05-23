@@ -3,11 +3,7 @@
 public partial class ShellViewModel : ViewModelBase
 {
     [RelayCommand]
-    private async Task NavigateToPage(string route)
-    {
-        Shell.Current.FlyoutIsPresented = false;
-        await Shell.Current.GoToAsync(route);
-    }
+    private Task NavigateToPage(string pageName) => NavigateAsync(pageName);
 
     [RelayCommand]
     private async Task Logout()
@@ -18,11 +14,5 @@ public partial class ShellViewModel : ViewModelBase
         }
         Shell.Current.FlyoutIsPresented = false;
         await Shell.Current.GoToAsync("///LoginPage");
-    }
-
-    [RelayCommand]
-    private void CloseFlyout()
-    {
-        Shell.Current.FlyoutIsPresented = false;
     }
 }

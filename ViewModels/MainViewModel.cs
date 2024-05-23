@@ -8,7 +8,10 @@ public partial class MainViewModel(IHttpClientFactory httpClientFactory) : ViewM
     private Task NavigateToSkiPage() => NavigateAsync(nameof(SkiPage));
 
     [RelayCommand]
-    private Task NavigateToFunfair() => NavigateAsync(nameof(SkiPage));
+    private Task NavigateToFunfair() => NavigateAsync(nameof(FunFairPage));
+
+    [RelayCommand]
+    private Task NavigateToScanPage() => NavigateAsync(nameof(ScanQrCodePage));
 
     // Można dodać metodę do obsługi wywołań API, jeśli jest potrzebna
     /*[RelayCommand]

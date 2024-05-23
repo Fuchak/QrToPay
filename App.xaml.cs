@@ -17,6 +17,7 @@ namespace QrToPay
             Routing.RegisterRoute("ResetPasswordPage", typeof(ResetPasswordPage));
             Routing.RegisterRoute("ResetPasswordConfirmPage", typeof(ResetPasswordConfirmPage));
             Routing.RegisterRoute("SkiPage", typeof(SkiPage));
+            Routing.RegisterRoute("FunFairPage", typeof(FunFairPage));
             Routing.RegisterRoute("AccountPage", typeof(AccountPage));
             Routing.RegisterRoute("HelpPage", typeof(HelpPage));
             Routing.RegisterRoute("TopUpAccountPage", typeof(TopUpAccountPage));
@@ -25,6 +26,10 @@ namespace QrToPay
             Routing.RegisterRoute("ChangePhonePage", typeof(ChangePhonePage));
             Routing.RegisterRoute("ChangeEmailPage", typeof(ChangeEmailPage));
             Routing.RegisterRoute("HistoryPage", typeof(HistoryPage));
+            Routing.RegisterRoute("ScanQrCodePage", typeof(ScanQrCodePage));
+            Routing.RegisterRoute("SkiResortPage", typeof(SkiResortPage));
+            Routing.RegisterRoute("SkiResortBuyPage", typeof(SkiResortBuyPage));
+            Routing.RegisterRoute("ActiveBiletsPage", typeof(ActiveBiletsPage));
 
         }
     }

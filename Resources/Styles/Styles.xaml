@@ -2,7 +2,8 @@
 <?xaml-comp compile="true" ?>
 <ResourceDictionary 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:QrToPay.ViewModels">
 
     <!-- Strony mają białe tło mimo że motyw w telefonie jest ciemny -->
     <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
@@ -33,8 +34,9 @@
         <Setter Property="BackgroundColor" Value="{StaticResource Orange}" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
         <Setter Property="FontSize" Value="14"/>
-        <Setter Property="BorderWidth" Value="0"/>
-        <Setter Property="CornerRadius" Value="20"/>
+        <Setter Property="BorderColor" Value="{StaticResource Black}"/>
+        <Setter Property="BorderWidth" Value="1"/>
+        <Setter Property="CornerRadius" Value="5"/>
         <Setter Property="FontAttributes" Value="Bold"/>
         <Setter Property="Padding" Value="14,10"/>
         <Setter Property="MinimumHeightRequest" Value="44"/>
@@ -432,6 +434,16 @@
         <Setter Property="BarTextColor" Value="{StaticResource Primary}" />
         <Setter Property="UnselectedTabColor" Value="Black" />
         <Setter Property="SelectedTabColor" Value="Black" />
+    </Style>
+
+    <Style x:Key="BasePageStyle" TargetType="ContentPage">
+        <Setter Property="Shell.FlyoutBehavior" Value="Disabled" />
+        <Setter Property="Shell.PresentationMode" Value="NotAnimated" />
+        <Setter Property="Shell.BackButtonBehavior">
+            <Setter.Value>
+                <BackButtonBehavior Command="{Binding GoBackCommand}" x:DataType="vm:ViewModelBase"/>
+            </Setter.Value>
+        </Setter>
     </Style>
 
 </ResourceDictionary>

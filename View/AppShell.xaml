@@ -2,16 +2,20 @@
 <Shell
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:local="clr-namespace:QrToPay.View"
     xmlns:vm="clr-namespace:QrToPay.ViewModels"
     x:Class="QrToPay.View.AppShell"
     x:DataType="vm:ShellViewModel"
     Shell.FlyoutBackgroundColor="White"
-    FlyoutBehavior="Flyout"
     FlyoutWidth="250"
     Title="QrToPay">
 
-    <!-- Strona ładowania (sprawdzanie zalogowania użytkownika) tymczasowe? -->
+    <Shell.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="White" StatusBarStyle="DarkContent" />
+    </Shell.Behaviors>
+
+    <!-- Strona ładowania (sprawdzanie zalogowania użytkownika) -->
     <ShellItem Route="loading" FlyoutItemIsVisible="False">
         <ShellContent
             ContentTemplate="{DataTemplate local:LoadingPage}"
@@ -62,13 +66,13 @@
             </Border>
             <!-- isbusy to not get redirected to two pages at same time when fast clicking -->
             <StackLayout Spacing="10" Padding="5,10,5,0">
-                <Button Text="Konto" Command="{Binding NavigateToPageCommand}" CommandParameter="AccountPage" IsEnabled="{Binding IsNotBusy}" />
-                <!--  <Button Text="Aktywne bilety???"  IsEnabled="{Binding IsNotBusy}"/> -->
-                <Button Text="Historia biletów" Command="{Binding NavigateToPageCommand}" CommandParameter="HistoryPage" IsEnabled="{Binding IsNotBusy}" />
-                <Button Text="Doładuj konto" Command="{Binding NavigateToPageCommand}" CommandParameter="TopUpAccountPage" IsEnabled="{Binding IsNotBusy}"/>
-                <Button Text="Ustawienia"  Command="{Binding NavigateToPageCommand}" CommandParameter="SettingsPage" IsEnabled="{Binding IsNotBusy}"/>
-                <Button Text="Pomoc" Command="{Binding NavigateToPageCommand}" CommandParameter="HelpPage" IsEnabled="{Binding IsNotBusy}"/>
-                <Button Text="Wyloguj" Command="{Binding LogoutCommand}" IsEnabled="{Binding IsNotBusy}" />
+                <Button Text="Konto" Command="{Binding NavigateToPageCommand}" CommandParameter="AccountPage"/>
+                <Button Text="Aktywne bilety"  Command="{Binding NavigateToPageCommand}" CommandParameter="ActiveBiletsPage"/>
+                <Button Text="Historia biletów" Command="{Binding NavigateToPageCommand}" CommandParameter="HistoryPage" />
+                <Button Text="Doładuj konto" Command="{Binding NavigateToPageCommand}" CommandParameter="TopUpAccountPage"/>
+                <Button Text="Ustawienia"  Command="{Binding NavigateToPageCommand}" CommandParameter="SettingsPage"/>
+                <Button Text="Pomoc" Command="{Binding NavigateToPageCommand}" CommandParameter="HelpPage"/>
+                <Button Text="Wyloguj" Command="{Binding LogoutCommand}"/>
             </StackLayout>
         </Grid>
     </Shell.FlyoutContent>
@@ -78,5 +82,4 @@
             <Label Text="QrtoPay &#10;wersja 1.0" HorizontalTextAlignment="Center"/>
         </StackLayout>
     </Shell.FlyoutFooter>
-    
 </Shell>

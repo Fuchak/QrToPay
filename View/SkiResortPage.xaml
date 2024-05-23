@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:QrToPay.ViewModels"
              xmlns:models="clr-namespace:QrToPay.Models"
-             x:Class="QrToPay.View.SkiPage"
+             x:Class="QrToPay.View.SkiResortPage"
              Style="{StaticResource BasePageStyle}"
-             x:DataType="vm:SkiViewModel">
-
+             x:DataType="vm:SkiResortViewModel">
+    
     <Shell.TitleView>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -16,7 +16,7 @@
             <!-- Wycentrowany tytuł -->
             <Label 
                FontFamily="Arial"
-               Text="Stoki Narciarskie" 
+               Text="{Binding Title}" 
                FontSize="20"
                FontAttributes="Bold"
                HorizontalOptions="Center" 
@@ -39,11 +39,10 @@
             </Border>
         </Grid>
 
-        <VerticalStackLayout Grid.Row="1" Padding="10,10,10,0" Spacing="10">
-
-            <CollectionView  ItemsSource="{Binding Skiresorts}">
+        <VerticalStackLayout Padding="10">
+            <CollectionView ItemsSource="{Binding Tickets}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:SkiResortModel">
+                    <DataTemplate x:DataType="models:Ticket">
                         <Frame Padding="10"
                                Margin="2"
                                BackgroundColor="{StaticResource Orange}"
@@ -51,19 +50,17 @@
                                VerticalOptions="Start"
                                CornerRadius="5">
                             <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SkiViewModel}},  Path=GotoSkiResortCommand}" 
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SkiResortViewModel}},  Path=GotoSkiResortBuyCommand}" 
                                                        CommandParameter="{Binding}"/>
                             </Frame.GestureRecognizers>
                             <StackLayout Orientation="Horizontal">
-                                <Image Source="{Binding ImageSource}" WidthRequest="24" HeightRequest="24" VerticalOptions="Center"/>
-                                <Label Text="{Binding ResortName}" FontSize="16" VerticalOptions="Center" TextColor="White" Margin="10,0,0,0"/>
-                                <Label Text="{Binding City}" FontSize="16" VerticalOptions="Center" TextColor="White" Margin="10,0,0,0"/>
+                                <Label Text="{Binding BiletType}" FontSize="16" VerticalOptions="Center" TextColor="White" Margin="10,0,0,0"/>
+                                <Label Text="{Binding Price}" FontSize="16" VerticalOptions="Center" TextColor="White" Margin="10,0,0,0"/>
                             </StackLayout>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

@@ -3,30 +3,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:QrToPay.ViewModels"
              x:Class="QrToPay.View.TopUpAccountPage"
+             Style="{StaticResource BasePageStyle}"
              x:DataType="vm:TopUpAccountViewModel">
 
     <Shell.TitleView>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-            <!-- Place for back button -->
-            <BoxView Grid.Column="0" WidthRequest="0" Opacity="0"/>
-            <!-- Centered Title -->
-            <Label Grid.Column="1"
-               FontFamily="Arial"
-               Text="Doładuj Konto" 
-               FontSize="20"
-               FontAttributes="Bold"
-               HorizontalOptions="Center" 
-               HorizontalTextAlignment="Center" 
-               VerticalOptions="Center"/>
-            <!-- Place on right side of title to align title to center -->
-            <BoxView Grid.Column="2" WidthRequest="70" Opacity="0" BackgroundColor="White"/>
+            <!-- Wycentrowany tytuł -->
+            <Label 
+                   FontFamily="Arial"
+                   Text="Doładuj Konto" 
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" 
+                   HorizontalTextAlignment="Center" 
+                   VerticalOptions="Center"/>
         </Grid>
     </Shell.TitleView>
+    
     <Grid>
         <Border Grid.Row="0" 
            HorizontalOptions="FillAndExpand"

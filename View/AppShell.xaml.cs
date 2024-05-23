@@ -1,4 +1,7 @@
-﻿namespace QrToPay.View;
+﻿using Microsoft.Maui.Controls.PlatformConfiguration;
+using System.ComponentModel.Design;
+
+namespace QrToPay.View;
 
 public partial class AppShell : Shell
 {
@@ -6,26 +9,23 @@ public partial class AppShell : Shell
     {
         InitializeComponent();
         BindingContext = new ShellViewModel();
-
-        // Obsługa zdarzenia rozpoczęcia nawigacji
-        this.Navigating += OnNavigating;
-        // Obsługa zdarzenia zakończenia nawigacji
-        this.Navigated += OnNavigated;
     }
-    private void OnNavigating(object? sender, ShellNavigatingEventArgs e)
+
+    protected override bool OnBackButtonPressed()
     {
-        // Wyłącz interakcję z flyout menu podczas nawigacji
-        if (e.Target.Location.OriginalString.Contains("SkiPage") || e.Target.Location.OriginalString.Contains("FunfairPage"))
+        if (Shell.Current.CurrentPage is MainPage)
         {
-            // Nie zmieniaj zachowania Flyout
-            return;
+            return false;
         }
-        this.FlyoutBehavior = FlyoutBehavior.Disabled;
+        else { 
+            GoBack();
+            return true;
+        }
     }
 
-    private void OnNavigated(object? sender, ShellNavigatedEventArgs e)
+    private async void GoBack()
     {
-        // Przywróć standardowe zachowanie flyout po zakończeniu nawigacji
-        this.FlyoutBehavior = FlyoutBehavior.Flyout;
+        // Wykonaj niestandardową nawigację wstecz bez animacji
+        await Shell.Current.GoToAsync("..", false);
     }
 }

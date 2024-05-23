@@ -4,6 +4,7 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:vm="clr-namespace:QrToPay.ViewModels"
              x:Class="QrToPay.View.VerificationCodePopup"
+             Style="{StaticResource BasePageStyle}"
              x:DataType="vm:VerificationCodePopupViewModel">
 
     <VerticalStackLayout Padding="20" Spacing="10" BackgroundColor="White">

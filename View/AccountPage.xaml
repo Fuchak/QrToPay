@@ -3,9 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:QrToPay.ViewModels"
              x:Class="QrToPay.View.AccountPage"
+             Style="{StaticResource BasePageStyle}"
              x:DataType="vm:AccountViewModel"
              Title="Konto">
-    
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style TargetType="Label" x:Key="AccountLabelStyle">
@@ -28,14 +29,11 @@
     <Shell.TitleView>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-            <!-- Place for back button -->
-            <BoxView Grid.Column="0" WidthRequest="0" Opacity="0"/>
-            <!-- Centered Title -->
-            <Label Grid.Column="1"
+            <!-- Wycentrowany tytuł -->
+            <Label 
                    FontFamily="Arial"
                    Text="Konto" 
                    FontSize="20"
@@ -43,8 +41,6 @@
                    HorizontalOptions="Center" 
                    HorizontalTextAlignment="Center" 
                    VerticalOptions="Center"/>
-            <!-- Place on right side of title to align title to center -->
-            <BoxView Grid.Column="2" WidthRequest="70" Opacity="0" BackgroundColor="White"/>
         </Grid>
     </Shell.TitleView>
 

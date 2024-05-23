@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:QrToPay.ViewModels"
+             Style="{StaticResource BasePageStyle}"
+             x:Class="QrToPay.View.ActiveBiletsPage"
+             x:DataType="vm:ActiveBiletsViewModel">
+
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <!-- Wycentrowany tytuł -->
+            <Label 
+           FontFamily="Arial"
+           Text="Aktywne bilety" 
+           FontSize="20"
+           FontAttributes="Bold"
+           HorizontalOptions="Center" 
+           HorizontalTextAlignment="Center" 
+           VerticalOptions="Center"/>
+        </Grid>
+    </Shell.TitleView>
+
+    <Grid>
+        <Grid>
+            <Border Grid.Row="0" 
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="Start">
+                <Border.Shadow>
+                    <Shadow Brush="Black"
+                        Offset="0,5"
+                        Radius="7"
+                        Opacity="0.8"/>
+                </Border.Shadow>
+            </Border>
+        </Grid>
+
+        <VerticalStackLayout Padding="10">
+            <Frame BackgroundColor="LightGray" Padding="10">
+                <StackLayout>
+                    <Label Text="Dane biletu" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" />
+                    <Label Text="{Binding ResortName}" FontSize="18" HorizontalOptions="Center" />
+                    <Label Text="{Binding City}" FontSize="18" HorizontalOptions="Center" />
+                    <Label Text="{Binding BiletType}" FontSize="18" HorizontalOptions="Center" />
+                    <Label Text="{Binding Price}" FontSize="18" HorizontalOptions="Center" />
+                    <Label Text="{Binding Points}" FontSize="18" HorizontalOptions="Center" />
+                    <Button Text="Pokaż kod QR" Command="{Binding ToggleQrCodeVisibilityCommand}" HorizontalOptions="Center" />
+                </StackLayout>
+            </Frame>
+
+            <Image Source="{Binding QrCodePath}" IsVisible="{Binding IsQrCodeVisible}" HorizontalOptions="Center" VerticalOptions="Center" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

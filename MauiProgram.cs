@@ -1,7 +1,7 @@
-﻿using CommunityToolkit.Maui;
+﻿using BarcodeScanning;
+using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
-//Nie wiem czemu ale tego jakby nie ma ale bez tego są podkreślenia w EntryHandler
-using Microsoft.Maui.Controls.Compatibility.Platform.Android;
+using Microsoft.Maui.Platform;
 
 namespace QrToPay
 {
@@ -15,6 +15,7 @@ namespace QrToPay
                 .ConfigurePages()
                 .ConfigureViewModels()
                 .UseMauiCommunityToolkit()
+                .UseBarcodeScanning()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -25,13 +26,12 @@ namespace QrToPay
     		    builder.Logging.AddDebug();
             #endif
 
-            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("Placeholder", (h, v) =>
-            {
             #if ANDROID
-                h.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
-            #endif
+            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoUnderline", (h, v) =>
+            {
+                h.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToPlatform());
             });
-
+            #endif
 
             // Rejestrujesz IHttpClientFactory i konfigurujesz klienta HTTP
             builder.Services.AddHttpClient("ApiHttpClient", client =>
@@ -42,6 +42,7 @@ namespace QrToPay
 
             builder.Services.AddTransient<AuthService>();
             builder.Services.AddTransientPopup<VerificationCodePopup, VerificationCodePopupViewModel>();
+            builder.Services.AddSingleton<QrCodeService>();
 
 
             return builder.Build();
