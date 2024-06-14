@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:QrToPay.ViewModels"
+             x:Class="QrToPay.View.CreateUserPage"
+             Style="{StaticResource BasePageStyle}"
+             x:DataType="vm:CreateUserViewModel">
+    
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Image Source="logo.png" HeightRequest="120" WidthRequest="120" HorizontalOptions="Center"/>
+        </Grid>
+    </Shell.TitleView>
+    
+    <Grid>
+        <Border Grid.Row="0" 
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="Start">
+            <Border.Shadow>
+                <Shadow Brush="Black"
+                        Offset="0,5"
+                        Radius="7"
+                        Opacity="0.8"/>
+            </Border.Shadow>
+        </Border>
+        <VerticalStackLayout Grid.Row="1" Padding="30,90,30,0" Spacing="10">
+            <!-- Wpisz email/numer telefonu-->
+            <Label
+            Text="Podaj email/numer telefonu:"
+            Style="{StaticResource SubHeadline}" 
+            FontAttributes="Bold"/>
+            <Frame>
+                <Entry
+                x:Name="EmailPhoneEntry"
+                Placeholder="E-mail/Telefon"
+                Text="{Binding EmailPhone, Mode=TwoWay}" />
+            </Frame>
+            <!-- Wpisz hasło-->
+            <Label
+            Text="Wpisz hasło:"
+            Style="{StaticResource SubHeadline}" />
+            <Frame>
+                <Entry
+            x:Name="PasswordEntry"
+            Placeholder="Hasło"
+            Text="{Binding Password, Mode=TwoWay}"/>
+            </Frame>
+            <!-- Wymagania hasła -->
+            <Label 
+                TextColor="Black"
+                Text="Hasło musi zawierać co najmniej 8 znaków, w tym:
+                &#10;   • jedną cyfrę, 
+                &#10;   • jedną dużą literę, 
+                &#10;   • jeden znak specjalny, np. @, $, !"
+                FontSize="12"/>
+            <!-- Potwierdz hasło -->
+            <Label
+            Text="Potwierdz hasło:"
+            Style="{StaticResource SubHeadline}"/>
+            <Frame>
+                <Entry
+                x:Name="PasswordConfirm"
+                Placeholder="Hasło"
+                Text="{Binding PasswordConfirm, Mode=TwoWay}"/>
+            </Frame>
+            <!-- Przycisk zarejestruj -->
+            <Button
+            Text="ZAREJESTRUJ" 
+            Command="{Binding ConfirmCommand}"
+            IsEnabled="{Binding IsNotBusy}"/>
+            <!-- Wyświetl błąd -->
+            <Label Text="{Binding ErrorMessage}"
+                       FontSize="Small"
+                       TextColor="Red"
+                       HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>
