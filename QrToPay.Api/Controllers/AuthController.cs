@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.DTOs;
-using QrToPay.Api.Data;
+using QrToPay.Api.Models;
 
 namespace QrToPay.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AuthController(DatabaseContext context) : ControllerBase
+    public class AuthController(QrToPayDbContext context) : ControllerBase
     {
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserDto loginDto)
@@ -29,7 +29,7 @@ namespace QrToPay.Api.Controllers
 
             var user = await userQuery.FirstOrDefaultAsync();
 
-            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
+            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.PasswordHash, user.PasswordHash))
             {
                 return Unauthorized(new { Message = "Nieprawidłowy email, numer telefonu lub hasło." });
             }
@@ -39,9 +39,14 @@ namespace QrToPay.Api.Controllers
                 return Unauthorized(new { Message = "Konto nie zostało aktywowane." });
             }
 
+            if (user.IsDeleted)
+            {
+                return Unauthorized(new { Message = "Konto zostało zablokowane." });
+            }
+
             var userDto = new UserDto
             {
-                UserID = user.UserID,
+                UserID = user.UserId,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 AccountBalance = user.AccountBalance

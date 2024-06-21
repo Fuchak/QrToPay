@@ -2,9 +2,16 @@ namespace QrToPay.View;
 
 public partial class HistoryPage : ContentPage
 {
-	public HistoryPage(HistoryViewModel vm)
+    private readonly HistoryViewModel _viewModel;
+    public HistoryPage(HistoryViewModel vm)
 	{
 		InitializeComponent();
-		BindingContext = vm;
-	}
+		BindingContext = _viewModel = vm;
+        InitializeAsync();
+    }
+
+    private async void InitializeAsync()
+    {
+        await _viewModel.LoadHistoryAsync();
+    }
 }

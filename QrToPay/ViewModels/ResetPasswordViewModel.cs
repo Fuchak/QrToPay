@@ -3,6 +3,7 @@ using System.Net.Http;
 using Plugin.LocalNotification;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.Messaging;
+using QrToPay.Models.Responses;
 
 namespace QrToPay.ViewModels;
 

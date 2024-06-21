@@ -2,34 +2,28 @@
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Maui.Storage;
-
+using System.Diagnostics;
+using System.Net.Http;
+using System.Net.Http.Json;
+using BarcodeScanning;
+using System.Globalization;
 
 namespace QrToPay.Services;
-public class QrCodeService
+public class QrCodeService(IHttpClientFactory httpClientFactory)
 {
-    public Task<string> GenerateQrCodeAsync(string resortName, string city, string biletType, string price, string points)
+    public async Task<string> GenerateAndUpdateTicketAsync(UpdateTicketRequest updateRequest)
     {
-        var ticketInfo = new
+        var client = httpClientFactory.CreateClient("ApiHttpClient");
+
+        var response = await client.PostAsJsonAsync("/tickets/generateAndUpdate", updateRequest);
+
+        if (!response.IsSuccessStatusCode)
         {
-            ResortName = resortName,
-            City = city,
-            BiletType = biletType,
-            Price = price,
-            Points = points
-        };
+            Debug.WriteLine($"Nieudane generowanie lub aktualizacja biletu: {response.ReasonPhrase}");
+            return string.Empty;
+        }
 
-        var json = JsonSerializer.Serialize(ticketInfo);
-        var fileName = Path.Combine(FileSystem.CacheDirectory, "qrcode.png");
-        var jsonFileName = Path.ChangeExtension(fileName, ".json");
-
-        using QRCodeGenerator qrGenerator = new();
-        using QRCodeData qrCodeData = qrGenerator.CreateQrCode(json, QRCodeGenerator.ECCLevel.Q);
-        using PngByteQRCode qrCode = new(qrCodeData);
-        byte[] qrCodeImage = qrCode.GetGraphic(20);
-
-        File.WriteAllBytes(fileName, qrCodeImage);
-        File.WriteAllText(jsonFileName, json);
-        Preferences.Set("QrCodePath", fileName);
-        return Task.FromResult(fileName);
+        var result = await response.Content.ReadFromJsonAsync<UpdateTicketResponse>();
+        return result?.QrCode ?? string.Empty;
     }
 }

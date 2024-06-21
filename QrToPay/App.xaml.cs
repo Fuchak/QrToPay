@@ -29,6 +29,7 @@ namespace QrToPay
             Routing.RegisterRoute("SkiResortPage", typeof(SkiResortPage));
             Routing.RegisterRoute("SkiResortBuyPage", typeof(SkiResortBuyPage));
             Routing.RegisterRoute("ActiveBiletsPage", typeof(ActiveBiletsPage));
+            Routing.RegisterRoute("CityPage", typeof(CityPage));
 
         }
     }

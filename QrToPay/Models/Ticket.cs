@@ -1,10 +1,35 @@
-﻿namespace QrToPay.Models;
-public class Ticket
+﻿namespace QrToPay.Models
 {
-    public string? BiletType { get; set; }
+    public class Ticket
+    {
+        public string? CityName { get; set; }
+        public int UserId { get; set; }
+        public string? ResortName { get; set; }
+        public string? QrCode { get; set; }
+        public decimal Price { get; set; }
+        public int Points { get; set; }
+    }
 
-    public string? Points { get; set; }
 
-    public string? Price { get; set; }
+    public class UpdateTicketRequest
+    {
+        public int UserID { get; set; }
+        public int? SkiResortID { get; set; }
+        public int? FunFairID { get; set; }
+        public int Quantity { get; set; }
+        public int Tokens { get; set; }
+        public string? TotalPrice { get; set; }
+    }
 
+    public class UpdateTicketResponse
+    {
+        public string? QrCode { get; set; }
+    }
+
+    public class HistoryItem
+    {
+        public string? Date { get; set; }
+        public string? Type { get; set; }
+        public decimal TotalPrice { get; set; }
+    }
 }

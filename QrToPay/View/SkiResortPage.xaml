@@ -16,7 +16,7 @@
             <!-- Wycentrowany tytuł -->
             <Label 
                FontFamily="Arial"
-               Text="{Binding Title}" 
+               Text="{Binding ResortName}" 
                FontSize="20"
                FontAttributes="Bold"
                HorizontalOptions="Center" 
@@ -54,8 +54,10 @@
                                                        CommandParameter="{Binding}"/>
                             </Frame.GestureRecognizers>
                             <StackLayout Orientation="Horizontal">
-                                <Label Text="{Binding BiletType}" FontSize="16" VerticalOptions="Center" TextColor="White" Margin="10,0,0,0"/>
-                                <Label Text="{Binding Price}" FontSize="16" VerticalOptions="Center" TextColor="White" Margin="10,0,0,0"/>
+                                <Label Text="{Binding Price}" FontSize="16" VerticalOptions="Center" TextColor="White"/>
+                                <Label Text=" zł - " FontSize="16" VerticalOptions="Center" TextColor="White"/>
+                                <Label Text="{Binding Points}" FontSize="16" VerticalOptions="Center" TextColor="White"/>
+                                <Label Text=" token" FontSize="16" VerticalOptions="Center" TextColor="White"/>
                             </StackLayout>
                         </Frame>
                     </DataTemplate>

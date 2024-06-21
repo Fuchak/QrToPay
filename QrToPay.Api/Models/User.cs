@@ -1,15 +1,31 @@
-﻿namespace QrToPay.Api.Models
-{
-    public class User
-    {
-        public int UserID { get; set; }
-        public string? Email { get; set; }
-        public string? PhoneNumber { get; set; }
-        public required string PasswordHash { get; set; }
-        public string? VerificationCode { get; set; }
-        public decimal? AccountBalance { get; set; }
-        public bool IsVerified { get; set; }
+﻿using System;
+using System.Collections.Generic;
 
-        public ICollection<UserTicket> UserTickets { get; set; } = [];
-    }
+namespace QrToPay.Api.Models;
+
+public partial class User
+{
+    public int UserId { get; set; }
+
+    public string? PhoneNumber { get; set; }
+
+    public string? Email { get; set; }
+
+    public string PasswordHash { get; set; } = null!;
+
+    public string? VerificationCode { get; set; }
+
+    public decimal? AccountBalance { get; set; }
+
+    public bool IsVerified { get; set; }
+
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public bool IsDeleted { get; set; }
+
+    public virtual ICollection<TicketHistory> TicketHistories { get; set; } = new List<TicketHistory>();
+
+    public virtual ICollection<UserTicket> UserTickets { get; set; } = new List<UserTicket>();
 }

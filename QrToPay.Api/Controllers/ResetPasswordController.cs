@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using QrToPay.Api.Data;
 using QrToPay.Api.DTOs;
 using QrToPay.Api.Helpers;
 using QrToPay.Api.Models;
@@ -9,7 +8,7 @@ namespace QrToPay.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ResetPasswordController(DatabaseContext context) : ControllerBase
+    public class ResetPasswordController(QrToPayDbContext context) : ControllerBase
     {
 
         [HttpPost("email")]
@@ -30,6 +29,7 @@ namespace QrToPay.Api.Controllers
 
             var verificationCode = AuthenticationHelper.GenerateVerificationCode();
             user.VerificationCode = verificationCode;
+            user.UpdatedAt = DateTime.Now;
             await context.SaveChangesAsync();
 
             return Ok(new { VerificationCode = verificationCode });
@@ -53,6 +53,7 @@ namespace QrToPay.Api.Controllers
 
             var verificationCode = AuthenticationHelper.GenerateVerificationCode();
             user.VerificationCode = verificationCode;
+            user.UpdatedAt = DateTime.Now;
             await context.SaveChangesAsync();
 
             return Ok(new { VerificationCode = verificationCode });
@@ -82,6 +83,7 @@ namespace QrToPay.Api.Controllers
             // Update password
             user.PasswordHash = AuthenticationHelper.HashPassword(request.NewPassword);
             user.VerificationCode = null;
+            user.UpdatedAt = DateTime.Now;
             await context.SaveChangesAsync();
 
             return Ok(new { Message = "Hasło zostało zaktualizowane." });

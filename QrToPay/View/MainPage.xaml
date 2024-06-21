@@ -114,7 +114,7 @@
                 <Frame Grid.Row="0" Grid.Column="0"
                        Style="{StaticResource ButtonsFrameStyle}">
                     <Frame.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding NavigateToSkiPageCommand}"/>
+                        <TapGestureRecognizer Command="{Binding NavigateToCityPageCommand}"  CommandParameter="skislope"/>
                     </Frame.GestureRecognizers>
                     <StackLayout>
                         <Image Source="stok.png" HeightRequest="100" HorizontalOptions="Center"/>
@@ -127,7 +127,7 @@
                 <Frame Grid.Row="0" Grid.Column="1"
                        Style="{StaticResource ButtonsFrameStyle}">
                     <Frame.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding NavigateToFunfairCommand}"/>
+                        <TapGestureRecognizer Command="{Binding NavigateToCityPageCommand}" CommandParameter="funfair"/>
                     </Frame.GestureRecognizers>
                     <StackLayout>
                         <Image Source="miasteczko.png" HeightRequest="100" HorizontalOptions="Center"/>

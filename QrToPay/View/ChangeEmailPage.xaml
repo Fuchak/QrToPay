@@ -46,7 +46,7 @@
                 <Entry
                     x:Name="EmailEntry"
                     Placeholder="Email"
-                    Text="{Binding NewEmail, Mode=TwoWay}" />
+                    Text="{Binding NewEmail}" />
             </Frame>
 
             <Label
@@ -56,12 +56,13 @@
                 <Entry
                     x:Name="PasswordEntry"
                     Placeholder="Hasło"
-                    Text="{Binding Password, Mode=TwoWay}"/>
+                    Text="{Binding Password}"/>
             </Frame>
 
             <Button
                 Text="Zmień email" 
-                Command="{Binding DisplayPopupCommand}"/>
+                Command="{Binding RequestEmailChangeCommand}"/>
+            <Label Text="{Binding ErrorMessage}" TextColor="Red" />
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

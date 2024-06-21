@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using QrToPay.Api.Data;
+//using QrToPay.Api.Data;
+using QrToPay.Api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddDbContext<DatabaseContext>(options =>
+builder.Services.AddDbContext<QrToPayDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddEndpointsApiExplorer();

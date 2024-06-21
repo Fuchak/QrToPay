@@ -15,7 +15,7 @@
             <!-- Wycentrowany tytuł -->
             <Label 
                FontFamily="Arial"
-               Text="{Binding Title}" 
+               Text="{Binding ResortName}" 
                FontSize="20"
                FontAttributes="Bold"
                HorizontalOptions="Center" 
@@ -38,15 +38,21 @@
             </Border>
         </Grid>
 
-        <VerticalStackLayout Padding="10">
+        <VerticalStackLayout Padding="10" Margin="0,10,0,0">
             <Frame BackgroundColor="LightGray" Padding="10">
                 <StackLayout>
                     <Label Text="Dane biletu" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" />
                     <Label Text="{Binding ResortName}" FontSize="18" HorizontalOptions="Center" />
-                    <Label Text="{Binding City}" FontSize="18" HorizontalOptions="Center" />
-                    <Label Text="{Binding BiletType}" FontSize="18" HorizontalOptions="Center" />
-                    <Label Text="{Binding PointsPrice}" FontSize="18" HorizontalOptions="Center" />
-                    <Button Text="Kup bilet/Wygeneruj QR" Command="{Binding GenerateQrCodeCommand}" HorizontalOptions="Center" />
+                    <Label Text="{Binding CityName}" FontSize="18" HorizontalOptions="Center" />
+                    <HorizontalStackLayout HorizontalOptions="Center">
+                        <Label Text="{Binding Price}" FontSize="18" />
+                        <Label Text=" zł" FontSize="18"/>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout HorizontalOptions="Center">
+                        <Label Text="{Binding Points}" FontSize="18" />
+                        <Label Text=" punkty" FontSize="18"/>
+                    </HorizontalStackLayout>
+                    <Button Text="Kup bilet/Wygeneruj QR" Command="{Binding GenerateQrCodeCommand}" HorizontalOptions="Center" Margin="0,20,0,0"/>
                 </StackLayout>
             </Frame>
         </VerticalStackLayout>

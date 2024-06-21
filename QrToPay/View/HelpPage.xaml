@@ -23,51 +23,82 @@
                    VerticalOptions="Center"/>
         </Grid>
     </Shell.TitleView>
-    
+
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="30,25,30,0" Spacing="10">
+
+                <Label
+                    Text="Imię i Nazwisko:"
+                    Style="{StaticResource SubHeadline}" />
+                <Frame>
+                    <Entry
+                        x:Name="UserNameEntry"
+                        Placeholder="Imię i Nazwisko"
+                        Text="{Binding UserName, Mode=TwoWay}" />
+                </Frame>
+
+                <Label
+                    Text="Adres E-mail:"
+                    Style="{StaticResource SubHeadline}" />
+                <Frame>
+                    <Entry
+                        x:Name="UserEmailEntry"
+                        Placeholder="Adres E-mail"
+                        Text="{Binding UserEmail, Mode=TwoWay}" />
+                </Frame>
+
+                <Label
+                    Text="Temat:"
+                    Style="{StaticResource SubHeadline}" />
+                <Frame>
+                    <Picker
+                        x:Name="SubjectPicker"
+                        ItemsSource="{Binding Subjects}"
+                        SelectedItem="{Binding SelectedSubject}"
+                        Title="Wybierz temat problemu" />
+                </Frame>
+
+                <Label
+                    Text="Opis problemu:"
+                    Style="{StaticResource SubHeadline}" />
+                <Frame>
+                    <Editor
+                        x:Name="DescriptionEditor"
+                        Placeholder="Opis problemu"
+                        HorizontalTextAlignment="Start"
+                        VerticalTextAlignment="Start"
+                        HeightRequest="300"
+                        TextColor="Black"
+                        Text="{Binding Description, Mode=TwoWay}" />
+                </Frame>
+
+                <Button
+                    Text="Wyślij"
+                    Command="{Binding SubmitCommand}" />
+
+                <Label
+                    Text="{Binding ErrorMessage}"
+                    TextColor="Red" 
+                    HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </ScrollView>
+        
         <Border Grid.Row="0" 
            HorizontalOptions="FillAndExpand"
            VerticalOptions="Start">
             <Border.Shadow>
                 <Shadow Brush="Black"
-                       Offset="0,5"
+                       Offset="0,6"
                        Radius="7"
                        Opacity="0.8"/>
             </Border.Shadow>
         </Border>
-        <VerticalStackLayout Grid.Row="1" Padding="30,25,30,0" Spacing="10">
-            <Frame>
-                <Entry
-                    x:Name="NameEntry"
-                    Placeholder="Imie i nazwisko"
-                    Text="{Binding Name, Mode=TwoWay}" />
-            </Frame>
-            <Frame>
-                <Entry
-                    x:Name="EmailEntry"
-                    Placeholder="Adres e-mail"
-                    Text="{Binding Email, Mode=TwoWay}" />
-            </Frame>
-            <Frame>
-                <Entry
-                    x:Name="SubjectEntry"
-                    Placeholder="Temat Zgłoszenia"
-                    Text="{Binding Subject, Mode=TwoWay}" />
-            </Frame>
-            <Frame>
-                <Entry
-                    x:Name="ProblemEntry"
-                    HorizontalTextAlignment="Start"
-                    VerticalTextAlignment="Start"
-                    Placeholder="Opisz problem"
-                    HeightRequest="300"
-                    Text="{Binding Problem, Mode=TwoWay}" />
-            </Frame>
 
-            <Button
-                Text="Wyślij" 
-                Command="{Binding ConfirmCommand}"
-                IsEnabled="{Binding IsNotBusy}" />
-        </VerticalStackLayout>
     </Grid>
 </ContentPage>

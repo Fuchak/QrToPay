@@ -1,12 +1,23 @@
-﻿
-using System.Text.Json;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Net.Http;
+using System.Net.Http.Json;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using QrToPay.Models;
+using System.Threading.Tasks;
+using Microsoft.Maui.Controls;
+using QRCoder;
+using System.Drawing;
+using System.IO;
+using CommunityToolkit.Maui.Views;
 
 namespace QrToPay.ViewModels;
 
-public partial class ActiveBiletsViewModel : ViewModelBase
+public partial class ActiveBiletsViewModel(IHttpClientFactory httpClientFactory) : ViewModelBase
 {
     [ObservableProperty]
-    private string qrCodePath;
+    private ObservableCollection<Ticket> activeTickets = [];
 
     [ObservableProperty]
     private bool isQrCodeVisible;
@@ -29,33 +40,57 @@ public partial class ActiveBiletsViewModel : ViewModelBase
     [ObservableProperty]
     private bool hasActiveTickets;
 
-    public ActiveBiletsViewModel()
+    [RelayCommand]
+    public async Task LoadActiveTicketsAsync()
     {
-        QrCodePath = Preferences.Get("QrCodePath", string.Empty);
-        IsQrCodeVisible = false;
-
-        if (!string.IsNullOrEmpty(QrCodePath))
+        try
         {
-            var json = File.ReadAllText(Path.ChangeExtension(QrCodePath, ".json"));
-            var document = JsonDocument.Parse(json);
+            var client = httpClientFactory.CreateClient("ApiHttpClient");
+            int userId = Preferences.Get("UserId", 0);
+            var response = await client.GetAsync($"/tickets/active?userId={userId}");
+            response.EnsureSuccessStatusCode();
 
-            ResortName = document.RootElement.GetProperty(nameof(ResortName)).GetString();
-            City = document.RootElement.GetProperty(nameof(City)).GetString();
-            BiletType = document.RootElement.GetProperty(nameof(BiletType)).GetString();
-            Price = document.RootElement.GetProperty(nameof(Price)).GetString();
-            Points = document.RootElement.GetProperty(nameof(Points)).GetString();
+            var ticketsFromApi = await response.Content.ReadFromJsonAsync<List<Ticket>>();
+            ActiveTickets.Clear();
+            if (ticketsFromApi != null)
+            {
+                foreach (var ticket in ticketsFromApi)
+                {
+                    ActiveTickets.Add(ticket);
+                }
+            }
 
-            HasActiveTickets = true;
+            HasActiveTickets = ActiveTickets.Count > 0;
         }
-        else
+        catch (Exception ex)
         {
+            Debug.WriteLine($"Failed to load active tickets: {ex.Message}");
             HasActiveTickets = false;
         }
     }
 
     [RelayCommand]
-    private void ToggleQrCodeVisibility()
+    private void ShowQrCodePopup(Ticket ticket)
     {
-        IsQrCodeVisible = !IsQrCodeVisible;
+
+        var qrCodeImage = GenerateQrCodeImage(ticket.UserId, ticket.QrCode ?? string.Empty);
+        var popup = new QrCodePopup(qrCodeImage);
+
+        Shell.Current.ShowPopup(popup);
+    }
+
+    private ImageSource GenerateQrCodeImage(int userId, string qrCodePath)
+    {
+        var qrGenerator = new QRCodeGenerator();
+        var qrCodeData = qrGenerator.CreateQrCode($"UserId:{userId},QrCode:{qrCodePath}", QRCodeGenerator.ECCLevel.Q);
+        var qrCode = new BitmapByteQRCode(qrCodeData);
+        var qrCodeImageBytes = qrCode.GetGraphic(20);
+
+        var stream = new MemoryStream(qrCodeImageBytes);
+        return ImageSource.FromStream(() =>
+        {
+            var newStream = new MemoryStream(qrCodeImageBytes);
+            return newStream;
+        });
     }
 }

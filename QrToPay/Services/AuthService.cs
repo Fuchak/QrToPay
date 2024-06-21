@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Microsoft.Maui.Storage;
 using CommunityToolkit.Mvvm.Messaging;
+using QrToPay.Models.Responses;
 
 namespace QrToPay.Services
 {
@@ -42,7 +43,7 @@ namespace QrToPay.Services
             {
                 loginData.PhoneNumber = emailPhone;
             }
-            loginData.Password = password;
+            loginData.PasswordHash = password;
             var content = new StringContent(JsonConvert.SerializeObject(loginData), Encoding.UTF8, "application/json");
 
             var response = await httpClient.PostAsync("/auth/login/", content);
@@ -57,15 +58,8 @@ namespace QrToPay.Services
                     Preferences.Set(AuthStateKey, true);
                     Preferences.Set(UserIdKey, user.UserID);
 
-                    if (!string.IsNullOrEmpty(user.Email))
-                    {
-                        Preferences.Set(UserEmailKey, user.Email);
-                    }
-
-                    if (!string.IsNullOrEmpty(user.PhoneNumber))
-                    {
-                        Preferences.Set(UserPhoneKey, user.PhoneNumber);
-                    }
+                    Preferences.Set(UserEmailKey, user.Email ?? "Brak");
+                    Preferences.Set(UserPhoneKey, user.PhoneNumber ?? "Brak");
 
                     WeakReferenceMessenger.Default.Send(new UserLoggedInMessage());
 
@@ -92,7 +86,7 @@ namespace QrToPay.Services
 
         public User GetUserData()
         {
-            return new User
+            return new User()
             {
                 UserID = Preferences.Get(UserIdKey, 0),
                 Email = Preferences.Get(UserEmailKey, string.Empty),

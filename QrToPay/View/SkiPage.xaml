@@ -40,10 +40,9 @@
         </Grid>
 
         <VerticalStackLayout Grid.Row="1" Padding="10,10,10,0" Spacing="10">
-
-            <CollectionView  ItemsSource="{Binding Skiresorts}">
+            <CollectionView  ItemsSource="{Binding Skislopes}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:SkiResortModel">
+                    <DataTemplate x:DataType="models:SkiSlope">
                         <Frame Padding="10"
                                Margin="2"
                                BackgroundColor="{StaticResource Orange}"
@@ -57,13 +56,17 @@
                             <StackLayout Orientation="Horizontal">
                                 <Image Source="{Binding ImageSource}" WidthRequest="24" HeightRequest="24" VerticalOptions="Center"/>
                                 <Label Text="{Binding ResortName}" FontSize="16" VerticalOptions="Center" TextColor="White" Margin="10,0,0,0"/>
-                                <Label Text="{Binding City}" FontSize="16" VerticalOptions="Center" TextColor="White" Margin="10,0,0,0"/>
                             </StackLayout>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-
+            
+            <Label Text="{Binding ErrorMessage}"
+                       FontSize="Small"
+                       TextColor="Red"
+                       HorizontalOptions="Center"/>
+            
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

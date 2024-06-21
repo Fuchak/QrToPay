@@ -6,7 +6,7 @@ using Microsoft.Maui.Storage;
 
 namespace QrToPay.ViewModels
 {
-    public partial class MainViewModel(BalanceService balanceService) : ViewModelBase
+    public partial class MainViewModel(BalanceService balanceService, AppState appState) : ViewModelBase
     {
 
         [ObservableProperty]
@@ -54,11 +54,18 @@ namespace QrToPay.ViewModels
             }
         }
 
-        [RelayCommand]
-        private Task NavigateToSkiPage() => NavigateAsync(nameof(SkiPage));
+        // [RelayCommand]
+        // private Task NavigateToSkiPage() => NavigateAsync(nameof(SkiPage));
+
+        // [RelayCommand]
+        // private Task NavigateToFunfair() => NavigateAsync(nameof(FunFairPage));
 
         [RelayCommand]
-        private Task NavigateToFunfair() => NavigateAsync(nameof(FunFairPage));
+        public async Task NavigateToCityPageAsync(string attractionType)
+        {
+            appState.AttractionType = attractionType;
+            await Shell.Current.GoToAsync(nameof(CityPage));
+        }
 
         [RelayCommand]
         private Task NavigateToScanPage() => NavigateAsync(nameof(ScanQrCodePage));

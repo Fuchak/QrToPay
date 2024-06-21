@@ -1,38 +1,58 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using QrToPay.Models;
 
 namespace QrToPay.ViewModels;
 
-public partial class SkiResortViewModel : ViewModelBase, IQueryAttributable
+public partial class SkiResortViewModel(AppState appState, IHttpClientFactory httpClientFactory) : ViewModelBase
 {
+
     [ObservableProperty]
-    private ObservableCollection<Ticket> tickets;
+    private ObservableCollection<Ticket> tickets = [];
 
     [ObservableProperty]
     private string? resortName;
 
     [ObservableProperty]
-    private string? city;
+    private string? cityName;
 
-    public string Title => $"{ResortName}\n{City}";
-
-    public SkiResortViewModel()
+    public async Task InitializeAsync()
     {
-        Tickets=[
-                new() { BiletType = "Normalny ", Points = "30 pkt", Price = "45 zł" },
-                new() { BiletType = "Ulgowy ", Points = "30 pkt", Price = "42 zł" }
-            ];
-    }
+        ResortName = appState.ResortName;
+        CityName = appState.CityName;
 
-    public void ApplyQueryAttributes(IDictionary<string, object> query)
-    {
-        ResortName = Uri.UnescapeDataString(query["ResortName"] as string ?? string.Empty);
-        City = Uri.UnescapeDataString(query["City"] as string ?? string.Empty);
+        var client = httpClientFactory.CreateClient("ApiHttpClient");
+        var response = await client.GetAsync($"/skislopes/prices?skiResortId={appState.SkiResortId}");
+        response.EnsureSuccessStatusCode();
 
-        OnPropertyChanged(nameof(Title));
+        var pricesFromApi = await response.Content.ReadFromJsonAsync<List<SkiSlopePrice>>();
+
+        if (pricesFromApi != null)
+        {
+            Tickets.Clear();
+            foreach (var price in pricesFromApi)
+            {
+                Tickets.Add(new Ticket
+                {
+                    Points = price.Tokens,
+                    Price = price.Price
+                });
+            }
+        }
+
+        OnPropertyChanged(nameof(Tickets));
     }
 
     [RelayCommand]
-    Task GotoSkiResortBuy(Ticket tickets) => 
-        NavigateAsync($"{nameof(SkiResortBuyPage)}?ResortName={ResortName}&City={City}&BiletType={tickets.BiletType}&Points={tickets.Points}&Price={tickets.Price}&Title={Title}");
+    public async Task GotoSkiResortBuyAsync(Ticket ticket)
+    {
+        appState.Points = ticket.Points;
+        appState.Price = ticket.Price;
+
+        await Shell.Current.GoToAsync($"{nameof(SkiResortBuyPage)}");
+    }
 }

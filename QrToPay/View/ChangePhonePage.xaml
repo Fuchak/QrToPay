@@ -61,7 +61,8 @@
 
             <Button
                 Text="Zmień numer" 
-                Command="{Binding DisplayPopupCommand}"/>
+                Command="{Binding RequestPhoneChangeCommand}"/>
+            <Label Text="{Binding ErrorMessage}" TextColor="Red" />
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

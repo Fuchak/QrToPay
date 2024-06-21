@@ -12,5 +12,9 @@
             var random = new Random();
             return random.Next(100000, 999999).ToString();
         }
+        public static bool VerifyPassword(string enteredPassword, string storedHash)
+        {
+            return BCrypt.Net.BCrypt.Verify(enteredPassword, storedHash);
+        }
     }
 }

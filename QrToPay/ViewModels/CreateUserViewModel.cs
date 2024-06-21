@@ -6,6 +6,7 @@ using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using QrToPay.Models.Responses;
 
 namespace QrToPay.ViewModels;
 
@@ -56,12 +57,12 @@ public partial class CreateUserViewModel(IHttpClientFactory httpClientFactory) :
             if (ValidationHelper.IsEmail(EmailPhone))
             {
                 userType = "email";
-                requestData = new { Email = EmailPhone, Password };
+                requestData = new { Email = EmailPhone, PasswordHash = Password };
             }
             else if (ValidationHelper.IsPhoneNumber(EmailPhone))
             {
                 userType = "phone";
-                requestData = new { PhoneNumber = EmailPhone, Password };
+                requestData = new { PhoneNumber = EmailPhone, PasswordHash = Password };
             }
             else
             {

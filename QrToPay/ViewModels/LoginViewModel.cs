@@ -30,6 +30,8 @@ public partial class LoginViewModel(AuthService authService) : ViewModelBase
 
         if (loginResult.Success)
         {
+            EmailPhone = null;
+            Password = null;
             // Przejdź do strony głównej po udanym zalogowaniu
             await Shell.Current.GoToAsync("///MainPage");
         }

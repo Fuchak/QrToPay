@@ -3,6 +3,7 @@ using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Platform;
 using Plugin.LocalNotification;
+using System.Net.NetworkInformation;
 
 namespace QrToPay
 {
@@ -33,6 +34,14 @@ namespace QrToPay
             {
                 h.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToPlatform());
             });
+            Microsoft.Maui.Handlers.PickerHandler.Mapper.AppendToMapping("NoUnderline", (h, v) =>
+            {
+                h.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToPlatform());
+            });
+            Microsoft.Maui.Handlers.EditorHandler.Mapper.AppendToMapping("NoUnderline", (h, v) =>
+            {
+                h.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToPlatform());
+            });
             #endif
 
             // Rejestrujesz IHttpClientFactory i konfigurujesz klienta HTTP
@@ -44,8 +53,12 @@ namespace QrToPay
 
             builder.Services.AddTransient<AuthService>();
             builder.Services.AddTransientPopup<VerificationCodePopup, VerificationCodePopupViewModel>();
+            builder.Services.AddTransientPopup<QrCodePopup, QrCodePopupViewModel>();
             builder.Services.AddSingleton<QrCodeService>();
             builder.Services.AddSingleton<BalanceService>();
+
+            //usługa lokalnego magazynu by nie przekazywać po ekranach wszystkich danych
+            builder.Services.AddSingleton<AppState>();
 
             return builder.Build();
         }

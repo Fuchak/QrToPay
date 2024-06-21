@@ -2,9 +2,16 @@ namespace QrToPay.View;
 
 public partial class SkiResortBuyPage : ContentPage
 {
-	public SkiResortBuyPage(SkiResortBuyViewModel vm)
-	{
-		InitializeComponent();
-		BindingContext = vm;
-	}
+    private readonly SkiResortBuyViewModel _viewModel;
+
+    public SkiResortBuyPage(SkiResortBuyViewModel vm)
+    {
+        InitializeComponent();
+        BindingContext = _viewModel = vm;
+        InitializeAsync();
+    }
+    private async void InitializeAsync()
+    {
+        await _viewModel.InitializeAsync();
+    }
 }

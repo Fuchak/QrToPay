@@ -215,8 +215,8 @@
     </Style>
 
     <Style TargetType="Picker">
-        <Setter Property="TextColor" Value="{StaticResource Primary}" />
-        <Setter Property="TitleColor" Value="Black" />
+        <Setter Property="TextColor" Value="Black" />
+        <Setter Property="TitleColor" Value="{StaticResource White}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
         <Setter Property="FontSize" Value="14"/>

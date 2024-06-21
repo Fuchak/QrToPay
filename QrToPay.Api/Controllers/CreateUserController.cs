@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.DTOs;
-using QrToPay.Api.Data;
 using QrToPay.Api.Models;
 using QrToPay.Api.Helpers;
 
@@ -9,7 +8,7 @@ namespace QrToPay.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class RegisterController(DatabaseContext context) : ControllerBase
+    public class RegisterController(QrToPayDbContext context) : ControllerBase
     {
         [HttpPost("email")]
         public async Task<IActionResult> RegisterWithEmail(CreateUserRequest request)
@@ -25,9 +24,10 @@ namespace QrToPay.Api.Controllers
                 }
 
                 // Aktualizuj dane istniejącego użytkownika
-                existingUser.PasswordHash = AuthenticationHelper.HashPassword(request.Password);
+                existingUser.PasswordHash = AuthenticationHelper.HashPassword(request.PasswordHash);
                 existingUser.VerificationCode = AuthenticationHelper.GenerateVerificationCode();
                 existingUser.IsVerified = false;
+                existingUser.UpdatedAt = DateTime.Now;
 
                 await context.SaveChangesAsync();
             }
@@ -36,9 +36,11 @@ namespace QrToPay.Api.Controllers
                 var newUser = new User
                 {
                     Email = request.Email,
-                    PasswordHash = AuthenticationHelper.HashPassword(request.Password),
+                    PasswordHash = AuthenticationHelper.HashPassword(request.PasswordHash),
                     VerificationCode = AuthenticationHelper.GenerateVerificationCode(),
-                    IsVerified = false
+                    IsVerified = false,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
                 };
 
                 context.Users.Add(newUser);
@@ -72,9 +74,10 @@ namespace QrToPay.Api.Controllers
                 }
 
                 // Aktualizuj dane istniejącego użytkownika
-                existingUser.PasswordHash = AuthenticationHelper.HashPassword(request.Password);
+                existingUser.PasswordHash = AuthenticationHelper.HashPassword(request.PasswordHash);
                 existingUser.VerificationCode = AuthenticationHelper.GenerateVerificationCode();
                 existingUser.IsVerified = false;
+                existingUser.UpdatedAt = DateTime.Now;
 
                 await context.SaveChangesAsync();
             }
@@ -83,9 +86,11 @@ namespace QrToPay.Api.Controllers
                 var newUser = new User
                 {
                     PhoneNumber = request.PhoneNumber,
-                    PasswordHash = AuthenticationHelper.HashPassword(request.Password),
+                    PasswordHash = AuthenticationHelper.HashPassword(request.PasswordHash),
                     VerificationCode = AuthenticationHelper.GenerateVerificationCode(),
-                    IsVerified = false
+                    IsVerified = false,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
                 };
 
                 context.Users.Add(newUser);
@@ -116,6 +121,7 @@ namespace QrToPay.Api.Controllers
             }
 
             user.IsVerified = true;
+            user.UpdatedAt = DateTime.Now;
             await context.SaveChangesAsync();
 
             return Ok(new { Message = "Użytkownik został zweryfikowany." });

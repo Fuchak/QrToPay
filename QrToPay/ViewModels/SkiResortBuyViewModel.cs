@@ -1,56 +1,119 @@
-﻿
-using Microsoft.Maui.Controls;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Animations;
+using QrToPay.Models;
 
 namespace QrToPay.ViewModels;
 
-public partial class SkiResortBuyViewModel(QrCodeService qrCodeService) : ViewModelBase, IQueryAttributable
+public partial class SkiResortBuyViewModel(QrCodeService qrCodeService, AppState appState, BalanceService balanceService) : ViewModelBase
 {
-    private readonly QrCodeService _qrCodeService = qrCodeService;
+    [ObservableProperty]
+    private ObservableCollection<Ticket> tickets = [];
 
     [ObservableProperty]
     private string? resortName;
 
     [ObservableProperty]
-    private string? city;
+    private string? cityName;
 
     [ObservableProperty]
     private string? biletType;
 
     [ObservableProperty]
-    private string? price;
+    private decimal price;
 
     [ObservableProperty]
-    private string? points;
+    private int points;
 
     [ObservableProperty]
-    public string? title;
+    private int skiResortId;
 
-    public string PointsPrice => $"{Points} - {Price}";
+    [ObservableProperty]
+    private int funFairId;
 
-    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    private int userId;
+
+    public Task InitializeAsync()
     {
-        ResortName = Uri.UnescapeDataString(query["ResortName"] as string ?? string.Empty);
-        City = Uri.UnescapeDataString(query["City"] as string ?? string.Empty);
-        BiletType = Uri.UnescapeDataString(query["BiletType"] as string ?? string.Empty);
-        Points = Uri.UnescapeDataString(query["Points"] as string ?? string.Empty);
-        Price = Uri.UnescapeDataString(query["Price"] as string ?? string.Empty);
-        Title = Uri.UnescapeDataString(query["Title"] as string ?? string.Empty);
+        ResortName = appState.ResortName;
+        FunFairId = appState.FunFairId;
+        SkiResortId = appState.SkiResortId;
+        CityName = appState.CityName;
+        Price = appState.Price;
+        Points = appState.Points;
+        userId = Preferences.Get("UserId", 0);
 
-        OnPropertyChanged(nameof(PointsPrice));
+        return Task.CompletedTask;
     }
 
     [RelayCommand]
-    private async Task GenerateQrCode()
+    private async Task GenerateQrCodeAsync()
     {
-        //Dodane by pozbyć się błędów że niby są null a wiemy przecież że nie mogą być i nigdy nie będą
-        if (string.IsNullOrEmpty(ResortName) || string.IsNullOrEmpty(City) || string.IsNullOrEmpty(BiletType) || string.IsNullOrEmpty(Price) || string.IsNullOrEmpty(Points))
+        if (string.IsNullOrEmpty(ResortName) || string.IsNullOrEmpty(CityName))
         {
             await Shell.Current.DisplayAlert("Błąd", "Wszystkie pola muszą być wypełnione", "OK");
             return;
         }
+            string formattedPrice = Price.ToString(CultureInfo.InvariantCulture);
+        try
+        {
+            var (accountBalance, errorMessage) = await balanceService.LoadUserDataAsync();
+            if (accountBalance == null)
+            {
+                await Shell.Current.DisplayAlert("Błąd", errorMessage, "OK");
+                return;
+            }
 
-        await Shell.Current.DisplayAlert("Potwierdzenie", "Bilet został zakupiony, kod qr wygenerowany", "OK");
-        var qrCodePath = await _qrCodeService.GenerateQrCodeAsync(ResortName, City, BiletType, Price, Points);
-        await Shell.Current.GoToAsync($"//MainPage/ActiveBiletsPage?QrCodePath={qrCodePath}");
+            if (accountBalance < Price)
+            {
+                await Shell.Current.DisplayAlert("Błąd", "Nie masz wystarczających środków na koncie.", "OK");
+                return;
+            }
+
+            var updateRequest = new UpdateTicketRequest
+            {
+                UserID = userId,
+                SkiResortID = SkiResortId == 0 ? (int?)null : SkiResortId,
+                FunFairID = FunFairId == 0 ? (int?)null : FunFairId,
+                Quantity = 1,
+                Tokens = Points,
+                TotalPrice = formattedPrice
+            };
+
+            Debug.WriteLine($"Sending Update Request: UserID={updateRequest.UserID}, SkiResortID={updateRequest.SkiResortID}, FunFairID={updateRequest.FunFairID}, Quantity={updateRequest.Quantity}, Tokens={updateRequest.Tokens}, TotalPrice={updateRequest.TotalPrice}");
+
+            var qrCode = await qrCodeService.GenerateAndUpdateTicketAsync(updateRequest);
+            if (string.IsNullOrEmpty(qrCode))
+            {
+                await Shell.Current.DisplayAlert("Błąd", "Nie udało się zaktualizować bazy danych", "OK");
+                return;
+            }
+
+            var newTicket = new Ticket
+            {
+                UserId = userId,
+                ResortName = ResortName,
+                CityName = CityName,
+                Price = Price,
+                Points = Points,
+                QrCode = qrCode
+            };
+
+            Tickets.Add(newTicket);
+
+            await Shell.Current.DisplayAlert("Potwierdzenie", "Bilet został zakupiony, kod QR wygenerowany", "OK");
+
+            await Shell.Current.GoToAsync($"//MainPage/ActiveBiletsPage");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Błąd przy generowaniu kodu qr lub aktualizowaniu bazy: {ex.Message}");
+            await Shell.Current.DisplayAlert("Błąd", "Wystąpił błąd podczas zakupu biletu", "OK");
+        }
     }
 }
