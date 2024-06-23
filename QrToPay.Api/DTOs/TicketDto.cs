@@ -30,4 +30,13 @@
         public string? Type { get; set; }
         public decimal TotalPrice { get; set; }
     }
+
+    //To do skanowania dodane tutaj tak na szybko
+    public class PurchaseRequest
+    {
+        public int UserId { get; set; }
+        public string? Type { get; set; }
+        public string? AttractionName { get; set; }
+        public decimal Price { get; set; }
+    }
 }

@@ -17,9 +17,9 @@ public partial class FunFair
 
     public bool IsDeleted { get; set; }
 
-    public virtual ICollection<Attraction> Attractions { get; set; } = new List<Attraction>();
-
     public virtual City City { get; set; } = null!;
+
+    public virtual ICollection<FunFairAttraction> FunFairAttractions { get; set; } = new List<FunFairAttraction>();
 
     public virtual ICollection<FunFairPrice> FunFairPrices { get; set; } = new List<FunFairPrice>();
 

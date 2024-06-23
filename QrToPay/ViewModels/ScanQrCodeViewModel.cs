@@ -1,10 +1,13 @@
 ﻿using BarcodeScanning;
+using System.Diagnostics;
+using System.Net.Http.Json;
+using System.Net.Http;
 using System.Text.Json;
 using System.Windows.Input;
 
 namespace QrToPay.ViewModels;
 
-public partial class ScanQrCodeViewModel : ViewModelBase
+public partial class ScanQrCodeViewModel(IHttpClientFactory httpClientFactory) : ViewModelBase
 {
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsAttractionValid))]
@@ -15,23 +18,17 @@ public partial class ScanQrCodeViewModel : ViewModelBase
     private Attraction? _currentAttraction;
 
     [ObservableProperty]
-    private bool pauseScanning;
+    private bool pauseScanning = false;
 
-    public ICommand DetectionFinishedCommand { get; set; }
 
-    public ScanQrCodeViewModel()
-    {
-        DetectionFinishedCommand = new Command<BarcodeResult[]>(OnDetectionFinished);
-        PauseScanning = false;
-    }
-
-    private void OnDetectionFinished(BarcodeResult[] results)
+    [RelayCommand]
+    private async Task OnDetectionFinished(BarcodeResult[] results)
     {
         if (results.Length > 0 && !PauseScanning)
         {
             // Obsługa wykrytego kodu kreskowego
             DetectedCode = results[0].DisplayValue;
-            ParseQrCode(DetectedCode);
+            await FetchAttractionData(DetectedCode);
             if (IsAttractionValid)
             {
                 PauseScanning = true;
@@ -43,40 +40,78 @@ public partial class ScanQrCodeViewModel : ViewModelBase
             
         }
     }
-    private void ParseQrCode(string qrCode)
+    private async Task FetchAttractionData(string qrCode)
     {
         try
         {
-            var attraction = JsonSerializer.Deserialize<Attraction>(qrCode);
-            if (attraction != null)
+            var client = httpClientFactory.CreateClient("ApiHttpClient");
+            var response = await client.GetAsync($"/scan/{qrCode}");
+
+            if (response.IsSuccessStatusCode)
             {
-                CurrentAttraction = attraction;
-                PurchaseCommand.NotifyCanExecuteChanged();
+                var attraction = await response.Content.ReadFromJsonAsync<Attraction>();
+                if (attraction != null)
+                {
+                    CurrentAttraction = attraction;
+                    PurchaseCommand.NotifyCanExecuteChanged();
+                }
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                Debug.WriteLine(errorContent?.Message ?? "Błąd podczas skanowania kodu QR.");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error parsing QR code: {ex.Message}");
+            Debug.WriteLine($"Error fetching attraction data: {ex.Message}");
         }
     }
 
     public bool IsAttractionValid =>
             !string.IsNullOrEmpty(CurrentAttraction?.Type) &&
             !string.IsNullOrEmpty(CurrentAttraction?.AttractionName) &&
-            CurrentAttraction?.Price.HasValue == true;
+            CurrentAttraction?.Price != null;
 
 
     [RelayCommand(CanExecute = nameof(CanPurchase))]
     private async Task Purchase()
     {
-        // Logika zakupu
-        await Shell.Current.DisplayAlert("Zakup", "Zakup zakończony pomyślnie!", "OK");
+        try
+        {
+            var client = httpClientFactory.CreateClient("ApiHttpClient");
+            var userId = Preferences.Get("UserId", 0);
 
-        DetectedCode = null;
-        CurrentAttraction = null;
-        PauseScanning = false;
+            var purchaseRequest = new PurchaseRequest
+            {
+                UserId = userId,
+                Type = CurrentAttraction?.Type,
+                AttractionName = CurrentAttraction?.AttractionName,
+                Price = CurrentAttraction.Price
+            };
 
-        PurchaseCommand.NotifyCanExecuteChanged();
+            var response = await client.PostAsJsonAsync("/scan/purchase", purchaseRequest);
+
+            if (response.IsSuccessStatusCode)
+            {
+                await Shell.Current.DisplayAlert("Zakup", "Zakup zakończony pomyślnie!", "OK");
+
+                DetectedCode = null;
+                CurrentAttraction = null;
+                PauseScanning = false;
+
+                PurchaseCommand.NotifyCanExecuteChanged();
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                Debug.WriteLine(errorContent?.Message ?? "Błąd podczas zakupu.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error during purchase: {ex.Message}");
+        }
     }
 
     [RelayCommand]

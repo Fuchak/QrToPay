@@ -32,4 +32,13 @@
         public string? Type { get; set; }
         public decimal TotalPrice { get; set; }
     }
+
+    //Tu też dodane na szybko dla biletów w sumie można by to poprostu w shared dać
+    public class PurchaseRequest
+    {
+        public int UserId { get; set; }
+        public string? Type { get; set; }
+        public string? AttractionName { get; set; }
+        public decimal Price { get; set; }
+    }
 }

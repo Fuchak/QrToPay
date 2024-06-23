@@ -13,6 +13,8 @@ public partial class UserTicket
 
     public int? FunFairId { get; set; }
 
+    public DateTime PurchaseDate { get; set; }
+
     public int Quantity { get; set; }
 
     public decimal TotalPrice { get; set; }
