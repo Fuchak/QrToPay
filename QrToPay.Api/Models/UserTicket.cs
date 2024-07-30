@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace QrToPay.Api.Models;
+﻿namespace QrToPay.Api.Models;
 
 public partial class UserTicket
 {
@@ -9,9 +6,7 @@ public partial class UserTicket
 
     public int UserId { get; set; }
 
-    public int? SkiResortId { get; set; }
-
-    public int? FunFairId { get; set; }
+    public Guid EntityId { get; set; }
 
     public DateTime PurchaseDate { get; set; }
 
@@ -25,9 +20,7 @@ public partial class UserTicket
 
     public string Qrcode { get; set; } = null!;
 
-    public virtual FunFair? FunFair { get; set; }
-
-    public virtual SkiSlope? SkiResort { get; set; }
+    public virtual Entity Entity { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }

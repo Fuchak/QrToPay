@@ -1,44 +1,54 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using QrToPay.Api.DTOs;
 using QrToPay.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
+using QrToPay.Api.Responses;
 
 namespace QrToPay.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class SkiSlopesController(QrToPayDbContext context) : ControllerBase
+    [Route("api/[controller]")]
+    public class SkiSlopesController: ControllerBase
     {
+        private readonly QrToPayDbContext _context;
 
+        public SkiSlopesController(QrToPayDbContext context)
+        {
+            _context = context;
+        }
         // GET: api/skislopes
         [HttpGet("slopes")]
-        public async Task<ActionResult<IEnumerable<SkiSlopeDto>>> GetSkiSlopes(int cityId)
+        public async Task<ActionResult<IEnumerable<SkiSlopeDto>>> GetSkiSlopes(Guid entityId)
         {
-            var skiSlopes = await context.SkiSlopes
-                .Include(s => s.City)
-                .Where(s => !s.IsDeleted && !s.City.IsDeleted && s.CityId == cityId)
+            var skiSlopes = await _context.SkiSlopes
+                .Where(s => !s.IsDeleted && s.EntityId == entityId)
                 .Select(s => new SkiSlopeDto
                 {
                     SkiResortId = s.SkiResortId,
                     ResortName = s.ResortName,
-                    CityName = s.City.CityName
+                    CityName = s.CityName
                 })
                 .ToListAsync();
+
+            if (!skiSlopes.Any())
+            {
+                Debug.WriteLine($"No ski slopes found for entityId: {entityId}");
+            }
 
             return Ok(skiSlopes);
         }
 
         // GET: api/skislopes/prices
         [HttpGet("prices")]
-        public async Task<ActionResult<IEnumerable<SkiSlopePriceDto>>> GetSkiSlopePrices(int skiResortId)
+        public async Task<ActionResult<IEnumerable<SkiSlopePriceDto>>> GetSkiSlopePrices([FromQuery] int skiResortId)
         {
-            var prices = await context.SkiSlopePrices
+            var prices = await _context.SkiSlopePrices
                 .Where(p => p.SkiResortId == skiResortId && !p.IsDeleted)
                 .Select(p => new { p.Tokens, p.Price, p.SkiSlopePriceId })
                 .Distinct()
                 .Select(p => new SkiSlopePriceDto
                 {
-                    SkiSlopePriceID = p.SkiSlopePriceId,
+                    SkiSlopePriceId = p.SkiSlopePriceId,
                     Tokens = p.Tokens,
                     Price = p.Price
                 })

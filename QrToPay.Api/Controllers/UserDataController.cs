@@ -1,44 +1,51 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using QrToPay.Api.DTOs;
 using QrToPay.Api.Models;
+using QrToPay.Api.Requests;
+using QrToPay.Api.Responses;
 
 namespace QrToPay.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class UserDataController(QrToPayDbContext context) : ControllerBase
+    [Route("api/[controller]")]
+    public class UserDataController : ControllerBase
     {
+        private readonly QrToPayDbContext _context;
+
+        public UserDataController(QrToPayDbContext context)
+        {
+           _context = context;
+        }
 
         //Narazie nie używamy tego może będziemy używać po zmienieniu telefonu czy tam emaila w ustawieniach jak nie to out robi
-        [HttpGet("{userID}")]
-        public async Task<IActionResult> GetUserDetails(int userID)
+        [HttpGet("{userId:int}")]
+        public async Task<IActionResult> GetUserDetails([FromRoute] int userId)
         {
-            var user = await context.Users
-                .FirstOrDefaultAsync(u => u.UserId == userID);
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.UserId == userId);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            var userDto = new UserDto
+            LoginDto loginDto = new()
             {
-                UserID = user.UserId,
+                UserId = user.UserId,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 AccountBalance = user.AccountBalance
             };
 
-            return Ok(userDto);
+            return Ok(loginDto);
         }
 
-        [HttpGet("{userID}/balance")]
-        public async Task<IActionResult> GetUserBalance(int userID)
+        [HttpGet("{userId:int}/balance")]
+        public async Task<IActionResult> GetUserBalance([FromRoute] int userId)
         {
-            var balance = await context.Users
-                .Where(u => u.UserId == userID)
-                .Select(u => new UserBalanceRequest { AccountBalance = u.AccountBalance })
+            var balance = await _context.Users
+                .Where(u => u.UserId == userId)
+                .Select(u => new UserBalanceDto { AccountBalance = u.AccountBalance })
                 .FirstOrDefaultAsync();
 
             if (balance == null)
@@ -50,9 +57,9 @@ namespace QrToPay.Api.Controllers
         }
 
         [HttpPost("topup")]
-        public async Task<IActionResult> TopUpAccount([FromBody] TopUpRequest request)
+        public async Task<IActionResult> TopUpAccount([FromBody] TopUpRequestModel request)
         {
-            var user = await context.Users.FindAsync(request.UserID);
+            var user = await _context.Users.FindAsync(request.UserId);
             if (user == null)
             {
                 return NotFound("Użytkownik nieodnaleziony");
@@ -61,8 +68,8 @@ namespace QrToPay.Api.Controllers
             user.AccountBalance = (user.AccountBalance ?? 0) + request.Amount;
             user.UpdatedAt = DateTime.Now;
 
-            context.Users.Update(user);
-            await context.SaveChangesAsync();
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
 
             var updatedBalance = user.AccountBalance;
 

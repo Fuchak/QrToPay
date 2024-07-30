@@ -3,7 +3,7 @@
 <ResourceDictionary 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:vm="clr-namespace:QrToPay.ViewModels">
+    xmlns:vm="clr-namespace:QrToPay.ViewModels.Base">
 
     <!-- Strony mają białe tło mimo że motyw w telefonie jest ciemny -->
     <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
@@ -411,16 +411,16 @@
     </Style>
 
     <Style TargetType="Shell" ApplyToDerivedTypes="True">
-        <Setter Property="Shell.BackgroundColor" Value="White" />
-        <Setter Property="Shell.ForegroundColor" Value="Black" />
-        <Setter Property="Shell.TitleColor" Value="Black" />
-        <Setter Property="Shell.DisabledColor" Value="Black" />
-        <Setter Property="Shell.UnselectedColor" Value="Black" />
-        <Setter Property="Shell.NavBarHasShadow" Value="False" />
-        <Setter Property="Shell.TabBarBackgroundColor" Value="Black" />
-        <Setter Property="Shell.TabBarForegroundColor" Value="Black" />
-        <Setter Property="Shell.TabBarTitleColor" Value="Black" />
-        <Setter Property="Shell.TabBarUnselectedColor" Value="Black" />
+        <Setter Property="BackgroundColor" Value="White" />
+        <Setter Property="ForegroundColor" Value="Black" />
+        <Setter Property="TitleColor" Value="Black" />
+        <Setter Property="DisabledColor" Value="Black" />
+        <Setter Property="UnselectedColor" Value="Black" />
+        <Setter Property="NavBarHasShadow" Value="False" />
+        <Setter Property="TabBarBackgroundColor" Value="Black" />
+        <Setter Property="TabBarForegroundColor" Value="Black" />
+        <Setter Property="TabBarTitleColor" Value="Black" />
+        <Setter Property="TabBarUnselectedColor" Value="Black" />
     </Style>
 
     <Style TargetType="NavigationPage">

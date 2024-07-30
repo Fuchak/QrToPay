@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:local="clr-namespace:QrToPay.View"
+    xmlns:vm="clr-namespace:QrToPay.ViewModels.Common"
+    x:Class="QrToPay.View.AppShell"
+    x:DataType="vm:ShellViewModel"
+    FlyoutBackgroundColor="White"
+    FlyoutWidth="250"
+    Title="QrToPay">
+
+    <Shell.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="White" StatusBarStyle="DarkContent" />
+    </Shell.Behaviors>
+
+    <!-- Strona ładowania (sprawdzanie zalogowania użytkownika) -->
+    <ShellItem Route="loading" FlyoutItemIsVisible="False">
+        <ShellContent
+            ContentTemplate="{DataTemplate local:LoadingPage}"
+            Route="LoadingPage"
+            Shell.NavBarIsVisible="False"
+            Shell.FlyoutBehavior="Disabled"/>
+    </ShellItem>
+    <!-- Strona logowania -->
+    <ShellItem Route="login" FlyoutItemIsVisible="False">
+        <ShellContent
+            ContentTemplate="{DataTemplate local:LoginPage}"
+            Route="LoginPage"
+            Shell.NavBarIsVisible="False"
+            Shell.FlyoutBehavior="Disabled"/>
+    </ShellItem>
+    <!-- Główna strona -->
+    <ShellItem Route="main" FlyoutItemIsVisible="False">
+        <ShellContent
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="MainPage"
+            Shell.NavBarIsVisible="True"
+            Shell.FlyoutBehavior="Flyout"/>
+    </ShellItem>
+
+    <!-- Header menu bocznego -->
+    <Shell.FlyoutHeader>
+        <StackLayout>
+            <Image 
+            Source="logo.png" 
+            HeightRequest="56" 
+            WidthRequest="120"
+            HorizontalOptions="Center" 
+            VerticalOptions="Center"/>
+        </StackLayout>
+    </Shell.FlyoutHeader>
+    <!-- Menu boczne-->
+    <Shell.FlyoutContent>
+        <Grid>
+            <Border Grid.Row="0" 
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="Start">
+                <Border.Shadow>
+                    <Shadow Brush="Black"
+                            Offset="0,5"
+                            Radius="7"
+                            Opacity="0.8" />
+                </Border.Shadow>
+            </Border>
+            <!-- isbusy to not get redirected to two pages at same time when fast clicking -->
+            <StackLayout Spacing="10" Padding="5,10,5,0">
+                <Button Text="Konto" Command="{Binding NavigateToPageCommand}" CommandParameter="AccountPage"/>
+                <Button Text="Aktywne bilety"  Command="{Binding NavigateToPageCommand}" CommandParameter="ActiveBiletsPage"/>
+                <Button Text="Historia biletów" Command="{Binding NavigateToPageCommand}" CommandParameter="HistoryPage" />
+                <Button Text="Doładuj konto" Command="{Binding NavigateToPageCommand}" CommandParameter="TopUpAccountPage"/>
+                <Button Text="Ustawienia"  Command="{Binding NavigateToPageCommand}" CommandParameter="SettingsPage"/>
+                <Button Text="Pomoc" Command="{Binding NavigateToPageCommand}" CommandParameter="HelpPage"/>
+                <Button Text="Wyloguj" Command="{Binding LogoutCommand}"/>
+            </StackLayout>
+        </Grid>
+    </Shell.FlyoutContent>
+    <!-- Footer menu bocznego -->
+    <Shell.FlyoutFooter>
+        <StackLayout>
+            <Label Text="QrtoPay &#10;wersja 1.0" HorizontalTextAlignment="Center"/>
+        </StackLayout>
+    </Shell.FlyoutFooter>
+</Shell>

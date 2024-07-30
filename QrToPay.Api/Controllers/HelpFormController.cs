@@ -1,18 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QrToPay.Api.Models;
-using QrToPay.Api.DTOs;
+using QrToPay.Api.Requests;
+using System.ComponentModel.DataAnnotations;
 
 namespace QrToPay.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class HelpFormController(QrToPayDbContext context) : ControllerBase
+    [Route("api/[controller]")]
+    public class HelpFormController : ControllerBase
     {
+        private readonly QrToPayDbContext _context;
 
-        [HttpPost]
-        public async Task<IActionResult> CreateHelpForm(HelpFormRequest request)
+        public HelpFormController(QrToPayDbContext context)
         {
-            var helpForm = new HelpForm
+            _context = context;
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateHelpForm([Required] HelpFormRequestModel request) //Tu można dawać required tu albo w modelu
+        {
+            HelpForm helpForm = new()
             {
                 UserName = request.UserName,
                 UserEmail = request.UserEmail,
@@ -24,8 +30,8 @@ namespace QrToPay.Api.Controllers
                 IsDeleted = false
             };
 
-            context.HelpForms.Add(helpForm);
-            await context.SaveChangesAsync();
+            _context.HelpForms.Add(helpForm);
+            await _context.SaveChangesAsync();
 
             return Ok(new { Message = "Zgłoszenie zostało utworzone." });
         }

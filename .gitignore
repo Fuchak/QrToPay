@@ -363,3 +363,6 @@ MigrationBackup/
 FodyWeavers.xsd
 /Jakieś tam obrazki itp
 /QrToPay.Api/appsettings.json
+/QrToPay/.idea
+/QrToPay/.idea
+/ngrok.exe

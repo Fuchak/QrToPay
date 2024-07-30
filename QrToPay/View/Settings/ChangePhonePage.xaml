@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:QrToPay.ViewModels.Settings"
+             x:Class="QrToPay.View.ChangePhonePage"
+             Style="{StaticResource BasePageStyle}"
+             x:DataType="vm:ChangePhoneViewModel"
+             Title="ChangePhonePage">
+    
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <!-- Wycentrowany tytuł -->
+            <Label 
+                   FontFamily="Arial"
+                   Text="Zmień Numer Telefonu" 
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" 
+                   HorizontalTextAlignment="Center" 
+                   VerticalOptions="Center"/>
+        </Grid>
+    </Shell.TitleView>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" 
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="Start">
+            <Border.Shadow>
+                <Shadow Brush="Black"
+                       Offset="0,5"
+                       Radius="7"
+                       Opacity="0.8"/>
+            </Border.Shadow>
+        </Border>
+        <VerticalStackLayout Grid.Row="1" Padding="30,25,30,0" Spacing="10">
+
+            <Label
+                Text="Wpisz nowy numer telefonu:"
+                Style="{StaticResource SubHeadline}" 
+                FontAttributes="Bold"/>
+            <Frame>
+                <Entry
+                    x:Name="PhoneEntry"
+                    Placeholder="Numer telefonu"
+                    Text="{Binding NewPhoneNumber, Mode=TwoWay}" />
+            </Frame>
+
+            <Label
+                Text="Wpisz hasło:"
+                Style="{StaticResource SubHeadline}" />
+            <Frame>
+                <Entry
+                    x:Name="PasswordEntry"
+                    Placeholder="Hasło"
+                    Text="{Binding Password, Mode=TwoWay}"/>
+            </Frame>
+
+            <Button
+                Text="Zmień numer" 
+                Command="{Binding RequestPhoneChangeCommand}"/>
+            <Label Text="{Binding ErrorMessage}" TextColor="Red" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

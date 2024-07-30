@@ -1,29 +1,25 @@
-﻿using System;
-using System.Globalization;
-using Microsoft.Maui.Controls;
+﻿using System.Globalization;
 
-namespace QrToPay.Converters
+namespace QrToPay.Converters;
+public class FalseToTrueConverter : IValueConverter
 {
-    public class FalseToTrueConverter : IValueConverter
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        if (value is bool boolean)
         {
-            if (value is bool boolean)
-            {
-                return !boolean;
-            }
-
-            return false;
+            return !boolean;
         }
 
-        public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-        {
-            if (value is bool boolean)
-            {
-                return !boolean;
-            }
+        return false;
+    }
 
-            return false;
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is bool boolean)
+        {
+            return !boolean;
         }
+
+        return false;
     }
 }

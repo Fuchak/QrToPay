@@ -1,0 +1,102 @@
+﻿using System.Net.Http.Json;
+using System.Diagnostics;
+using QrToPay.Models.Responses;
+using QrToPay.Models.Requests;
+using Newtonsoft.Json;
+
+namespace QrToPay.ViewModels.Settings;
+public partial class ChangePasswordViewModel : ViewModelBase
+{
+    private readonly IHttpClientFactory _httpClientFactory;
+    public ChangePasswordViewModel(IHttpClientFactory httpClientFactory)
+    {
+        _httpClientFactory = httpClientFactory;
+    }
+    [ObservableProperty]
+    private string? oldPassword;
+
+    [ObservableProperty]
+    private string? password;
+
+    [ObservableProperty]
+    private string? passwordConfirm;
+
+    [ObservableProperty]
+    private string? errorMessage;
+
+    [RelayCommand]
+    private async Task Confirm()
+    {
+        if (string.IsNullOrWhiteSpace(OldPassword) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(PasswordConfirm))
+        {
+            ErrorMessage = "Wszystkie pola są wymagane.";
+            return;
+        }
+
+        if (Password != PasswordConfirm)
+        {
+            ErrorMessage = "Hasła nie są zgodne.";
+            return;
+        }
+
+        if (Password.Length < 8 || !Password.Any(char.IsDigit) || !Password.Any(char.IsUpper) || !Password.Any(ch => !char.IsLetterOrDigit(ch)))
+        {
+            ErrorMessage = "Hasło nie spełnia wymagań.";
+            return;
+        }
+
+        IsBusy = true;
+        try
+        {
+            int userId = Preferences.Get("UserId", 0);
+            if (userId == 0)
+            {
+                ErrorMessage = "Nie można znaleźć identyfikatora użytkownika.";
+                return;
+            }
+
+            Debug.WriteLine($"UserId: {userId}");
+
+            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+            ChangePasswordRequest changePasswordRequest = new()
+            {
+                UserId = userId,
+                OldPassword = OldPassword,
+                NewPassword = Password,
+                ConfirmNewPassword = PasswordConfirm
+            };
+
+            Debug.WriteLine($"Request Data: {JsonConvert.SerializeObject(changePasswordRequest)}");
+
+            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Settings/changePassword", changePasswordRequest);
+
+            Debug.WriteLine($"Response Status: {response.StatusCode}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                await Shell.Current.DisplayAlert("Sukces", "Hasło zostało zmienione.", "OK");
+            }
+            else
+            {
+                ApiResponse? errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
+                ErrorMessage = errorResponse?.Message ?? "Zmiana hasła nie powiodła się. Spróbuj ponownie.";
+            }
+        }
+        catch (HttpRequestException)
+        {
+            ErrorMessage = "Brak połączenia z internetem.";
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Unexpected error: {ex.Message}");
+            ErrorMessage = "Wystąpił nieoczekiwany błąd. Spróbuj ponownie.";
+        }
+        finally
+        {
+            IsBusy = false;
+            OldPassword = string.Empty;
+            Password = string.Empty;
+            PasswordConfirm = string.Empty;
+        }
+    }
+}

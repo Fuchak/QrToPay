@@ -1,27 +1,52 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using QrToPay.Api.DTOs;
 using QrToPay.Api.Models;
-
+using QrToPay.Api.Responses;
 
 namespace QrToPay.Api.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class CitiesController(QrToPayDbContext context) : ControllerBase
+    public class CitiesController : ControllerBase
     {
+        private readonly QrToPayDbContext _context;
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CityDto>>> GetCities()
+        public CitiesController(QrToPayDbContext context)
         {
-            var cities = await context.Cities
-                .Where(c => !c.IsDeleted)
-                .Select(c => new CityDto
-                {
-                    CityId = c.CityId,
-                    CityName = c.CityName
-                })
-                .ToListAsync();
+            _context = context;
+        }
+
+        [HttpGet("{attractionType}")]
+        public async Task<ActionResult<IEnumerable<CityDto>>> GetCities(string attractionType)
+        {
+            List<CityDto> cities;
+
+            if (attractionType == "skislope")
+            {
+                cities = await _context.SkiSlopes
+                    .Where(s => !s.IsDeleted)
+                    .Select(s => new CityDto
+                    {
+                        CityName = s.CityName,
+                        EntityId = s.EntityId
+                    })
+                    .ToListAsync();
+            }
+            else if (attractionType == "funfair")
+            {
+                cities = await _context.FunFairs
+                    .Where(f => !f.IsDeleted)
+                    .Select(f => new CityDto
+                    {
+                        CityName = f.CityName,
+                        EntityId = f.EntityId
+                    })
+                    .ToListAsync();
+            }
+            else
+            {
+                return BadRequest("Invalid attraction type.");
+            }
 
             return Ok(cities);
         }

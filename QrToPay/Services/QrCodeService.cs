@@ -1,21 +1,23 @@
-﻿using QRCoder;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.Maui.Storage;
-using System.Diagnostics;
-using System.Net.Http;
+﻿using System.Diagnostics;
 using System.Net.Http.Json;
-using BarcodeScanning;
-using System.Globalization;
+using QrToPay.Models.Responses;
+using QrToPay.Models.Requests;
 
 namespace QrToPay.Services;
-public class QrCodeService(IHttpClientFactory httpClientFactory)
+public class QrCodeService
 {
+    private readonly IHttpClientFactory _httpClientFactory;
+
+    public QrCodeService(IHttpClientFactory httpClientFactory)
+    {
+        _httpClientFactory = httpClientFactory;
+    }
+
     public async Task<string> GenerateAndUpdateTicketAsync(UpdateTicketRequest updateRequest)
     {
-        var client = httpClientFactory.CreateClient("ApiHttpClient");
+        HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
 
-        var response = await client.PostAsJsonAsync("/tickets/generateAndUpdate", updateRequest);
+        HttpResponseMessage response = await client.PostAsJsonAsync("/api/Tickets/generateAndUpdate", updateRequest);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -23,7 +25,7 @@ public class QrCodeService(IHttpClientFactory httpClientFactory)
             return string.Empty;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<UpdateTicketResponse>();
+        UpdateTicketResponse? result = await response.Content.ReadFromJsonAsync<UpdateTicketResponse>();
         return result?.QrCode ?? string.Empty;
     }
 }

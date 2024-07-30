@@ -1,19 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using QrToPay.Api.DTOs;
 using QrToPay.Api.Models;
 using QrToPay.Api.Helpers;
+using QrToPay.Api.Requests;
+using QrToPay.Api.Responses;
 
 namespace QrToPay.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class RegisterController(QrToPayDbContext context) : ControllerBase
+    [Route("api/[controller]")]
+    public class RegisterController : ControllerBase
     {
-        [HttpPost("email")]
-        public async Task<IActionResult> RegisterWithEmail(CreateUserRequest request)
+        private readonly QrToPayDbContext _context;
+
+        public RegisterController(QrToPayDbContext context)
         {
-            var existingUser = await context.Users
+            _context = context;
+        }
+
+        [HttpPost("email")]
+        public async Task<IActionResult> RegisterWithEmail(CreateUserRequestModel request)
+        {
+            var existingUser = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (existingUser != null)
@@ -29,7 +37,7 @@ namespace QrToPay.Api.Controllers
                 existingUser.IsVerified = false;
                 existingUser.UpdatedAt = DateTime.Now;
 
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             else
             {
@@ -43,12 +51,12 @@ namespace QrToPay.Api.Controllers
                     UpdatedAt = DateTime.Now
                 };
 
-                context.Users.Add(newUser);
-                await context.SaveChangesAsync();
+                _context.Users.Add(newUser);
+                await _context.SaveChangesAsync();
             }
 
             // Znajdź użytkownika, aby zwrócić kod weryfikacyjny
-            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (user == null)
             {
@@ -56,14 +64,14 @@ namespace QrToPay.Api.Controllers
             }
 
             // Zwróć kod weryfikacyjny
-            return Ok(new CreateUserResponse { VerificationCode = user.VerificationCode });
+            return Ok(new CreateUserDto { VerificationCode = user.VerificationCode });
         }
 
         [HttpPost("phone")]
-        public async Task<IActionResult> RegisterWithPhone(CreateUserRequest request)
+        public async Task<IActionResult> RegisterWithPhone(CreateUserRequestModel request)
         {
 
-            var existingUser = await context.Users
+            var existingUser = await _context.Users
                 .FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
 
             if (existingUser != null)
@@ -79,7 +87,7 @@ namespace QrToPay.Api.Controllers
                 existingUser.IsVerified = false;
                 existingUser.UpdatedAt = DateTime.Now;
 
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             else
             {
@@ -93,12 +101,12 @@ namespace QrToPay.Api.Controllers
                     UpdatedAt = DateTime.Now
                 };
 
-                context.Users.Add(newUser);
-                await context.SaveChangesAsync();
+                _context.Users.Add(newUser);
+                await _context.SaveChangesAsync();
             }
 
             // Znajdź użytkownika, aby zwrócić kod weryfikacyjny
-            var user = await context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
 
             if (user == null)
             {
@@ -106,13 +114,13 @@ namespace QrToPay.Api.Controllers
             }
 
             // Zwróć kod weryfikacyjny
-            return Ok(new CreateUserResponse { VerificationCode = user.VerificationCode });
+            return Ok(new CreateUserDto { VerificationCode = user.VerificationCode });
         }
 
         [HttpPost("verify")]
-        public async Task<IActionResult> VerifyUser(VerifyRequest request)
+        public async Task<IActionResult> VerifyUser(VerifyCreateUserRequestModel request)
         {
-            var user = await context.Users
+            var user = await _context.Users
                 .FirstOrDefaultAsync(u => (u.Email == request.EmailOrPhone || u.PhoneNumber == request.EmailOrPhone) && u.VerificationCode == request.VerificationCode);
 
             if (user == null)
@@ -122,7 +130,7 @@ namespace QrToPay.Api.Controllers
 
             user.IsVerified = true;
             user.UpdatedAt = DateTime.Now;
-            await context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return Ok(new { Message = "Użytkownik został zweryfikowany." });
         }

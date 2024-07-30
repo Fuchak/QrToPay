@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:QrToPay.ViewModels.FlyoutMenu"
+             x:Class="QrToPay.View.AccountPage"
+             Style="{StaticResource BasePageStyle}"
+             x:DataType="vm:AccountViewModel"
+             Title="Konto">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label" x:Key="AccountLabelStyle">
+                <Setter Property="Margin" Value="0,0,0,10"/>
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+            </Style>
+            <Style TargetType="Label" x:Key="AccountLabelMiniStyle">
+                <Setter Property="Margin" Value="0,0,0,10"/>
+                <Setter Property="FontSize" Value="Medium"/>
+            </Style>
+            <Style TargetType="BoxView" x:Key="AccountBoxViewStyle">
+                <Setter Property="HeightRequest" Value="2"/>
+                <Setter Property="Color" Value="LightGray"/>
+                <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <!-- Wycentrowany tytuł -->
+            <Label 
+                   FontFamily="Arial"
+                   Text="Konto" 
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" 
+                   HorizontalTextAlignment="Center" 
+                   VerticalOptions="Center"/>
+        </Grid>
+    </Shell.TitleView>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" 
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="Start">
+            <Border.Shadow>
+                <Shadow Brush="Black"
+                        Offset="0,5"
+                        Radius="7"
+                        Opacity="0.8"/>
+            </Border.Shadow>
+        </Border>
+        <VerticalStackLayout  Grid.Row="1" Spacing="10" Padding="20">
+             <!-- Sekcje informacji o użytkowniku -->
+            <StackLayout>
+                <Label Text="UserID" Style="{StaticResource AccountLabelStyle}"/>
+                <Label Text="{Binding UserId, StringFormat='# {0}'}" Style="{StaticResource AccountLabelMiniStyle}"/>
+                <BoxView Style="{StaticResource AccountBoxViewStyle}"/>
+            </StackLayout>
+
+            <StackLayout>
+                <Label Text="Numer telefonu" Style="{StaticResource AccountLabelStyle}"/>
+                <Label Text="{Binding PhoneNumber}" Style="{StaticResource AccountLabelMiniStyle}"/>
+                <BoxView Style="{StaticResource AccountBoxViewStyle}"/>
+            </StackLayout>
+
+            <StackLayout>
+                <Label Text="Email" Style="{StaticResource AccountLabelStyle}"/>
+                <Label Text="{Binding Email}" Style="{StaticResource AccountLabelMiniStyle}"/>
+                <BoxView Style="{StaticResource AccountBoxViewStyle}"/>
+            </StackLayout>
+            <!-- 
+                <StackLayout>
+                    <Label Text="Numery rejestracyjne" Style="{StaticResource AccountLabelStyle}"/>
+                    <Label Text="TKA 44RN" Style="{StaticResource AccountLabelMiniStyle}"/>
+                    <Label Text="KBC FG54" Style="{StaticResource AccountLabelMiniStyle}"/>
+                    <BoxView Style="{StaticResource AccountBoxViewStyle}"/>
+                </StackLayout>
+            
+                Jeśli byłyby parking to taka dodatkowa opcja te numery rejestracyjne.
+                A te brak to w sumie jesli brak to mozna całego stacklayota poprostu nie pokazywać
+            -->
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

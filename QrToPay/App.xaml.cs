@@ -1,9 +1,6 @@
-﻿using QrToPay.Services;
-using QrToPay.View;
-
-namespace QrToPay
+﻿namespace QrToPay
 {
-    public partial class App : Application
+    public partial class App
     {
         public App()
         {

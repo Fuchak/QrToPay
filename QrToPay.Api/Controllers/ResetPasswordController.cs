@@ -1,20 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using QrToPay.Api.DTOs;
 using QrToPay.Api.Helpers;
 using QrToPay.Api.Models;
+using QrToPay.Api.Requests;
 
 namespace QrToPay.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class ResetPasswordController(QrToPayDbContext context) : ControllerBase
+    [Route("api/[controller]")]
+    public class ResetPasswordController : ControllerBase
     {
+        private readonly QrToPayDbContext _context;
+
+        public ResetPasswordController(QrToPayDbContext context)
+        {
+            _context = context;
+        }
 
         [HttpPost("email")]
-        public async Task<IActionResult> CheckIfEmailExist(UserExistRequest request)
+        public async Task<IActionResult> CheckIfEmailExist(UserExistRequestModel request)
         {
-            var user = await context.Users
+            var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (user == null)
@@ -30,15 +36,15 @@ namespace QrToPay.Api.Controllers
             var verificationCode = AuthenticationHelper.GenerateVerificationCode();
             user.VerificationCode = verificationCode;
             user.UpdatedAt = DateTime.Now;
-            await context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return Ok(new { VerificationCode = verificationCode });
         }
 
         [HttpPost("phone")]
-        public async Task<IActionResult> CheckIfPhoneExist(UserExistRequest request)
+        public async Task<IActionResult> CheckIfPhoneExist(UserExistRequestModel request)
         {
-            var user = await context.Users
+            var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
 
             if (user == null)
@@ -54,20 +60,20 @@ namespace QrToPay.Api.Controllers
             var verificationCode = AuthenticationHelper.GenerateVerificationCode();
             user.VerificationCode = verificationCode;
             user.UpdatedAt = DateTime.Now;
-            await context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return Ok(new { VerificationCode = verificationCode });
         }
 
         [HttpPost("resetpassword")]
-        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequestModel request)
         {
             if (string.IsNullOrEmpty(request.NewPassword))
             {
                 return BadRequest(new { Message = "Nowe hasło jest wymagane." });
             }
 
-            var user = await context.Users
+            var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == request.EmailOrPhone || u.PhoneNumber == request.EmailOrPhone);
 
             if (user == null)
@@ -84,7 +90,7 @@ namespace QrToPay.Api.Controllers
             user.PasswordHash = AuthenticationHelper.HashPassword(request.NewPassword);
             user.VerificationCode = null;
             user.UpdatedAt = DateTime.Now;
-            await context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return Ok(new { Message = "Hasło zostało zaktualizowane." });
         }

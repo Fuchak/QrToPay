@@ -1,22 +1,20 @@
-﻿using System.Diagnostics;
-using System.Net.Http;
-using System.Text;
+﻿using System.Text;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
-using Microsoft.Maui.Storage;
 using CommunityToolkit.Mvvm.Messaging;
 using QrToPay.Models.Responses;
+using QrToPay.Models.Requests;
+using QrToPay.Models.Common;
 
 namespace QrToPay.Services
 {
-    public class LoginResult
+    public class AuthService
     {
-        public bool Success { get; set; }
-        public string? ErrorMessage { get; set; }
-    }
+        private readonly IHttpClientFactory _httpClientFactory;
 
-    public class AuthService(IHttpClientFactory httpClientFactory)
-    {
+        public AuthService(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory;
+        }
 
         private const string AuthStateKey = "AuthState";
         private const string UserIdKey = "UserId";
@@ -26,54 +24,47 @@ namespace QrToPay.Services
         public async Task<bool> IsAuthenticatedAsync()
         {
             await Task.Delay(200);
-
             return Preferences.Get(AuthStateKey, false);
         }
 
-        public async Task<LoginResult> Login(string emailPhone, string password)
+        public async Task<ApiResponse> Login(string emailPhone, string password)
         {
-            var httpClient = httpClientFactory.CreateClient("ApiHttpClient");
+            HttpClient httpClient = _httpClientFactory.CreateClient("ApiHttpClient");
 
-            var loginData = new User();
-            if (ValidationHelper.IsEmail(emailPhone))
-            {
-                loginData.Email = emailPhone;
-            }
-            else
-            {
-                loginData.PhoneNumber = emailPhone;
-            }
-            loginData.PasswordHash = password;
-            var content = new StringContent(JsonConvert.SerializeObject(loginData), Encoding.UTF8, "application/json");
+            LoginUserRequest loginData = ValidationHelper.IsEmail(emailPhone)
+                ? new LoginUserRequest { Email = emailPhone, PasswordHash = password }
+                : new LoginUserRequest { PhoneNumber = emailPhone, PasswordHash = password };
 
-            var response = await httpClient.PostAsync("/auth/login/", content);
+            StringContent content = new (JsonConvert.SerializeObject(loginData), Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await httpClient.PostAsync("/api/Auth/login/", content);
 
             if (response.IsSuccessStatusCode)
             {
-                var result = await response.Content.ReadAsStringAsync();
-                var user = JsonConvert.DeserializeObject<User>(result);
+                string result = await response.Content.ReadAsStringAsync();
+                UserResponse? userResponse = JsonConvert.DeserializeObject<UserResponse>(result);
 
-                if (user != null)
+                if (userResponse != null)
                 {
                     Preferences.Set(AuthStateKey, true);
-                    Preferences.Set(UserIdKey, user.UserID);
-
-                    Preferences.Set(UserEmailKey, user.Email ?? "Brak");
-                    Preferences.Set(UserPhoneKey, user.PhoneNumber ?? "Brak");
+                    Preferences.Set(UserIdKey, userResponse.UserId);
+                    Preferences.Set(UserEmailKey, userResponse.Email ?? "Brak");
+                    Preferences.Set(UserPhoneKey, userResponse.PhoneNumber ?? "Brak");
 
                     WeakReferenceMessenger.Default.Send(new UserLoggedInMessage());
 
-                    return new LoginResult { Success = true };
+                    return ApiResponse.SuccessResponse("Login successful.");
                 }
             }
             else
             {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                var errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(errorContent);
-                return new LoginResult { Success = false, ErrorMessage = errorResponse?.Message ?? "Błąd podczas logowania." };
+                string errorContent = await response.Content.ReadAsStringAsync();
+                ApiResponse? errorResponse = JsonConvert.DeserializeObject<ApiResponse>(errorContent);
+
+                return ApiResponse.ErrorResponse(errorResponse?.Message ?? "Błąd podczas logowania.");
             }
 
-            return new LoginResult { Success = false, ErrorMessage = "Błąd podczas logowania." };
+            return ApiResponse.ErrorResponse("Błąd podczas logowania.");
         }
 
         public void Logout()
@@ -84,11 +75,11 @@ namespace QrToPay.Services
             Preferences.Remove(UserPhoneKey);
         }
 
-        public User GetUserData()
+        public UserPreferences GetUserData()
         {
-            return new User()
+            return new UserPreferences()
             {
-                UserID = Preferences.Get(UserIdKey, 0),
+                UserId = Preferences.Get(UserIdKey, 0),
                 Email = Preferences.Get(UserEmailKey, string.Empty),
                 PhoneNumber = Preferences.Get(UserPhoneKey, string.Empty),
             };

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace QrToPay.Api.Models;
+﻿namespace QrToPay.Api.Models;
 
 public partial class FunFair
 {
     public int FunFairId { get; set; }
 
-    public int CityId { get; set; }
+    public Guid EntityId { get; set; }
+
+    public string CityName { get; set; } = null!;
 
     public string ParkName { get; set; } = null!;
 
@@ -17,13 +16,9 @@ public partial class FunFair
 
     public bool IsDeleted { get; set; }
 
-    public virtual City City { get; set; } = null!;
+    public virtual Entity Entity { get; set; } = null!;
 
     public virtual ICollection<FunFairAttraction> FunFairAttractions { get; set; } = new List<FunFairAttraction>();
 
     public virtual ICollection<FunFairPrice> FunFairPrices { get; set; } = new List<FunFairPrice>();
-
-    public virtual ICollection<TicketHistory> TicketHistories { get; set; } = new List<TicketHistory>();
-
-    public virtual ICollection<UserTicket> UserTickets { get; set; } = new List<UserTicket>();
 }

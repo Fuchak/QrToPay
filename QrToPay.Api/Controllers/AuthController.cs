@@ -1,26 +1,36 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using QrToPay.Api.DTOs;
 using QrToPay.Api.Models;
+using QrToPay.Api.Requests;
+using QrToPay.Api.Responses;
+
 
 namespace QrToPay.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class AuthController(QrToPayDbContext context) : ControllerBase
+    [Route("api/[controller]")]
+    public class AuthController : ControllerBase
     {
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(UserDto loginDto)
-        {
-            var userQuery = context.Users.AsQueryable();
+        private readonly QrToPayDbContext _context;
 
-            if (!string.IsNullOrEmpty(loginDto.Email))
+        public AuthController(QrToPayDbContext context)
+        {
+            _context = context;
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginRequestModel request)
+        {
+            var userQuery = _context.Users.AsQueryable();
+
+            if (!string.IsNullOrEmpty(request.Email))
             {
-                userQuery = userQuery.Where(u => u.Email == loginDto.Email);
+                userQuery = userQuery.Where(u => u.Email == request.Email);
             }
-            else if (!string.IsNullOrEmpty(loginDto.PhoneNumber))
+            else if (!string.IsNullOrEmpty(request.PhoneNumber))
             {
-                userQuery = userQuery.Where(u => u.PhoneNumber == loginDto.PhoneNumber);
+                userQuery = userQuery.Where(u => u.PhoneNumber == request.PhoneNumber);
             }
             else
             {
@@ -29,7 +39,7 @@ namespace QrToPay.Api.Controllers
 
             var user = await userQuery.FirstOrDefaultAsync();
 
-            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.PasswordHash, user.PasswordHash))
+            if (user == null || !BCrypt.Net.BCrypt.Verify(request.PasswordHash, user.PasswordHash))
             {
                 return Unauthorized(new { Message = "Nieprawidłowy email, numer telefonu lub hasło." });
             }
@@ -44,15 +54,15 @@ namespace QrToPay.Api.Controllers
                 return Unauthorized(new { Message = "Konto zostało zablokowane." });
             }
 
-            var userDto = new UserDto
+            LoginDto loginDto = new ()
             {
-                UserID = user.UserId,
+                UserId = user.UserId,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 AccountBalance = user.AccountBalance
             };
 
-            return Ok(userDto);
+            return Ok(loginDto);
         }
     }
 }

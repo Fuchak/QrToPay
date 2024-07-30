@@ -18,6 +18,7 @@
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<HotReloadEnabled>true</HotReloadEnabled>
 		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
@@ -66,11 +67,7 @@
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <None Remove="Resources\Images\refresh.png" />
-	</ItemGroup>
-
+	
 	<ItemGroup>
 		<PackageReference Include="BarcodeScanning.Native.Maui" Version="1.5.2" />
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
@@ -87,84 +84,85 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="View\AccountPage.xaml">
+	  <MauiXaml Update="View\FlyoutMenu\AccountPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\ActiveBiletsPage.xaml">
+	  <MauiXaml Update="View\FlyoutMenu\ActiveBiletsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\ChangeEmailPage.xaml">
+	  <MauiXaml Update="View\Settings\ChangeEmailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\ChangePasswordPage.xaml">
+	  <MauiXaml Update="View\Settings\ChangePasswordPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\ChangePhonePage.xaml">
+	  <MauiXaml Update="View\Settings\ChangePhonePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\CityPage.xaml">
+	  <MauiXaml Update="View\Common\CityPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\CreateUserPage.xaml">
+	  <MauiXaml Update="View\Authentication\CreateUserPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\FunFairPage.xaml">
+	  <MauiXaml Update="View\FunFair\FunFairPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\HelpPage.xaml">
+	  <MauiXaml Update="View\FlyoutMenu\HelpPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\HistoryPage.xaml">
+	  <MauiXaml Update="View\FlyoutMenu\HistoryPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\QrCodePopup.xaml">
+	  <MauiXaml Update="View\QR\QrCodePopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\ResetPasswordConfirmPage.xaml">
+	  <MauiXaml Update="View\ResetPassword\ResetPasswordConfirmPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\ResetPasswordPage.xaml">
+	  <MauiXaml Update="View\ResetPassword\ResetPasswordPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\LoadingPage.xaml">
+	  <MauiXaml Update="View\Common\LoadingPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\LoginPage.xaml">
+	  <MauiXaml Update="View\Authentication\LoginPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\ScanQrCodePage.xaml">
+	  <MauiXaml Update="View\QR\ScanQrCodePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\SettingsPage.xaml">
+	  <MauiXaml Update="View\FlyoutMenu\SettingsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\SkiPage.xaml">
+	  <MauiXaml Update="View\SkiResort\SkiPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\SkiResortBuyPage.xaml">
+	  <MauiXaml Update="View\SkiResort\SkiResortBuyPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\SkiResortPage.xaml">
+	  <MauiXaml Update="View\SkiResort\SkiResortPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\TopUpAccountPage.xaml">
+	  <MauiXaml Update="View\FlyoutMenu\TopUpAccountPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\VerificationCodePopup.xaml">
+	  <MauiXaml Update="View\Authentication\VerificationCodePopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="View\ResetPasswordPage.xaml.cs">
+	  <Compile Update="View\ResetPassword\ResetPasswordPage.xaml.cs">
 	    <DependentUpon>ResetPasswordPage.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Services\AuthService.cs">
 	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </Compile>
-	  <Compile Update="View\ScanQrCodePage.xaml.cs">
+	  <Compile Update="View\QR\ScanQrCodePage.xaml.cs">
 	    <DependentUpon>ScanQrCodePage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
+	
 
 </Project>
