@@ -41,7 +41,6 @@ public partial class LoginViewModel : ViewModelBase
         {
             EmailPhone = null;
             Password = null;
-            // Przejdź do strony głównej po udanym zalogowaniu
             await Shell.Current.GoToAsync("///MainPage");
         }
         else
@@ -53,7 +52,7 @@ public partial class LoginViewModel : ViewModelBase
     [RelayCommand]
     private async Task Register()
     {
-        ErrorMessage = null; // To czyści kod błędu żeby po powrocie na stronę go nie było ale potrzebujemy go jakoś globalniej bo tak co chwile go pisać to meh
+        ErrorMessage = null; // TODO To czyści kod błędu żeby po powrocie na stronę go nie było ale potrzebujemy go jakoś globalniej bo tak co chwile go pisać to meh
         await Shell.Current.GoToAsync("/CreateUserPage");
     }
 

@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-//using QrToPay.Api.Data;
+using FluentValidation;
 using QrToPay.Api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +11,15 @@ builder.Services.AddDbContext<QrToPayDbContext>(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Get the current assembly
+var assembly = typeof(Program).Assembly;
+
+// Add FluentValidation
+builder.Services.AddValidatorsFromAssembly(assembly);
+
+// Add MediatR
+builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(assembly));
 
 var app = builder.Build();
 

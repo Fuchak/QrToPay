@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QrToPay.Api.Features.Auth.Login;
 using QrToPay.Api.Models;
 using QrToPay.Api.Requests;
 using QrToPay.Api.Responses;

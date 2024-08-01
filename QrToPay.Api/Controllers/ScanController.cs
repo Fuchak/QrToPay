@@ -115,7 +115,7 @@ namespace QrToPay.Api.Controllers
                 
                 user.AccountBalance -= request.Price;
 
-                Models.TicketHistory purchase = new()
+                TicketHistory purchase = new()
                 {
                     UserId = request.UserId,
                     EntityId = entity.EntityId,
