@@ -1,11 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using QrToPay.Api.Models;
+using QrToPay.Api.Common.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers();
+// Add services to the container and add global filters
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidationFilter>();
+});
+
+
 builder.Services.AddDbContext<QrToPayDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -17,6 +23,7 @@ var assembly = typeof(Program).Assembly;
 
 // Add FluentValidation
 builder.Services.AddValidatorsFromAssembly(assembly);
+builder.Services.AddTransient<ValidationFilter>();
 
 // Add MediatR
 builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(assembly));

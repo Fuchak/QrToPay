@@ -1,4 +1,5 @@
 ﻿using QrToPay.Models.Common;
+using QrToPay.Models.Enums;
 
 namespace QrToPay.ViewModels.Common;
 
@@ -58,18 +59,11 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    // [RelayCommand]
-    // private Task NavigateToSkiPage() => NavigateAsync(nameof(SkiPage));
-
-    // [RelayCommand]
-    // private Task NavigateToFunfair() => NavigateAsync(nameof(FunFairPage));
+    [RelayCommand]
+    private Task NavigateToSkiResortPage() => NavigateAsync(nameof(SkiResortCityPage));
 
     [RelayCommand]
-    public async Task NavigateToCityPageAsync(string attractionType)
-    {
-        _appState.AttractionType = attractionType;
-        await Shell.Current.GoToAsync(nameof(CityPage));
-    }
+    private Task NavigateToFunFairPage() => NavigateAsync(nameof(FunFairCityPage));
 
     [RelayCommand]
     private Task NavigateToScanPage() => NavigateAsync(nameof(ScanQrCodePage));

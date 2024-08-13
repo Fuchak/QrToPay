@@ -33,7 +33,9 @@ public static class ViewModelExtensions
         builder.Services.AddTransient<SkiResortViewModel>();
         builder.Services.AddTransient<SkiResortBuyViewModel>();
         builder.Services.AddTransient<ActiveBiletsViewModel>();
-        builder.Services.AddTransient<CityViewModel>();
+        //builder.Services.AddTransient<CityViewModel>();
+        builder.Services.AddTransient<SkiResortCityViewModel>();
+        builder.Services.AddTransient<FunFairCityViewModel>();
 
         return builder;
     }

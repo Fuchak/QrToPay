@@ -33,7 +33,8 @@ public static class PagesExtensions
             builder.Services.AddTransient<SkiResortPage>();
             builder.Services.AddTransient<SkiResortBuyPage>();
             builder.Services.AddTransient<ActiveBiletsPage>();
-            builder.Services.AddTransient<CityPage>();
+            builder.Services.AddTransient<SkiResortCityPage>();
+            builder.Services.AddTransient<FunFairCityPage>();
 
             return builder;
         }   

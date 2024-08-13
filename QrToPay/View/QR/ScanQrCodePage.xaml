@@ -42,7 +42,6 @@
                                 VibrationOnDetected="False"
                                 TapToFocusEnabled="True"
                                 />
-
             <Label Text="{Binding CurrentAttraction.Type}" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
             <Label Text="{Binding CurrentAttraction.AttractionName}" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center" />
             <Label Text="{Binding CurrentAttraction.Price, StringFormat='Cena: {0:F2}'}" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center" />

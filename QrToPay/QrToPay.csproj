@@ -90,6 +90,9 @@
 	  <MauiXaml Update="View\FlyoutMenu\ActiveBiletsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="View\FunFair\FunFairCityPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="View\Settings\ChangeEmailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -97,9 +100,6 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\Settings\ChangePhonePage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="View\Common\CityPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\Authentication\CreateUserPage.xaml">
@@ -135,6 +135,9 @@
 	  <MauiXaml Update="View\FlyoutMenu\SettingsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="View\SkiResort\SkiResortCityPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="View\SkiResort\SkiPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -153,6 +156,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="View\FunFair\FunFairCityPage.xaml.cs">
+	    <DependentUpon>FunFairCityPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="View\ResetPassword\ResetPasswordPage.xaml.cs">
 	    <DependentUpon>ResetPasswordPage.xaml</DependentUpon>
 	  </Compile>
@@ -161,6 +167,9 @@
 	  </Compile>
 	  <Compile Update="View\QR\ScanQrCodePage.xaml.cs">
 	    <DependentUpon>ScanQrCodePage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="View\SkiResort\SkiResortCityPage.xaml.cs">
+	    <DependentUpon>SkiResortCityPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 	

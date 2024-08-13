@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using QrToPay.Api.Common.Results;
 using QrToPay.Api.Models;
 
 namespace QrToPay.Api.Features.Auth.Login

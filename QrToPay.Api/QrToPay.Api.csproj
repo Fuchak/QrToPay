@@ -26,12 +26,4 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Cities\" />
-    <Folder Include="Features\Tickets\" />
-    <Folder Include="Features\SkiSlopes\" />
-    <Folder Include="Features\Scan\" />
-    <Folder Include="Features\Users\" />
-  </ItemGroup>
-
 </Project>

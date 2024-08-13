@@ -22,13 +22,11 @@ public class BalanceService
         {
             userId = Preferences.Get("UserId", 0);
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            UserResponse? userResponse = await client.GetFromJsonAsync<UserResponse>($"/api/UserData/{userId}/balance");
+            UserResponse? userResponse = await client.GetFromJsonAsync<UserResponse>($"/api/UserBalance/{userId}/balance");
 
             if (userResponse != null)
             {
-                decimal accountBalance = userResponse.AccountBalance ?? 0;
-                //user.AccountBalance ??= 0;
-                BalanceUpdated?.Invoke(this, userResponse.AccountBalance.Value);
+                BalanceUpdated?.Invoke(this, userResponse.AccountBalance ?? 0);
                 return (userResponse.AccountBalance, null);
             }
             else

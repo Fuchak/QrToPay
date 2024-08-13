@@ -60,12 +60,10 @@ public partial class QrToPayDbContext : DbContext
             entity.HasKey(e => e.FunFairId).HasName("PK__FunFairs__7636299B9FDB80EB");
 
             entity.Property(e => e.FunFairId).HasColumnName("FunFairID");
-            entity.Property(e => e.CityName).HasMaxLength(255);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.EntityId).HasColumnName("EntityID");
-            entity.Property(e => e.ParkName).HasMaxLength(255);
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
@@ -166,12 +164,10 @@ public partial class QrToPayDbContext : DbContext
             entity.HasKey(e => e.SkiResortId).HasName("PK__SkiSlope__3CEDE73B8B715A50");
 
             entity.Property(e => e.SkiResortId).HasColumnName("SkiResortID");
-            entity.Property(e => e.CityName).HasMaxLength(255);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.EntityId).HasColumnName("EntityID");
-            entity.Property(e => e.ResortName).HasMaxLength(255);
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");

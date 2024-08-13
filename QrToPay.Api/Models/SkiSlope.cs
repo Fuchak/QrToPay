@@ -6,10 +6,6 @@ public partial class SkiSlope
 
     public Guid EntityId { get; set; }
 
-    public string CityName { get; set; } = null!;
-
-    public string ResortName { get; set; } = null!;
-
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }

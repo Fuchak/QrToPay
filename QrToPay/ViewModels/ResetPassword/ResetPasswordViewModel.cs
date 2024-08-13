@@ -2,6 +2,7 @@
 using Plugin.LocalNotification;
 using System.Diagnostics;
 using QrToPay.Models.Responses;
+using QrToPay.Models.Enums;
 
 namespace QrToPay.ViewModels.ResetPassword;
 //TODO to z tym kodem widziałem gdzieś już
@@ -36,18 +37,18 @@ public partial class ResetPasswordViewModel : ViewModelBase
         {
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
 
-            string userType;
+            ChangeType changeType;
             object requestData;
 
             if (ValidationHelper.IsEmail(EmailPhone))
             {
-                userType = "email";
-                requestData = new { Email = EmailPhone };
+                changeType = ChangeType.Email;
+                requestData = new { Contact = EmailPhone, ChangeType = changeType };
             }
             else if (ValidationHelper.IsPhoneNumber(EmailPhone))
             {
-                userType = "phone";
-                requestData = new { PhoneNumber = EmailPhone };
+                changeType = ChangeType.Phone;
+                requestData = new { Contact = EmailPhone, ChangeType = changeType };
             }
             else
             {
@@ -56,17 +57,17 @@ public partial class ResetPasswordViewModel : ViewModelBase
                 return;
             }
 
-            HttpResponseMessage response = await client.PostAsJsonAsync($"/api/ResetPassword/{userType}", requestData);
+            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Auth/contact", requestData);
             if (response.IsSuccessStatusCode)
             {
-                CreateUserResponse? createUserResponse = await response.Content.ReadFromJsonAsync<CreateUserResponse>();
+                ChangeResponse? changeResponse = await response.Content.ReadFromJsonAsync<ChangeResponse>();
 
-                if (createUserResponse != null)
+                if (changeResponse != null)
                 {
                     NotificationRequest notificationRequest = new()
                     {
                         Title = "Kod weryfikacyjny",
-                        Description = $"Twój kod weryfikacyjny to: {createUserResponse.VerificationCode}",
+                        Description = $"Twój kod weryfikacyjny to: {changeResponse.VerificationCode}",
                         ReturningData = "VerificationCode",
                         NotificationId = 1337,
                         Schedule =

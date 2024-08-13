@@ -2,13 +2,13 @@
 
 public partial class Entity
 {
-    public Guid EntityId { get; set; }
+    public required Guid EntityId { get; set; }
 
-    public string? EntityType { get; set; }
+    public required string EntityType { get; set; }
 
-    public string? EntityName { get; set; }
+    public required string EntityName { get; set; }
 
-    public string? CityName { get; set; }
+    public required string CityName { get; set; }
 
     public DateTime CreatedAt { get; set; }
 

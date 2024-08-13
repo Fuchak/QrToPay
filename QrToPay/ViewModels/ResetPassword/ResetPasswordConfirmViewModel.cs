@@ -60,7 +60,7 @@ public partial class ResetPasswordConfirmViewModel : ViewModelBase
                 NewPassword = Password
             };
 
-            HttpResponseMessage response = await client.PostAsJsonAsync("/api/ResetPassword/resetPassword", requestData);
+            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Auth/resetPassword", requestData);
 
             if (response.IsSuccessStatusCode)
             {

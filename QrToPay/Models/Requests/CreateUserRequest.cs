@@ -2,6 +2,7 @@
 
 public sealed class CreateUserRequest
 {
-    public required string EmailOrPhone { get; init; }
+    public string? Email { get; init; }
+    public string? PhoneNumber { get; init; }
     public required string PasswordHash { get; init; }
 }

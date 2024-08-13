@@ -82,7 +82,7 @@ public partial class HelpViewModel : ViewModelBase
 
             Debug.WriteLine($"Request Data: {JsonConvert.SerializeObject(request)}");
 
-            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Helpform", request);
+            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Support", request);
 
             Debug.WriteLine($"Response Status: {response.StatusCode}");
 

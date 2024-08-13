@@ -56,18 +56,15 @@ namespace QrToPay.ViewModels.Authentication
             {
                 HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
 
-                string userType;
                 object requestData;
 
                 if (ValidationHelper.IsEmail(EmailPhone))
                 {
-                    userType = "email";
-                    requestData = new CreateUserRequest { EmailOrPhone = EmailPhone, PasswordHash = Password };
+                    requestData = new CreateUserRequest { Email = EmailPhone, PasswordHash = Password };
                 }
                 else if (ValidationHelper.IsPhoneNumber(EmailPhone))
                 {
-                    userType = "phone";
-                    requestData = new CreateUserRequest { EmailOrPhone = EmailPhone, PasswordHash = Password };
+                    requestData = new CreateUserRequest { PhoneNumber = EmailPhone, PasswordHash = Password };
                 }
                 else
                 {
@@ -76,12 +73,12 @@ namespace QrToPay.ViewModels.Authentication
                     return;
                 }
 
-                HttpResponseMessage response = await client.PostAsJsonAsync($"/api/register/{userType}", requestData);
+                HttpResponseMessage response = await client.PostAsJsonAsync("/api/Register/register", requestData);
 
                 if (response.IsSuccessStatusCode)
                 {
                     CreateUserResponse? registerResponse = await response.Content.ReadFromJsonAsync<CreateUserResponse>();
-
+                    
                     if (registerResponse != null)
                     {
                         NotificationRequest notification = new()
@@ -107,7 +104,7 @@ namespace QrToPay.ViewModels.Authentication
                                 VerificationCode = registerResponse.VerificationCode
                             };
 
-                            HttpResponseMessage verifyResponse = await client.PostAsJsonAsync("/api/register/verify", verifyData);
+                            HttpResponseMessage verifyResponse = await client.PostAsJsonAsync("/api/Register/verify", verifyData);
 
                             if (verifyResponse.IsSuccessStatusCode)
                             {

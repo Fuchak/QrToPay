@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using QrToPay.Api.Features.Auth.Login;
-using FluentValidation;
-using FluentValidation.Results;
+using QrToPay.Api.Common.Results;
+using QrToPay.Api.Features.Auth.ResetPassword;
 
 namespace QrToPay.Api.Features.Auth;
 
@@ -11,23 +11,15 @@ namespace QrToPay.Api.Features.Auth;
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly IValidator<LoginRequestModel> _validator;
 
-    public AuthController(IMediator mediator, IValidator<LoginRequestModel> validator)
+    public AuthController(IMediator mediator)
     {
         _mediator = mediator;
-        _validator = validator;
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestModel request)
     {
-        ValidationResult validationResult = await _validator.ValidateAsync(request);
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(new { Message = validationResult.Errors });
-        }
-
         Result<LoginDto> result = await _mediator.Send(request);
         if (!result.IsSuccess)
         {
@@ -35,4 +27,27 @@ public class AuthController : ControllerBase
         }
         return Ok(result.Value);
     }
+
+    [HttpPost("contact")]
+    public async Task<IActionResult> UserExist([FromBody] UserExistRequestModel request)
+    {
+        var result = await _mediator.Send(request);
+        if (!result.IsSuccess)
+        {
+            return BadRequest(new { Message = result.Error });
+        }
+        return Ok(new { VerificationCode = result.Value });
+    }
+
+    [HttpPost("resetPassword")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestModel request)
+    {
+        var result = await _mediator.Send(request);
+        if (!result.IsSuccess)
+        {
+            return BadRequest(new { Message = result.Error });
+        }
+        return Ok(new { Message = "Hasło zostało zaktualizowane." });
+    }
+
 }

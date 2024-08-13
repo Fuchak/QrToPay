@@ -25,7 +25,9 @@ public partial class ScanQrCodeViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool pauseScanning = false;
-    
+
+    private const int PauseDuration = 4000; // Pauza w milisekundach (4 sekundy) by nie zawalać api zbyt dużą ilością zapytań
+
     [RelayCommand]
     private async Task OnDetectionFinished(BarcodeResult[] results)
     {
@@ -41,6 +43,9 @@ public partial class ScanQrCodeViewModel : ViewModelBase
             else
             { 
                 CurrentAttraction = null;
+                PauseScanning = true;
+                await Task.Delay(PauseDuration); // Zatrzymanie skanowania na kilka sekund
+                PauseScanning = false; // Wznowienie skanowania
             }
             
         }
@@ -64,7 +69,7 @@ public partial class ScanQrCodeViewModel : ViewModelBase
             else
             {
                 ApiResponse? errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                Debug.WriteLine(errorResponse?.Message ?? "Błąd podczas skanowania kodu QR.");
+                await Shell.Current.DisplayAlert("Błąd", errorResponse?.Message, "OK");
             }
         }
         catch (Exception ex)

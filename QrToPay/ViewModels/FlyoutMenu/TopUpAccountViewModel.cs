@@ -34,7 +34,7 @@ public partial class TopUpAccountViewModel : ViewModelBase
 
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
             Debug.WriteLine($"Sending top-up request: {JsonSerializer.Serialize(topUpRequest)}");
-            HttpResponseMessage response = await client.PostAsJsonAsync("/api/UserData/topUp", topUpRequest);
+            HttpResponseMessage response = await client.PostAsJsonAsync("/api/UserBalance/topUp", topUpRequest);
 
             if (response.IsSuccessStatusCode)
             {

@@ -1,7 +1,8 @@
-﻿namespace QrToPay.Models.Common;
+﻿using QrToPay.Models.Enums;
+
+namespace QrToPay.Models.Common;
 public sealed class AppState
 {
-    public string? AttractionType { get; set; }
     public string? CityName { get; set; }
     public Guid EntityId { get; set; }
     public int? AttractionId { get; set; }

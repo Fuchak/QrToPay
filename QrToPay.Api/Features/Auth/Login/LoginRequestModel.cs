@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using QrToPay.Api.Common.Results;
 
 namespace QrToPay.Api.Features.Auth.Login;
 
