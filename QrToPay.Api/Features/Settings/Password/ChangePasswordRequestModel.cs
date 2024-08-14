@@ -1,6 +1,9 @@
-﻿namespace QrToPay.Api.Features.Settings.Password;
+﻿using MediatR;
+using QrToPay.Api.Common.Results;
 
-public sealed class ChangePasswordRequestModel
+namespace QrToPay.Api.Features.Settings.Password;
+
+public sealed class ChangePasswordRequestModel : IRequest<Result<string>>
 {
     public required int UserId { get; init; }
     public required string OldPassword { get; init; }

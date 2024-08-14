@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Net.Http.Json;
 using QrToPay.Models.Common;
+using QrToPay.Models.Enums;
 
 namespace QrToPay.ViewModels.FunFair;
 public partial class FunFairCityViewModel : ViewModelBase
@@ -22,12 +23,12 @@ public partial class FunFairCityViewModel : ViewModelBase
     string? errorMessage;
 
     [RelayCommand]
-    public async Task LoadCitiesAsync()
+    public async Task LoadCitiesAsync(EntityCategory entityType)
     {
         try
         {
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            HttpResponseMessage response = await client.GetAsync("/api/FunFair/cities");
+            HttpResponseMessage response = await client.GetAsync($"/api/Cities?entityType={entityType}");
             response.EnsureSuccessStatusCode();
 
             List<City>? cities = await response.Content.ReadFromJsonAsync<List<City>>();

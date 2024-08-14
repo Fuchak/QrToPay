@@ -21,6 +21,6 @@ public partial class FunFairCityPage : ContentPage
 
     private async void InitializeAsync()
     {
-        await _viewModel.LoadCitiesAsync();
+        await _viewModel.LoadCitiesAsync(EntityCategory.FunFair);
     }
 }

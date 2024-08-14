@@ -1,6 +1,9 @@
-﻿namespace QrToPay.Api.Features.UserBalance.TopUp;
+﻿using MediatR;
+using QrToPay.Api.Common.Results;
 
-public sealed class TopUpRequestModel
+namespace QrToPay.Api.Features.UserBalance.TopUp;
+
+public sealed class TopUpRequestModel : IRequest<Result<decimal>>
 {
     public required int UserId { get; init; }
     public required decimal Amount { get; init; }

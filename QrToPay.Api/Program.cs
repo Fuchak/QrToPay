@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using QrToPay.Api.Models;
 using QrToPay.Api.Common.Filters;
+using QrToPay.Api.Common.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,10 +24,12 @@ var assembly = typeof(Program).Assembly;
 
 // Add FluentValidation
 builder.Services.AddValidatorsFromAssembly(assembly);
-builder.Services.AddTransient<ValidationFilter>();
+//builder.Services.AddTransient<ValidationFilter>(); //Po co to tu jak jest na górze
 
 // Add MediatR
 builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(assembly));
+
+builder.Services.AddSingleton<VerificationStorageService>();
 
 var app = builder.Build();
 

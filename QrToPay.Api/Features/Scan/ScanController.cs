@@ -19,11 +19,11 @@ namespace QrToPay.Api.Features.Scan
         [HttpGet("{qrCode}")]
         public async Task<IActionResult> GetAttractionByQrCode(string qrCode)
         {
-            var request = new ScanedInfoRequestModel { QrCode = qrCode };
+            ScanedInfoRequestModel request = new() { QrCode = qrCode };
             var result = await _mediator.Send(request);
             if (!result.IsSuccess)
             {
-                return BadRequest(new { Message = result.Error });
+                return StatusCode(500, new { Message = result.Error });
             }
             return Ok(result.Value);
         }
@@ -34,7 +34,7 @@ namespace QrToPay.Api.Features.Scan
             var result = await _mediator.Send(request);
             if (!result.IsSuccess)
             {
-                return BadRequest(new { Message = result.Error });
+                return StatusCode(500, new { Message = result.Error });
             }
             return Ok(new { Message = result.Value });
         }

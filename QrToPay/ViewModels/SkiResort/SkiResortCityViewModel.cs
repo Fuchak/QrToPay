@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Net.Http.Json;
 using QrToPay.Models.Common;
+using QrToPay.Models.Enums;
 
 namespace QrToPay.ViewModels.SkiResort;
 public partial class SkiResortCityViewModel : ViewModelBase
@@ -22,12 +23,13 @@ public partial class SkiResortCityViewModel : ViewModelBase
     string? errorMessage;
 
     [RelayCommand]
-    public async Task LoadCitiesAsync()
+    public async Task LoadCitiesAsync(EntityCategory entityType)
     {
         try
         {
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            HttpResponseMessage response = await client.GetAsync("/api/SkiSlopes/cities");
+            //HttpResponseMessage response = await client.GetAsync("/api/SkiSlopes/cities"); Stary endpoint
+            HttpResponseMessage response = await client.GetAsync($"/api/Cities?entityType={entityType}");
             response.EnsureSuccessStatusCode();
 
             List<City>? cities = await response.Content.ReadFromJsonAsync<List<City>>();

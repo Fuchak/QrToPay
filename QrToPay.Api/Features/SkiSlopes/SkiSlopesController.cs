@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using QrToPay.Api.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using QrToPay.Api.Common.Dtos;
 using QrToPay.Api.Features.SkiSlopes.Prices;
 using QrToPay.Api.Features.SkiSlopes.Slopes;
+using MediatR;
 
 //TODO te miasta zmienić spowrotem do skislopes i funfairs i wywalić je z entities 
 namespace QrToPay.Api.Features.SkiSlopes
@@ -13,83 +10,39 @@ namespace QrToPay.Api.Features.SkiSlopes
     [Route("api/[controller]")]
     public class SkiSlopesController : ControllerBase
     {
-        private readonly QrToPayDbContext _context;
+        private readonly IMediator _mediator;
 
-        public SkiSlopesController(QrToPayDbContext context)
+        public SkiSlopesController(IMediator mediator)
         {
-            _context = context;
-        }
-
-        // GET: api/skislope/cities
-        [HttpGet("cities")]
-        public async Task<ActionResult<IEnumerable<CityDto>>> GetCities()
-        {
-            var cities = await _context.SkiSlopes
-                .Where(s => !s.IsDeleted)
-                .Select(s => new CityDto
-                {
-                    CityName = _context.Entities
-                        .Where(e => e.EntityId == s.EntityId && !e.IsDeleted)
-                        .Select(e => e.CityName)
-                        .FirstOrDefault()!, // Używamy CityName z tabeli Entities i informujemy kompilator, że nie będzie null
-                    EntityId = s.EntityId
-                })
-                .ToListAsync();
-
-            if (cities.Count is 0)
-            {
-                Debug.WriteLine("No cities found for SkiSlopes.");
-            }
-
-            return Ok(cities);
+            _mediator = mediator;
         }
 
         // GET: api/skislopes
         [HttpGet("slopes")]
-        public async Task<ActionResult<IEnumerable<SkiSlopeDto>>> GetSkiSlopes(Guid entityId)
+        public async Task<IActionResult> GetSkiSlopes([FromQuery] Guid entityId)
         {
-            var skiSlopes = await _context.SkiSlopes
-                .Where(s => !s.IsDeleted && s.EntityId == entityId)
-                .Select(s => new SkiSlopeDto
-                {
-                    SkiResortId = s.SkiResortId,
-                    ResortName = _context.Entities
-                        .Where(e => e.EntityId == s.EntityId && !e.IsDeleted)
-                        .Select(e => e.EntityName)
-                        .FirstOrDefault()!, // Używamy EntityName z tabeli Entities i informujemy kompilator, że nie będzie null
-                    CityName = _context.Entities
-                        .Where(e => e.EntityId == s.EntityId && !e.IsDeleted)
-                        .Select(e => e.CityName)
-                        .FirstOrDefault()!, // Używamy CityName z tabeli Entities i informujemy kompilator, że nie będzie null
-                })
-                .ToListAsync();
+            GetSkiSlopesRequestModel request = new() { EntityId = entityId };
+            var result = await _mediator.Send(request);
 
-            if (skiSlopes.Count is 0)
+            if (!result.IsSuccess)
             {
-                Debug.WriteLine($"No ski slopes found for entityId: {entityId}");
+                return StatusCode(500, new { Message = result.Error });
             }
-
-            return Ok(skiSlopes);
+            return Ok(result.Value);
         }
 
         // GET: api/skislopes/prices
         [HttpGet("prices")]
-        public async Task<ActionResult<IEnumerable<SkiSlopePriceDto>>> GetSkiSlopePrices([FromQuery] int skiResortId)
+        public async Task<IActionResult> GetSkiSlopePrices([FromQuery] int skiResortId)
         {
-            var prices = await _context.SkiSlopePrices
-                .Where(p => p.SkiResortId == skiResortId && !p.IsDeleted)
-                .Select(p => new { p.Tokens, p.Price, p.SkiSlopePriceId })
-                .Distinct()
-                .Select(p => new SkiSlopePriceDto
-                {
-                    SkiSlopePriceId = p.SkiSlopePriceId,
-                    Tokens = p.Tokens,
-                    Price = p.Price
-                })
-                .ToListAsync();
+            GetSkiSlopePricesRequestModel request = new() { SkiResortId = skiResortId };
+            var result = await _mediator.Send(request);
 
-            return Ok(prices);
+            if (!result.IsSuccess)
+            {
+                return StatusCode(500, new { Message = result.Error });
+            }
+            return Ok(result.Value);
         }
-
     }
 }

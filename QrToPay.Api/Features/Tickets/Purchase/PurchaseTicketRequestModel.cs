@@ -1,6 +1,9 @@
-﻿namespace QrToPay.Api.Features.Tickets.Purchase;
+﻿using MediatR;
+using QrToPay.Api.Common.Results;
 
-public class UpdateTicketRequestModel
+namespace QrToPay.Api.Features.Tickets.Purchase;
+
+public class PurchaseTicketRequestModel : IRequest<Result<string>>
 {
     public required int UserId { get; init; }
     public required Guid EntityId { get; init; }
