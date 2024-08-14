@@ -1,16 +1,6 @@
-﻿using Microsoft.Maui.Controls.PlatformConfiguration;
-using System.ComponentModel.Design;
-using QrToPay.ViewModels.Common;
-using QrToPay.ViewModels.FunFair;
-using QrToPay.ViewModels.Authentication;
-using QrToPay.ViewModels.FlyoutMenu;
-using QrToPay.ViewModels.QR;
-using QrToPay.ViewModels.ResetPassword;
-using QrToPay.ViewModels.Settings;
-using QrToPay.ViewModels.SkiResort;
+﻿using QrToPay.ViewModels.Common;
 
 namespace QrToPay.View;
-
 public partial class AppShell : Shell
 {
     public AppShell()

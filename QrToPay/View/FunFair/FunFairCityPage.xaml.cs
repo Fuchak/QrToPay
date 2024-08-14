@@ -1,11 +1,4 @@
-using QrToPay.ViewModels.Common;
 using QrToPay.ViewModels.FunFair;
-using QrToPay.ViewModels.Authentication;
-using QrToPay.ViewModels.FlyoutMenu;
-using QrToPay.ViewModels.QR;
-using QrToPay.ViewModels.ResetPassword;
-using QrToPay.ViewModels.Settings;
-using QrToPay.ViewModels.SkiResort;
 using QrToPay.Models.Enums;
 
 namespace QrToPay.View;
