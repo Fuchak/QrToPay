@@ -10,12 +10,10 @@ namespace QrToPay.ViewModels.Authentication
     public partial class CreateUserViewModel : ViewModelBase
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly VerificationCodeHelper _verificationCodeHelper;
 
-        public CreateUserViewModel(IHttpClientFactory httpClientFactory, VerificationCodeHelper verificationCodeHelper)
+        public CreateUserViewModel(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
-            _verificationCodeHelper = verificationCodeHelper;
         }
 
         [ObservableProperty]
@@ -56,15 +54,15 @@ namespace QrToPay.ViewModels.Authentication
             {
                 HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
 
-                object requestData;
+                object request;
 
                 if (ValidationHelper.IsEmail(EmailPhone))
                 {
-                    requestData = new CreateUserRequest { Email = EmailPhone, PasswordHash = Password };
+                    request = new CreateUserRequest { Email = EmailPhone, PasswordHash = Password };
                 }
                 else if (ValidationHelper.IsPhoneNumber(EmailPhone))
                 {
-                    requestData = new CreateUserRequest { PhoneNumber = EmailPhone, PasswordHash = Password };
+                    request = new CreateUserRequest { PhoneNumber = EmailPhone, PasswordHash = Password };
                 }
                 else
                 {
@@ -73,7 +71,7 @@ namespace QrToPay.ViewModels.Authentication
                     return;
                 }
 
-                HttpResponseMessage response = await client.PostAsJsonAsync("/api/Register/register", requestData);
+                HttpResponseMessage response = await client.PostAsJsonAsync("/api/Register/register", request);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -94,7 +92,7 @@ namespace QrToPay.ViewModels.Authentication
                         };
                         await LocalNotificationCenter.Current.Show(notification);
 
-                        bool verificationResult = await _verificationCodeHelper.VerifyCodeAsync(registerResponse.VerificationCode);
+                        bool verificationResult = await VerificationCodeHelper.VerifyCodeAsync(registerResponse.VerificationCode);
 
                         if (verificationResult)
                         {

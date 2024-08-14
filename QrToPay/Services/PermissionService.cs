@@ -1,6 +1,5 @@
 ﻿using Microsoft.Maui.ApplicationModel;
 using Plugin.LocalNotification;
-using System.Threading.Tasks;
 
 namespace QrToPay.Services;
 public class PermissionService

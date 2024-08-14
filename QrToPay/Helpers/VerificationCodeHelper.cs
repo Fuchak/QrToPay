@@ -4,7 +4,7 @@ using CommunityToolkit.Maui.Views;
 namespace QrToPay.Helpers;
 public class VerificationCodeHelper
 {
-    public async Task<bool> VerifyCodeAsync(string? actualCode)
+    public static async Task<bool> VerifyCodeAsync(string? actualCode)
     {
         VerificationCodePopupViewModel popupViewModel = new ();
         object? result = await Shell.Current.ShowPopupAsync(new VerificationCodePopup(popupViewModel));

@@ -8,11 +8,11 @@ public partial class VerificationCodePopup : Popup
     {
         InitializeComponent();
         BindingContext = vm;
+        vm.ClosePopupAction = ClosePopup;
     }
 
-    async void OnConfirmButtonClicked(object? sender, EventArgs e)
+    private async void ClosePopup(string? result)
     {
-        var viewModel = (VerificationCodePopupViewModel)BindingContext;
-        await CloseAsync(viewModel.VerificationCode);
+        await CloseAsync(result);
     }
 }

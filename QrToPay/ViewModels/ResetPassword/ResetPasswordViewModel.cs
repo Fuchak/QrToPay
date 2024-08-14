@@ -71,9 +71,9 @@ public partial class ResetPasswordViewModel : ViewModelBase
                         ReturningData = "VerificationCode",
                         NotificationId = 1337,
                         Schedule =
-                    {
-                        NotifyTime = DateTime.Now.AddSeconds(5) // Można dostosować czas powiadomienia
-                    }
+                        {
+                            NotifyTime = DateTime.Now.AddSeconds(5) // Można dostosować czas powiadomienia
+                        }
                     };
                     await LocalNotificationCenter.Current.Show(notificationRequest);
 

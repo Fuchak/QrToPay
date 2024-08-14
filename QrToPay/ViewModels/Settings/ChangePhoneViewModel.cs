@@ -12,11 +12,9 @@ namespace QrToPay.ViewModels.Settings;
 public partial class ChangePhoneViewModel : ViewModelBase
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly VerificationCodeHelper _verificationCodeHelper;
-    public ChangePhoneViewModel(IHttpClientFactory httpClientFactory, VerificationCodeHelper verificationCodeHelper)
+    public ChangePhoneViewModel(IHttpClientFactory httpClientFactory)
     {
         _httpClientFactory = httpClientFactory;
-        _verificationCodeHelper = verificationCodeHelper;
     }
 
     [ObservableProperty]
@@ -90,7 +88,7 @@ public partial class ChangePhoneViewModel : ViewModelBase
                     };
                     await LocalNotificationCenter.Current.Show(request);
 
-                    bool verificationResult = await _verificationCodeHelper.VerifyCodeAsync(changePhoneResponse.VerificationCode);
+                    bool verificationResult = await VerificationCodeHelper.VerifyCodeAsync(changePhoneResponse.VerificationCode);
 
                     Debug.WriteLine($"Verification Result: {verificationResult}");
                     if (verificationResult)

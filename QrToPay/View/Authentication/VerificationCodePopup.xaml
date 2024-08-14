@@ -5,22 +5,39 @@
              xmlns:vm="clr-namespace:QrToPay.ViewModels.Authentication"
              x:Class="QrToPay.View.VerificationCodePopup"
              Style="{StaticResource BasePageStyle}"
-             x:DataType="vm:VerificationCodePopupViewModel">
+             x:DataType="vm:VerificationCodePopupViewModel"
+             Color="Transparent"
+             CanBeDismissedByTappingOutsideOfPopup="False">
 
-    <VerticalStackLayout Padding="20" Spacing="10" BackgroundColor="White">
-        <Label Text="Wpisz kod weryfikacyjny:"
-               FontSize="Medium"/>
-        <Frame
-            Margin="0,0,0,10"
-            Padding="0">
-            <Entry x:Name="VerificationCodeEntry"
-                   HorizontalOptions="Center"
-                   Placeholder="Kod weryfikacyjny"
-                   FontSize="Small"
-                   Text="{Binding VerificationCode, Mode=TwoWay}"/>
-        </Frame>
-        <Button Text="Potwierdzam"
-                HorizontalOptions="Center"
-                Clicked="OnConfirmButtonClicked"/>
-    </VerticalStackLayout>
+    <Border Padding="0" HeightRequest="200"
+           WidthRequest="250"
+           Stroke="Transparent"
+           BackgroundColor="White">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="10"/>
+        </Border.StrokeShape>
+            <VerticalStackLayout Padding="20" Spacing="10" BackgroundColor="White">
+                <Label Text="Wpisz kod weryfikacyjny:"
+                       HorizontalOptions="Center"
+                       FontSize="Medium"/>
+                <Frame
+                        Margin="0,0,0,10"
+                        Padding="0">
+                    <Entry x:Name="VerificationCodeEntry"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               Placeholder="Kod weryfikacyjny"
+                               FontSize="Small"
+                               Text="{Binding VerificationCode, Mode=TwoWay}"/>
+                </Frame>
+                <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                    <Button Text="Anuluj"
+                                WidthRequest="100"
+                                Command="{Binding CancelCommand}"/>
+                    <Button Text="Potwierdzam"
+                                WidthRequest="100"
+                                Command="{Binding ConfirmCommand}"/>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+    </Border>
 </toolkit:Popup>
