@@ -8,40 +8,26 @@ using QrToPay.ViewModels.QR;
 using QrToPay.ViewModels.ResetPassword;
 using QrToPay.ViewModels.Settings;
 using QrToPay.ViewModels.SkiResort;
+using QrToPay.Services;
 
 namespace QrToPay.View;
-
 public partial class ScanQrCodePage : ContentPage
 {
     public ScanQrCodePage(ScanQrCodeViewModel vm)
 	{
-		InitializeComponent();
+        InitializeComponent();
 		BindingContext = vm;
     }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        bool permissionGranted = await PermissionService.RequestPermissionAsync<Permissions.Camera>("kamery");
 
-        var viewModel = BindingContext as ScanQrCodeViewModel;
-        if (viewModel == null)
-            return;
-
-        if (!await viewModel.CheckPermissions())
+        if (permissionGranted)
         {
-            bool goToSettings = await DisplayAlert("Błąd",
-                    "Nie przyznano wszystkich uprawnień. Niektóre funkcje systemu nie będą dostępne.",
-                    "Ustawienia",
-                    "OK");
-
-            if (goToSettings)
-            {
-                AppInfo.Current.ShowSettingsUI();
-            }
-            return;
+            BarcodeScanner.CameraEnabled = true;
         }
-
-        BarcodeScanner.CameraEnabled = true;
     }
 
     protected override void OnDisappearing()
@@ -49,5 +35,4 @@ public partial class ScanQrCodePage : ContentPage
         base.OnDisappearing();
         BarcodeScanner.CameraEnabled = false;
     }
-
 }

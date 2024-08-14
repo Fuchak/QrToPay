@@ -19,9 +19,7 @@ public partial class MainPage : ContentPage
     {
         InitializeComponent();
         BindingContext = _viewModel = vm;
-
         WeakReferenceMessenger.Default.Register<UserLoggedInMessage>(this, async (r, m) => await OnUserLoggedIn());
-
         InitializeAsync();
     }
 
