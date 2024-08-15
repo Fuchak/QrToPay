@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MediatR;
-using QrToPay.Api.Common.Enums;
 
 namespace QrToPay.Api.Features.Cities;
 

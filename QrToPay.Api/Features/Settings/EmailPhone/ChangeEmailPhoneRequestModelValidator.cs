@@ -2,9 +2,9 @@
 
 namespace QrToPay.Api.Features.Settings.EmailPhone;
 
-public class ChangeRequestModelValidator : AbstractValidator<ChangeRequestModel>
+public class ChangeEmailPhoneRequestModelValidator : AbstractValidator<ChangeEmailPhoneRequestModel>
 {
-    public ChangeRequestModelValidator()
+    public ChangeEmailPhoneRequestModelValidator()
     {
         RuleFor(x => x.UserId).GreaterThan(0).WithMessage("Identyfikator użytkownika jest wymagany.");
         RuleFor(x => x.Password).NotEmpty().WithMessage("Hasło jest wymagane.");

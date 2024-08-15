@@ -15,7 +15,7 @@ public class TopUpAccountHandler : IRequestHandler<TopUpRequestModel, Result<dec
 
     public async Task<Result<decimal>> Handle(TopUpRequestModel request, CancellationToken cancellationToken)
     {
-        var user = await _context.Users.FindAsync([request.UserId], cancellationToken: cancellationToken);
+        User? user = await _context.Users.FindAsync([request.UserId], cancellationToken);
 
         if (user == null)
         {

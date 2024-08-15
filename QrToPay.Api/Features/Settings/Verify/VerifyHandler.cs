@@ -7,12 +7,12 @@ using QrToPay.Api.Common.Enums;
 
 namespace QrToPay.Api.Features.Settings.Verify;
 
-public class VerifyChangeHandler : IRequestHandler<VerifyRequestModel, Result<string>>
+public class VerifyHandler : IRequestHandler<VerifyRequestModel, Result<string>>
 {
     private readonly QrToPayDbContext _context;
     private readonly VerificationStorageService _verificationStorageService;
 
-    public VerifyChangeHandler(QrToPayDbContext context, VerificationStorageService verificationStorageService)
+    public VerifyHandler(QrToPayDbContext context, VerificationStorageService verificationStorageService)
     {
         _context = context;
         _verificationStorageService = verificationStorageService;

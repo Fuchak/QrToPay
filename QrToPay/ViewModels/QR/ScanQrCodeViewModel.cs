@@ -143,27 +143,4 @@ public partial class ScanQrCodeViewModel : ViewModelBase
     {
         return IsAttractionValid;
     }
-
-    public async Task<bool> CheckPermissions()
-    {
-        PermissionStatus cameraStatus = await CheckPermissions<Permissions.Camera>();
-
-        return IsGranted(cameraStatus);
-    }
-    private async Task<PermissionStatus> CheckPermissions<TPermission>() where TPermission : Permissions.BasePermission, new()
-    {
-        PermissionStatus status = await Permissions.CheckStatusAsync<TPermission>();
-
-        if (status != PermissionStatus.Granted)
-        {
-            status = await Permissions.RequestAsync<TPermission>();
-        }
-
-        return status;
-    }
-
-    private static bool IsGranted(PermissionStatus status)
-    {
-        return status is PermissionStatus.Granted or PermissionStatus.Limited;
-    }
 }

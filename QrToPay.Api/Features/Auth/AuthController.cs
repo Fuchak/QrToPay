@@ -3,6 +3,7 @@ using MediatR;
 using QrToPay.Api.Features.Auth.Login;
 using QrToPay.Api.Common.Results;
 using QrToPay.Api.Features.Auth.ResetPassword;
+using QrToPay.Api.Features.Auth.CheckAccount;
 
 namespace QrToPay.Api.Features.Auth;
 
@@ -27,8 +28,8 @@ public class AuthController : ControllerBase
             : Ok(result.Value);
     }
 
-    [HttpPost("contact")]
-    public async Task<IActionResult> UserExist([FromBody] UserExistRequestModel request)
+    [HttpPost("checkAccount")]
+    public async Task<IActionResult> UserExist([FromBody] CheckAccountRequestModel request)
     {
         var result = await _mediator.Send(request);
 

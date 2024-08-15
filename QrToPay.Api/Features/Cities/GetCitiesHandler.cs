@@ -1,13 +1,12 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using QrToPay.Api.Common.Dtos;
 using QrToPay.Api.Common.Enums; //TODO to wróci jak zmienimy baze
 using QrToPay.Api.Common.Results;
 using QrToPay.Api.Models;
 
 namespace QrToPay.Api.Features.Cities
 {
-    public class GetCitiesHandler : IRequestHandler<GetCitiesRequestModel, Result<IEnumerable<CityDto>>>
+    public class GetCitiesHandler : IRequestHandler<GetCitiesRequestModel, Result<IEnumerable<CitiesDto>>>
     {
         private readonly QrToPayDbContext _context;
 
@@ -16,13 +15,13 @@ namespace QrToPay.Api.Features.Cities
             _context = context;
         }
 
-        public async Task<Result<IEnumerable<CityDto>>> Handle(GetCitiesRequestModel request, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<CitiesDto>>> Handle(GetCitiesRequestModel request, CancellationToken cancellationToken)
         {
             string entityTypeString = request.EntityType.ToString();
 
             var cities = await _context.Entities
                 .Where(e => !e.IsDeleted && e.EntityType == entityTypeString) //TODO zmiana tego na bazie na enum (0,1) a nie SkiResort/FunFair
-                .Select(e => new CityDto
+                .Select(e => new CitiesDto
                 {
                     CityName = e.CityName!,
                     EntityId = e.EntityId
@@ -32,10 +31,10 @@ namespace QrToPay.Api.Features.Cities
 
             if (cities.Count == 0)
             {
-                return Result<IEnumerable<CityDto>>.Failure($"Nie znaleziono miast dla, {request.EntityType}.");
+                return Result<IEnumerable<CitiesDto>>.Failure($"Nie znaleziono miast dla, {request.EntityType}.");
             }
 
-            return Result<IEnumerable<CityDto>>.Success(cities);
+            return Result<IEnumerable<CitiesDto>>.Success(cities);
         }
     }
 }

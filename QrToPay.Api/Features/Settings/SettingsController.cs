@@ -18,7 +18,7 @@ namespace QrToPay.Api.Features.Settings
         }
 
         [HttpPost("requestChange")]
-        public async Task<IActionResult> RequestChange([FromBody] ChangeRequestModel request)
+        public async Task<IActionResult> RequestChange([FromBody] ChangeEmailPhoneRequestModel request)
         {
             var result = await _mediator.Send(request);
 

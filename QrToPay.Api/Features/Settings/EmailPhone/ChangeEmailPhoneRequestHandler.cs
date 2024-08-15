@@ -8,20 +8,20 @@ using QrToPay.Api.Common.Services;
 
 namespace QrToPay.Api.Features.Settings.EmailPhone;
 
-public class ChangeRequestHandler : IRequestHandler<ChangeRequestModel, Result<string>>
+public class ChangeEmailPhoneRequestHandler : IRequestHandler<ChangeEmailPhoneRequestModel, Result<string>>
 {
     private readonly QrToPayDbContext _context;
     private readonly VerificationStorageService _verificationStorageService;
 
-    public ChangeRequestHandler(QrToPayDbContext context, VerificationStorageService verificationStorageService)
+    public ChangeEmailPhoneRequestHandler(QrToPayDbContext context, VerificationStorageService verificationStorageService)
     {
         _context = context;
         _verificationStorageService = verificationStorageService;
     }
 
-    public async Task<Result<string>> Handle(ChangeRequestModel request, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(ChangeEmailPhoneRequestModel request, CancellationToken cancellationToken)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == request.UserId && u.IsVerified, cancellationToken);
+        User? user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == request.UserId && u.IsVerified, cancellationToken);
 
         if (user == null)
         {
@@ -58,7 +58,7 @@ public class ChangeRequestHandler : IRequestHandler<ChangeRequestModel, Result<s
             return Result<string>.Failure($"Użytkownik z nowym {(request.ChangeType == ChangeType.Email ? "adresem email" : "numerem telefonu")} już istnieje.");
         }
 
-        var verificationCode = AuthenticationHelper.GenerateVerificationCode();
+        string verificationCode = AuthenticationHelper.GenerateVerificationCode();
         user.VerificationCode = verificationCode;
         user.UpdatedAt = DateTime.Now;
 

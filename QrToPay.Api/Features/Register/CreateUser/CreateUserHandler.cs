@@ -21,11 +21,11 @@ public class CreateUserHandler : IRequestHandler<CreateUserRequestModel, Result<
 
         if (!string.IsNullOrEmpty(request.Email))
         {
-            existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+            existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email, cancellationToken);
         }
         else if (!string.IsNullOrEmpty(request.PhoneNumber))
         {
-            existingUser = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
+            existingUser = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber, cancellationToken);
         }
 
         if (existingUser != null)
@@ -42,7 +42,7 @@ public class CreateUserHandler : IRequestHandler<CreateUserRequestModel, Result<
         }
         else
         {
-            var newUser = new User
+            User newUser = new()
             {
                 Email = request.Email,
                 PhoneNumber = request.PhoneNumber,
@@ -56,16 +56,16 @@ public class CreateUserHandler : IRequestHandler<CreateUserRequestModel, Result<
             _context.Users.Add(newUser);
         }
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email || u.PhoneNumber == request.PhoneNumber);
+        User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email || u.PhoneNumber == request.PhoneNumber, cancellationToken);
 
         if (user == null)
         {
             return Result<CreateUserDto>.Failure("Błąd wewnętrzny serwera.");
         }
-        var emailOrPhone = user.Email ?? user.PhoneNumber;
-        var result = new CreateUserDto { VerificationCode = user.VerificationCode!, EmailOrPhone = emailOrPhone! };
+        string? emailOrPhone = user.Email ?? user.PhoneNumber;
+        CreateUserDto result = new() { VerificationCode = user.VerificationCode!, EmailOrPhone = emailOrPhone! };
         return Result<CreateUserDto>.Success(result);
     }
 }

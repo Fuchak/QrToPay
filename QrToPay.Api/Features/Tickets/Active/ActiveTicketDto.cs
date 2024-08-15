@@ -1,6 +1,6 @@
 ﻿namespace QrToPay.Api.Features.Tickets.Active;
 
-public sealed class TicketDto
+public sealed class ActiveTicketDto
 {
     public required int UserTicketId { get; init; }
     public required int UserId { get; init; }

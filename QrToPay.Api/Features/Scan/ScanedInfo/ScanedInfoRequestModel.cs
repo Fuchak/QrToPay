@@ -2,10 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using QrToPay.Api.Common.Results;
 
-namespace QrToPay.Api.Features.Scan.ScanedInfo
+namespace QrToPay.Api.Features.Scan.ScanedInfo;
+public sealed class ScanedInfoRequestModel : IRequest<Result<ScanedInfoDto>>
 {
-    public sealed class ScanedInfoRequestModel : IRequest<Result<ScanedInfoDto>>
-    {
-        public required string QrCode { get; init; }
-    }
+    [FromRoute(Name = "qrCode")]
+    public required string QrCode { get; init; }
 }

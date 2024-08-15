@@ -5,7 +5,7 @@ using QrToPay.Api.Common.Results;
 
 namespace QrToPay.Api.Features.Tickets.Active;
 
-public class GetActiveTicketsHandler : IRequestHandler<GetActiveTicketsRequestModel, Result<List<TicketDto>>>
+public class GetActiveTicketsHandler : IRequestHandler<GetActiveTicketsRequestModel, Result<List<ActiveTicketDto>>>
 {
     private readonly QrToPayDbContext _context;
 
@@ -14,14 +14,14 @@ public class GetActiveTicketsHandler : IRequestHandler<GetActiveTicketsRequestMo
         _context = context;
     }
 
-    public async Task<Result<List<TicketDto>>> Handle(GetActiveTicketsRequestModel request, CancellationToken cancellationToken)
+    public async Task<Result<List<ActiveTicketDto>>> Handle(GetActiveTicketsRequestModel request, CancellationToken cancellationToken)
     {
         var activeTickets = await _context.UserTickets
             .Where(t => t.UserId == request.UserId && t.IsActive)
             .Include(t => t.Entity)
             .ToListAsync(cancellationToken);
 
-        var ticketResponses = activeTickets.Select(t => new TicketDto
+        var ticketResponses = activeTickets.Select(t => new ActiveTicketDto
         {
             UserTicketId = t.UserTicketId,
             UserId = t.UserId,
@@ -35,6 +35,6 @@ public class GetActiveTicketsHandler : IRequestHandler<GetActiveTicketsRequestMo
             IsActive = t.IsActive
         }).ToList();
 
-        return Result<List<TicketDto>>.Success(ticketResponses);
+        return Result<List<ActiveTicketDto>>.Success(ticketResponses);
     }
 }

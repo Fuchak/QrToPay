@@ -57,7 +57,7 @@ public partial class ResetPasswordViewModel : ViewModelBase
                 return;
             }
 
-            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Auth/contact", requestData);
+            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Auth/checkAccount", requestData);
             if (response.IsSuccessStatusCode)
             {
                 ChangeResponse? changeResponse = await response.Content.ReadFromJsonAsync<ChangeResponse>();

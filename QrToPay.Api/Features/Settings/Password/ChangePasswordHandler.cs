@@ -17,7 +17,7 @@ public class ChangePasswordHandler : IRequestHandler<ChangePasswordRequestModel,
 
     public async Task<Result<string>> Handle(ChangePasswordRequestModel request, CancellationToken cancellationToken)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == request.UserId, cancellationToken);
+        User? user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == request.UserId, cancellationToken);
 
         if (user == null)
         {

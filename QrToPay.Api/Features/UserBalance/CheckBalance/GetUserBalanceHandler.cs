@@ -16,7 +16,7 @@ public class GetUserBalanceHandler : IRequestHandler<GetUserBalanceRequestModel,
 
     public async Task<Result<UserBalanceDto>> Handle(GetUserBalanceRequestModel request, CancellationToken cancellationToken)
     {
-        var balance = await _context.Users
+        UserBalanceDto? balance = await _context.Users
             .Where(u => u.UserId == request.UserId)
             .Select(u => new UserBalanceDto { AccountBalance = u.AccountBalance })
             .FirstOrDefaultAsync(cancellationToken);

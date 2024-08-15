@@ -5,7 +5,7 @@ using QrToPay.Api.Models;
 
 namespace QrToPay.Api.Features.SkiSlopes.Slopes;
 
-public class GetSkiSlopesHandler : IRequestHandler<GetSkiSlopesRequestModel, Result<IEnumerable<SkiSlopeDto>>>
+public class GetSkiSlopesHandler : IRequestHandler<GetSkiSlopesRequestModel, Result<IEnumerable<SkiSlopesDto>>>
 {
     private readonly QrToPayDbContext _context;
 
@@ -14,11 +14,11 @@ public class GetSkiSlopesHandler : IRequestHandler<GetSkiSlopesRequestModel, Res
         _context = context;
     }
 
-    public async Task<Result<IEnumerable<SkiSlopeDto>>> Handle(GetSkiSlopesRequestModel request, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<SkiSlopesDto>>> Handle(GetSkiSlopesRequestModel request, CancellationToken cancellationToken)
     {
         var skiSlopes = await _context.SkiSlopes
             .Where(s => !s.IsDeleted && s.EntityId == request.EntityId)
-            .Select(s => new SkiSlopeDto
+            .Select(s => new SkiSlopesDto
             {
                 SkiResortId = s.SkiResortId,
                 ResortName = _context.Entities
@@ -34,9 +34,9 @@ public class GetSkiSlopesHandler : IRequestHandler<GetSkiSlopesRequestModel, Res
 
         if (skiSlopes.Count == 0)
         {
-            return Result<IEnumerable<SkiSlopeDto>>.Failure($"Nie znalezionio stoków narciarskich w tym mieście");
+            return Result<IEnumerable<SkiSlopesDto>>.Failure($"Nie znalezionio stoków narciarskich w tym mieście");
         }
 
-        return Result<IEnumerable<SkiSlopeDto>>.Success(skiSlopes);
+        return Result<IEnumerable<SkiSlopesDto>>.Success(skiSlopes);
     }
 }

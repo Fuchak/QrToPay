@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net;
 using System.Net.Http.Json;
 using QrToPay.Models.Responses;
 
@@ -34,13 +35,12 @@ public class BalanceService
                 return (null, "Błąd: Nie udało się pobrać salda.");
             }
         }
-        catch (HttpRequestException)
+        catch (HttpRequestException httpEx)
         {
-            return (null, "Brak połączenia z internetem.");
+            return (null, HttpError.HandleHttpError(httpEx));
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Debug.WriteLine($"Unexpected error: {ex}");
             return (null, "Wystąpił nieoczekiwany błąd.");
         }
     }

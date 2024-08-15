@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using QrToPay.Api.Common.Results;
 
-namespace QrToPay.Api.Features.Support.HelpFormFeature;
+namespace QrToPay.Api.Features.Support.CreateHelpForm;
 
-public sealed class HelpFormRequestModel : IRequest<Result<string>>
+public sealed class CreateHelpFormRequestModel : IRequest<Result<string>>
 {
     public required string UserName { get; init; }
     public required string UserEmail { get; init; }

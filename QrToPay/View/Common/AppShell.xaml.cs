@@ -11,7 +11,7 @@ public partial class AppShell : Shell
 
     protected override bool OnBackButtonPressed()
     {
-        if (Shell.Current.CurrentPage is MainPage || Shell.Current.CurrentPage is LoginPage)
+        if (Current.CurrentPage is MainPage || Current.CurrentPage is LoginPage)
         {
             return false;
         }
@@ -21,9 +21,9 @@ public partial class AppShell : Shell
         }
     }
 
-    private async void GoBack()
+    private static async void GoBack()
     {
         // Wykonaj niestandardową nawigację wstecz bez animacji
-        await Shell.Current.GoToAsync("..", false);
+        await Current.GoToAsync("..", false);
     }
 }

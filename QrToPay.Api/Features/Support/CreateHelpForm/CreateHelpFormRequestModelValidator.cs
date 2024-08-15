@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace QrToPay.Api.Features.Support.HelpFormFeature;
+namespace QrToPay.Api.Features.Support.CreateHelpForm;
 
-public class HelpFormRequestModelValidator : AbstractValidator<HelpFormRequestModel>
+public class CreateHelpFormRequestModelValidator : AbstractValidator<CreateHelpFormRequestModel>
 {
-    public HelpFormRequestModelValidator()
+    public CreateHelpFormRequestModelValidator()
     {
         RuleFor(x => x.UserName).NotEmpty().WithMessage("Imie i nazwisko jest wymagane.");
         RuleFor(x => x.UserEmail).NotEmpty().EmailAddress().WithMessage("Prawidłowy email jest wymagany.");

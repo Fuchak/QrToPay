@@ -17,7 +17,7 @@ public class VerifyCreateUserHandler : IRequestHandler<VerifyCreateUserRequestMo
     public async Task<Result<string>> Handle(VerifyCreateUserRequestModel request, CancellationToken cancellationToken)
     {
         var user = await _context.Users
-            .FirstOrDefaultAsync(u => (u.Email == request.EmailOrPhone || u.PhoneNumber == request.EmailOrPhone) && u.VerificationCode == request.VerificationCode);
+            .FirstOrDefaultAsync(u => (u.Email == request.EmailOrPhone || u.PhoneNumber == request.EmailOrPhone) && u.VerificationCode == request.VerificationCode, cancellationToken);
 
         if (user == null)
         {
