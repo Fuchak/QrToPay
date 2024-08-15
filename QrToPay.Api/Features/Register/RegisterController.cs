@@ -20,23 +20,19 @@ public class RegisterController : ControllerBase
     public async Task<IActionResult> Register([FromBody] CreateUserRequestModel request)
     {
         var result = await _mediator.Send(request);
-        if (!result.IsSuccess)
-        {
-            return StatusCode(500, new { Message = result.Error });
-        }
 
-        return Ok(result.Value);
+        return !result.IsSuccess 
+            ? StatusCode(500, new { Message = result.Error }) 
+            : Ok(result.Value);
     }
 
     [HttpPost("verify")]
     public async Task<IActionResult> Verify([FromBody] VerifyCreateUserRequestModel request)
     {
         var result = await _mediator.Send(request);
-        if (!result.IsSuccess)
-        {
-            return StatusCode(500, new { Message = result.Error });
-        }
 
-        return Ok(new { Message = result.Value });
+        return !result.IsSuccess 
+            ? StatusCode(500, new { Message = result.Error }) 
+            : Ok(new { Message = result.Value });
     }
 }

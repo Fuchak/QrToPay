@@ -18,16 +18,13 @@ namespace QrToPay.Api.Features.Tickets
         }
 
         [HttpGet("active")]
-        public async Task<IActionResult> GetActiveTickets([FromQuery] int userId)
+        public async Task<IActionResult> GetActiveTickets([FromQuery] GetActiveTicketsRequestModel request)
         {
-            GetActiveTicketsRequestModel request = new() { UserId = userId };
             var result = await _mediator.Send(request);
 
-            if (!result.IsSuccess)
-            {
-                return StatusCode(500, new { Message = result.Error });
-            }
-            return Ok(result.Value);
+            return !result.IsSuccess 
+                ? StatusCode(500, new { Message = result.Error }) 
+                : Ok(result.Value);
         }
 
         [HttpPost("generateAndUpdate")]
@@ -35,24 +32,20 @@ namespace QrToPay.Api.Features.Tickets
         {
             var result = await _mediator.Send(request);
 
-            if (!result.IsSuccess)
-            {
-                return StatusCode(500, new { Message = result.Error });
-            }
-            return Ok(new { qrCode = result.Value });
+            return !result.IsSuccess 
+                ? StatusCode(500, new { Message = result.Error }) 
+                : Ok(new { qrCode = result.Value });
         }
 
         [HttpGet("getHistory/{userId}")]
-        public async Task<IActionResult> GetTicketHistory(int userId)
+        public async Task<IActionResult> GetTicketHistory([FromRoute] int userId)
         {
             GetTicketHistoryRequestModel request = new() { UserId = userId };
             var result = await _mediator.Send(request);
 
-            if (!result.IsSuccess)
-            {
-                return StatusCode(500, new { Message = result.Error });
-            }
-            return Ok(result.Value);
+            return !result.IsSuccess 
+                ? StatusCode(500, new { Message = result.Error }) 
+                : Ok(result.Value);
         }
     }
 }

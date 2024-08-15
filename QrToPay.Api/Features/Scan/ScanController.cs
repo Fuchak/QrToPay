@@ -16,27 +16,24 @@ namespace QrToPay.Api.Features.Scan
             _mediator = mediator;
         }
 
-        [HttpGet("{qrCode}")]
-        public async Task<IActionResult> GetAttractionByQrCode(string qrCode)
+        [HttpGet("{qrCode:string}")]
+        public async Task<IActionResult> GetAttractionByQrCode([FromRoute] string qrCode)
         {
             ScanedInfoRequestModel request = new() { QrCode = qrCode };
             var result = await _mediator.Send(request);
-            if (!result.IsSuccess)
-            {
-                return StatusCode(500, new { Message = result.Error });
-            }
-            return Ok(result.Value);
+
+            return !result.IsSuccess 
+                ? StatusCode(500, new { Message = result.Error }) 
+                : Ok(result.Value);
         }
 
         [HttpPost("purchase")]
         public async Task<IActionResult> PurchaseTicket([FromBody] ScanPurchaseRequestModel request)
         {
             var result = await _mediator.Send(request);
-            if (!result.IsSuccess)
-            {
-                return StatusCode(500, new { Message = result.Error });
-            }
-            return Ok(new { Message = result.Value });
+            return !result.IsSuccess 
+                ? StatusCode(500, new { Message = result.Error }) 
+                : Ok(new { Message = result.Value });
         }
     }
 }

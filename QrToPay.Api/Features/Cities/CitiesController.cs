@@ -17,15 +17,12 @@ public class CitiesController : ControllerBase
 
     // GET: api/cities
     [HttpGet]
-    public async Task<IActionResult> GetCities([FromQuery] EntityCategory entityType)
+    public async Task<IActionResult> GetCities([FromQuery] GetCitiesRequestModel request)
     {
-        var request = new GetCitiesRequestModel { EntityType = entityType };
         var result = await _mediator.Send(request);
 
-        if (!result.IsSuccess)
-        {
-            return StatusCode(500, new { Message = result.Error });
-        }
-        return Ok(result.Value);
+        return !result.IsSuccess 
+            ? StatusCode(500, new { Message = result.Error }) 
+            : Ok(result.Value);
     }
 }

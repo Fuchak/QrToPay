@@ -1,4 +1,6 @@
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Views;
+using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
 using QrToPay.ViewModels.Authentication;
 
 namespace QrToPay.View;

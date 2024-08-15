@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 
 namespace QrToPay.Api.Features.Tickets.Purchase;
-
 public class PurchaseTicketRequestModelValidator : AbstractValidator<PurchaseTicketRequestModel>
 {
     public PurchaseTicketRequestModelValidator()

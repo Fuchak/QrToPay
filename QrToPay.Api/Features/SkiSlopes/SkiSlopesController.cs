@@ -19,30 +19,24 @@ namespace QrToPay.Api.Features.SkiSlopes
 
         // GET: api/skislopes
         [HttpGet("slopes")]
-        public async Task<IActionResult> GetSkiSlopes([FromQuery] Guid entityId)
+        public async Task<IActionResult> GetSkiSlopes([FromQuery] GetSkiSlopesRequestModel request)
         {
-            GetSkiSlopesRequestModel request = new() { EntityId = entityId };
             var result = await _mediator.Send(request);
 
-            if (!result.IsSuccess)
-            {
-                return StatusCode(500, new { Message = result.Error });
-            }
-            return Ok(result.Value);
+            return !result.IsSuccess 
+                ? StatusCode(500, new { Message = result.Error }) 
+                : Ok(result.Value);
         }
 
         // GET: api/skislopes/prices
         [HttpGet("prices")]
-        public async Task<IActionResult> GetSkiSlopePrices([FromQuery] int skiResortId)
+        public async Task<IActionResult> GetSkiSlopePrices([FromQuery] GetSkiSlopePricesRequestModel request)
         {
-            GetSkiSlopePricesRequestModel request = new() { SkiResortId = skiResortId };
             var result = await _mediator.Send(request);
 
-            if (!result.IsSuccess)
-            {
-                return StatusCode(500, new { Message = result.Error });
-            }
-            return Ok(result.Value);
+            return !result.IsSuccess 
+                ? StatusCode(500, new { Message = result.Error }) 
+                : Ok(result.Value);
         }
     }
 }

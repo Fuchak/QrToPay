@@ -22,12 +22,9 @@ namespace QrToPay.Api.Features.UserBalance
             GetUserBalanceRequestModel request = new() { UserId = userId };
             var result = await _mediator.Send(request);
 
-            if (!result.IsSuccess)
-            {
-                return NotFound(new { Message = result.Error });
-            }
-
-            return Ok(result.Value);
+            return !result.IsSuccess 
+                ? NotFound(new { Message = result.Error }) 
+                : Ok(result.Value);
         }
 
         [HttpPost("topup")]
@@ -35,11 +32,9 @@ namespace QrToPay.Api.Features.UserBalance
         {
             var result = await _mediator.Send(request);
 
-            if (!result.IsSuccess)
-            {
-                return StatusCode(500, new { Message = result.Error });
-            }
-            return Ok(new { accountBalance = result.Value });
+            return !result.IsSuccess 
+                ? StatusCode(500, new { Message = result.Error }) 
+                : Ok(new { accountBalance = result.Value });
         }
     }
 }

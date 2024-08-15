@@ -6,6 +6,8 @@ using Plugin.LocalNotification;
 using QrToPay.ViewModels.Extensions;
 using QrToPay.View.Extensions;
 using QrToPay.Models.Common;
+using QrToPay.ViewModels.Authentication;
+using QrToPay.ViewModels.QR;
 
 namespace QrToPay
 {
