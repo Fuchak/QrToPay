@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.Models;
 using QrToPay.Api.Common.Results;
+using QrToPay.Api.Common.Enums;
 
 namespace QrToPay.Api.Features.Tickets.History;
 
@@ -24,8 +25,8 @@ public class GetTicketHistoryHandler : IRequestHandler<GetTicketHistoryRequestMo
                 .Select(th => new TicketHistoryDto
                 {
                     Date = th.PurchaseDate.ToString("yyyy-MM-dd"),
-                    Type = th.Entity.EntityType,
-                    Name = th.Entity.EntityName,
+                    Type = (ServiceType)th.Service.ServiceType,
+                    Name = th.Service.ServiceName,
                     TotalPrice = th.TotalPrice
                 })
                 .ToListAsync(cancellationToken);

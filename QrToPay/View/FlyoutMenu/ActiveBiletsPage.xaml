@@ -43,7 +43,10 @@
                                     <Label Text="{Binding EntityName}" FontSize="18" HorizontalOptions="Center" />
                                     <Label Text="{Binding CityName}" FontSize="18" HorizontalOptions="Center" />
                                     <Label Text="{Binding Points, StringFormat='{}{0} token'}" FontSize="18" HorizontalOptions="Center" />
-                                    <Button Text="Pokaż kod QR" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ActiveBiletsViewModel}}, Path=ShowQrCodePopupCommand}" CommandParameter="{Binding .}" HorizontalOptions="Center" />
+                                    <Button Text="Pokaż kod QR" 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ActiveBiletsViewModel}}, Path=ShowQrCodePopupCommand}" 
+                                            CommandParameter="{Binding .}" 
+                                            HorizontalOptions="Center" />
                                 </StackLayout>
                             </Frame>
                         </DataTemplate>

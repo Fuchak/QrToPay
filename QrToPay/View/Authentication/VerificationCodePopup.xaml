@@ -9,7 +9,7 @@
              Color="Transparent"
              CanBeDismissedByTappingOutsideOfPopup="False">
 
-    <Border Padding="0" HeightRequest="200"
+    <Border HeightRequest="200"
            WidthRequest="250"
            Stroke="Transparent"
            BackgroundColor="White">
@@ -21,8 +21,7 @@
                        HorizontalOptions="Center"
                        FontSize="Medium"/>
                 <Frame
-                        Margin="0,0,0,10"
-                        Padding="0">
+                        Margin="0,0,0,10">
                     <Entry x:Name="VerificationCodeEntry"
                                HorizontalOptions="Center"
                                HorizontalTextAlignment="Center"

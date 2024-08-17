@@ -30,7 +30,7 @@ public partial class SkiResortViewModel : ViewModelBase
         CityName = _appState.CityName;
 
         HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-        HttpResponseMessage response = await client.GetAsync($"/api/SkiSlopes/prices?skiResortId={_appState.AttractionId}");
+        HttpResponseMessage response = await client.GetAsync($"/api/SkiResorts/prices?skiResortId={_appState.AttractionId}");
         response.EnsureSuccessStatusCode();
 
         List<SkiSlopePriceResponse>? skiSlopePrices = await response.Content.ReadFromJsonAsync<List<SkiSlopePriceResponse>>();

@@ -6,5 +6,5 @@ namespace QrToPay.Api.Features.Cities;
 
 public class GetCitiesRequestModel : IRequest<Result<IEnumerable<CitiesDto>>>
 {
-    public required EntityCategory EntityType { get; init; }
+    public required ServiceType ServiceType { get; init; }
 }

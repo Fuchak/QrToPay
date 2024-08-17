@@ -2,7 +2,7 @@
 
 public sealed class Ticket
 {
-    //public Guid EntityId { get; init; }
+    //public Guid ServiceId { get; init; }
     public string? CityName { get; init; }
     public int UserId { get; init; }
     public string? EntityName { get; init; }

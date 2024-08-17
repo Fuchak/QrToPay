@@ -29,20 +29,13 @@ public class ScanPurchaseHandler : IRequestHandler<ScanPurchaseRequestModel, Res
                 return Result<string>.Failure("Niewystarczające środki na koncie.");
             }
 
-            Entity? entity = await _context.Entities
-                .FirstOrDefaultAsync(e => e.EntityName == request.Type, cancellationToken);
-
-            if (entity == null)
-            {
-                return Result<string>.Failure("Atrakcja nie została znaleziona.");
-            }
-
             user.AccountBalance -= request.Price;
 
             TicketHistory purchase = new()
             {
                 UserId = request.UserId,
-                EntityId = entity.EntityId,
+                ServiceId = request.ServiceId,
+                //Gdzie attraction name? do historii
                 PurchaseDate = DateTime.Now,
                 Quantity = 1,
                 TotalPrice = request.Price

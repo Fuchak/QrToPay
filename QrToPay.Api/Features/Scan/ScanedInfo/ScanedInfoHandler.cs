@@ -34,8 +34,8 @@ public class ScanedInfoHandler : IRequestHandler<ScanedInfoRequestModel, Result<
 
                 if (funFairAttraction != null)
                 {
-                    var entity = await _context.Entities
-                        .FirstOrDefaultAsync(e => e.EntityId == funFairAttraction.FunFair.EntityId && !e.IsDeleted, cancellationToken);
+                    var entity = await _context.ServiceCategories
+                        .FirstOrDefaultAsync(e => e.ServiceId == funFairAttraction.FunFair.ServiceId && !e.IsDeleted, cancellationToken);
 
                     if (entity == null)
                     {
@@ -44,7 +44,7 @@ public class ScanedInfoHandler : IRequestHandler<ScanedInfoRequestModel, Result<
 
                     ScanedInfoDto response = new()
                     {
-                        Type = entity.EntityName,
+                        Type = entity.ServiceName,
                         AttractionName = funFairAttraction.AttractionName,
                         Price = funFairAttraction.TokensPerUse
                     };
@@ -59,8 +59,8 @@ public class ScanedInfoHandler : IRequestHandler<ScanedInfoRequestModel, Result<
 
                 if (skiLift != null)
                 {
-                    var entity = await _context.Entities
-                        .FirstOrDefaultAsync(e => e.EntityId == skiLift.SkiResort.EntityId && !e.IsDeleted, cancellationToken);
+                    var entity = await _context.ServiceCategories
+                        .FirstOrDefaultAsync(e => e.ServiceId == skiLift.SkiResort.ServiceId && !e.IsDeleted, cancellationToken);
 
                     if (entity == null)
                     {
@@ -69,7 +69,7 @@ public class ScanedInfoHandler : IRequestHandler<ScanedInfoRequestModel, Result<
 
                     ScanedInfoDto response = new()
                     {
-                        Type = entity.EntityName,
+                        Type = entity.ServiceName,
                         AttractionName = skiLift.LiftName,
                         Price = skiLift.TokensPerUse
                     };

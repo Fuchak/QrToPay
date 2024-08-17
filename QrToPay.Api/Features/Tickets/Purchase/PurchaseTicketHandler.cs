@@ -19,37 +19,30 @@ public class PurchaseTicketHandler : IRequestHandler<PurchaseTicketRequestModel,
     {
         try
         {
-            string qrCode;
+            Guid token;
             using (var connection = new SqlConnection(_context.Database.GetConnectionString()))
             {
                 await connection.OpenAsync(cancellationToken);
-                using var command = new SqlCommand("dbo.GenerateUniqueUserTicketQRCode", connection);
+                using var command = new SqlCommand("dbo.UpdateUserTicketsAndGenerateToken", connection);
                 command.CommandType = System.Data.CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@UserID", request.UserId);
 
-                var outputParam = new SqlParameter("@QRCode", System.Data.SqlDbType.NVarChar, 255)
+                command.Parameters.AddWithValue("@UserID", request.UserId);
+                command.Parameters.AddWithValue("@ServiceID", request.ServiceId);
+                command.Parameters.AddWithValue("@Quantity", request.Quantity);
+                command.Parameters.AddWithValue("@Tokens", request.Tokens);
+                command.Parameters.AddWithValue("@TotalPrice", request.TotalPrice);
+
+                var outputParam = new SqlParameter("@Token", System.Data.SqlDbType.UniqueIdentifier)
                 {
                     Direction = System.Data.ParameterDirection.Output
                 };
                 command.Parameters.Add(outputParam);
 
                 await command.ExecuteNonQueryAsync(cancellationToken);
-                qrCode = outputParam.Value.ToString() ?? string.Empty;
+                token = (Guid)outputParam.Value;
             }
 
-            var parameters = new[]
-            {
-                new SqlParameter("@UserID", request.UserId),
-                new SqlParameter("@EntityID", request.EntityId),
-                new SqlParameter("@Quantity", request.Quantity),
-                new SqlParameter("@Tokens", request.Tokens),
-                new SqlParameter("@TotalPrice", request.TotalPrice),
-                new SqlParameter("@QRCode", qrCode)
-            };
-
-            await _context.Database.ExecuteSqlRawAsync("EXEC UpdateUserTicketsAndAddHistory @UserID, @EntityID, @Quantity, @Tokens, @TotalPrice, @QRCode", parameters);
-
-            return Result<string>.Success(qrCode);
+            return Result<string>.Success(token.ToString());
         }
         catch (Exception ex)
         {

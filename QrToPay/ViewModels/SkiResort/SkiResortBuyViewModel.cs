@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
+using QRCoder;
 using QrToPay.Models.Common;
 using QrToPay.Models.Requests;
 
@@ -10,14 +11,18 @@ public partial class SkiResortBuyViewModel : ViewModelBase
 {
 
     private readonly QrCodeService _qrCodeService;
+    private readonly QrCodeStorageService _qrCodeStorageService;
     private readonly AppState _appState;
     private readonly BalanceService _balanceService;
-    public SkiResortBuyViewModel(QrCodeService qrCodeService, AppState appState, BalanceService balanceService)
+
+    public SkiResortBuyViewModel(QrCodeService qrCodeService, QrCodeStorageService qrCodeStorageService, AppState appState, BalanceService balanceService)
     {
         _qrCodeService = qrCodeService;
+        _qrCodeStorageService = qrCodeStorageService;
         _appState = appState;
         _balanceService = balanceService;
     }
+
     [ObservableProperty]
     private ObservableCollection<Ticket> tickets = [];
 
@@ -37,14 +42,14 @@ public partial class SkiResortBuyViewModel : ViewModelBase
     private int points;
 
     [ObservableProperty]
-    private Guid entityId;
+    private Guid serviceId;
 
     private int userId;
 
     public Task InitializeAsync()
     {
         ResortName = _appState.ResortName;
-        EntityId = _appState.EntityId;
+        ServiceId = _appState.ServiceId;
         CityName = _appState.CityName;
         Price = _appState.Price;
         Points = _appState.Points;
@@ -80,17 +85,17 @@ public partial class SkiResortBuyViewModel : ViewModelBase
             UpdateTicketRequest updateRequest = new()
             {
                 UserId = userId,
-                EntityId = EntityId,
+                ServiceId = ServiceId,
                 Quantity = 1,
                 Tokens = Points,
                 TotalPrice = formattedPrice
             };
             //TODO usun debug potem xd
-            Debug.WriteLine($"Sending Update Request: UserID={updateRequest.UserId}, EntityID={updateRequest.EntityId}, " +$"Quantity={updateRequest.Quantity}, Tokens={updateRequest.Tokens}, TotalPrice={updateRequest.TotalPrice}");
+            Debug.WriteLine($"Sending Update Request: UserID={updateRequest.UserId}, ServiceId={updateRequest.ServiceId}, Quantity={updateRequest.Quantity}, Tokens={updateRequest.Tokens}, TotalPrice={updateRequest.TotalPrice}");
 
 
-            var qrCode = await _qrCodeService.GenerateAndUpdateTicketAsync(updateRequest);
-            if (string.IsNullOrEmpty(qrCode))
+            var token = await _qrCodeService.GenerateAndUpdateTicketAsync(updateRequest);
+            if (string.IsNullOrEmpty(token))
             {
                 await Shell.Current.DisplayAlert("Błąd", "Nie udało się zaktualizować bazy danych", "OK");
                 return;
@@ -103,10 +108,12 @@ public partial class SkiResortBuyViewModel : ViewModelBase
                 CityName = CityName,
                 Price = Price,
                 Points = Points,
-                QrCode = qrCode
+                QrCode = token
             };
 
             Tickets.Add(newTicket);
+
+            await _qrCodeStorageService.GenerateAndSaveQrCodeImageAsync(userId, token);
 
             await Shell.Current.DisplayAlert("Potwierdzenie", "Bilet został zakupiony, kod QR wygenerowany", "OK");
 

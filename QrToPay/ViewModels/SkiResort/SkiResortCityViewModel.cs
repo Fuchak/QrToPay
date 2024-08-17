@@ -23,12 +23,11 @@ public partial class SkiResortCityViewModel : ViewModelBase
     string? errorMessage;
 
     [RelayCommand]
-    public async Task LoadCitiesAsync(EntityCategory entityType)
+    public async Task LoadCitiesAsync(int entityType)
     {
         try
         {
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            //HttpResponseMessage response = await client.GetAsync("/api/SkiSlopes/cities"); Stary endpoint
             HttpResponseMessage response = await client.GetAsync($"/api/Cities?entityType={entityType}");
             response.EnsureSuccessStatusCode();
 
@@ -61,10 +60,9 @@ public partial class SkiResortCityViewModel : ViewModelBase
     [RelayCommand]
     public async Task SelectCityAsync(City city)
     {
-        _appState.EntityId = city.EntityId;
+        _appState.ServiceId = city.ServiceId;
         _appState.CityName = city.CityName;
 
-        Debug.WriteLine($"EntityId set in AppState: {_appState.EntityId}");
         await Shell.Current.GoToAsync(nameof(SkiPage));
     }
 }

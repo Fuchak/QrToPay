@@ -11,7 +11,7 @@ public class TopUpRequestModelValidator : AbstractValidator<TopUpRequestModel>
 
         RuleFor(x => x.Amount)
             .GreaterThan(0)
-            .PrecisionScale(2, 10, true)
+            .PrecisionScale(12, 2, true)
             .WithMessage("Kwota doładowania musi być większa niż 0.");
     }
 }

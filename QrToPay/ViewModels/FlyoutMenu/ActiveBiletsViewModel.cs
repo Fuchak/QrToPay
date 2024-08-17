@@ -4,16 +4,19 @@ using System.Net.Http.Json;
 using QRCoder;
 using CommunityToolkit.Maui.Views;
 using QrToPay.Models.Common;
+using QrToPay.Services;
 
 namespace QrToPay.ViewModels.FlyoutMenu;
 
 public partial class ActiveBiletsViewModel : ViewModelBase
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly QrCodeStorageService _qrCodeStorageService;
 
-    public ActiveBiletsViewModel(IHttpClientFactory httpClientFactory)
+    public ActiveBiletsViewModel(IHttpClientFactory httpClientFactory, QrCodeStorageService qrCodeStorageService)
     {
         _httpClientFactory = httpClientFactory;
+        _qrCodeStorageService = qrCodeStorageService;
     }
 
     [ObservableProperty]
@@ -70,26 +73,25 @@ public partial class ActiveBiletsViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void ShowQrCodePopup(Ticket ticket)
+    private async Task ShowQrCodePopupAsync(Ticket ticket)
     {
+        // Użycie serwisu do wczytania lub wygenerowania kodu QR
+        ImageSource? imageSource = await _qrCodeStorageService.LoadQrCodeImageAsync(ticket.UserId, ticket.QrCode!);
 
-        ImageSource imageSource = GenerateQrCodeImage(ticket.UserId, ticket.QrCode ?? string.Empty);
-        QrCodePopup qrCodePopup = new (imageSource);
-
-        Shell.Current.ShowPopup(qrCodePopup);
-    }
-
-    private ImageSource GenerateQrCodeImage(int userId, string qrCodePath)
-    {
-        QRCodeGenerator qRCodeGenerator = new();
-        QRCodeData qRCodeData = qRCodeGenerator.CreateQrCode($"UserId:{userId},QrCode:{qrCodePath}", QRCodeGenerator.ECCLevel.Q);
-        BitmapByteQRCode bitmapByteQRCode = new (qRCodeData);
-        byte[] bytes = bitmapByteQRCode.GetGraphic(20);
-        
-        return ImageSource.FromStream(() =>
+        if (imageSource == null)
         {
-            MemoryStream memoryStream = new(bytes);
-            return memoryStream;
-        });
+            // Jeśli kod QR nie został znaleziony w pamięci, generujemy go ponownie
+            await _qrCodeStorageService.GenerateAndSaveQrCodeImageAsync(ticket.UserId, ticket.QrCode!);
+            imageSource = await _qrCodeStorageService.LoadQrCodeImageAsync(ticket.UserId, ticket.QrCode!);
+        }
+
+        if (imageSource == null)
+        {
+            await Shell.Current.DisplayAlert("Błąd", "Nie udało się znaleźć lub wygenerować kodu QR.", "OK");
+            return;
+        }
+
+        QrCodePopup qrCodePopup = new(imageSource);
+        await Shell.Current.ShowPopupAsync(qrCodePopup);
     }
 }

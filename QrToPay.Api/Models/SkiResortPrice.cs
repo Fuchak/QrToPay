@@ -1,8 +1,11 @@
-﻿namespace QrToPay.Api.Models;
+﻿using System;
+using System.Collections.Generic;
 
-public partial class SkiSlopePrice
+namespace QrToPay.Api.Models;
+
+public partial class SkiResortPrice
 {
-    public int SkiSlopePriceId { get; set; }
+    public int SkiResortPriceId { get; set; }
 
     public int SkiResortId { get; set; }
 
@@ -16,5 +19,5 @@ public partial class SkiSlopePrice
 
     public bool IsDeleted { get; set; }
 
-    public virtual SkiSlope SkiResort { get; set; } = null!;
+    public virtual SkiResort SkiResort { get; set; } = null!;
 }

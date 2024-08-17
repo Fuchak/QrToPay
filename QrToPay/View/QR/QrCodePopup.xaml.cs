@@ -9,9 +9,4 @@ public partial class QrCodePopup : Popup
         InitializeComponent();
         BindingContext = new QrCodePopupViewModel(qrCodeImage);
     }
-
-    private void OnCloseButtonClicked(object sender, EventArgs e)
-    {
-        Close();
-    }
 }

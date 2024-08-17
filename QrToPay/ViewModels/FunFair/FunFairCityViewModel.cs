@@ -23,7 +23,7 @@ public partial class FunFairCityViewModel : ViewModelBase
     string? errorMessage;
 
     [RelayCommand]
-    public async Task LoadCitiesAsync(EntityCategory entityType)
+    public async Task LoadCitiesAsync(int entityType)
     {
         try
         {
@@ -60,10 +60,9 @@ public partial class FunFairCityViewModel : ViewModelBase
     [RelayCommand]
     public async Task SelectCityAsync(City city)
     {
-        _appState.EntityId = city.EntityId;
+        _appState.ServiceId = city.ServiceId;
         _appState.CityName = city.CityName;
 
-        Debug.WriteLine($"EntityId set in AppState: {_appState.EntityId}");
         await Shell.Current.GoToAsync(nameof(FunFairPage));
     }
 }

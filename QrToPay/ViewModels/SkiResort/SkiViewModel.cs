@@ -26,10 +26,8 @@ public partial class SkiViewModel : ViewModelBase
     {
         try
         {
-            Debug.WriteLine($"EntityId used for fetching ski slopes: {_appState.EntityId}");
-
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            HttpResponseMessage response = await client.GetAsync($"/api/SkiSlopes/slopes?entityId={_appState.EntityId}"); // tu było cityname
+            HttpResponseMessage response = await client.GetAsync($"/api/SkiResorts/resorts?serviceId={_appState.ServiceId}");
             response.EnsureSuccessStatusCode();
 
             List<SkiSlope>? skiSlopes = await response.Content.ReadFromJsonAsync<List<SkiSlope>>();

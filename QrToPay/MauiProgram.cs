@@ -57,6 +57,7 @@ public static class MauiProgram
         builder.Services.AddTransient<AuthService>();
 
         builder.Services.AddSingleton<VerificationCodeHelper>();
+        builder.Services.AddSingleton<QrCodeStorageService>();
 
         builder.Services.AddTransientPopup<VerificationCodePopup, VerificationCodePopupViewModel>();
         builder.Services.AddTransientPopup<QrCodePopup, QrCodePopupViewModel>();

@@ -1,4 +1,7 @@
-﻿namespace QrToPay.Api.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace QrToPay.Api.Models;
 
 public partial class UserTicket
 {
@@ -6,7 +9,7 @@ public partial class UserTicket
 
     public int UserId { get; set; }
 
-    public Guid EntityId { get; set; }
+    public Guid ServiceId { get; set; }
 
     public DateTime PurchaseDate { get; set; }
 
@@ -18,9 +21,13 @@ public partial class UserTicket
 
     public bool IsActive { get; set; }
 
-    public string Qrcode { get; set; } = null!;
+    public Guid? Token { get; set; }
 
-    public virtual Entity Entity { get; set; } = null!;
+    public DateTime? QrCodeGeneratedAt { get; set; }
+
+    public bool? QrCodeIsActive { get; set; }
+
+    public virtual ServiceCategory Service { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }

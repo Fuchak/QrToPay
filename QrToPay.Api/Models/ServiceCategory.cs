@@ -1,14 +1,17 @@
-﻿namespace QrToPay.Api.Models;
+﻿using System;
+using System.Collections.Generic;
 
-public partial class Entity
+namespace QrToPay.Api.Models;
+
+public partial class ServiceCategory
 {
-    public required Guid EntityId { get; set; }
+    public Guid ServiceId { get; set; }
 
-    public required string EntityType { get; set; }
+    public int ServiceType { get; set; }
 
-    public required string EntityName { get; set; }
+    public string CityName { get; set; } = null!;
 
-    public required string CityName { get; set; }
+    public string ServiceName { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }
 
@@ -18,7 +21,7 @@ public partial class Entity
 
     public virtual ICollection<FunFair> FunFairs { get; set; } = new List<FunFair>();
 
-    public virtual ICollection<SkiSlope> SkiSlopes { get; set; } = new List<SkiSlope>();
+    public virtual ICollection<SkiResort> SkiResorts { get; set; } = new List<SkiResort>();
 
     public virtual ICollection<TicketHistory> TicketHistories { get; set; } = new List<TicketHistory>();
 

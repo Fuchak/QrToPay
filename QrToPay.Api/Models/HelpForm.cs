@@ -1,4 +1,7 @@
-﻿namespace QrToPay.Api.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace QrToPay.Api.Models;
 
 public partial class HelpForm
 {

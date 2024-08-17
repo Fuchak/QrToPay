@@ -25,11 +25,13 @@ public partial class TopUpAccountViewModel : ViewModelBase
 
         if (decimal.TryParse(amountWithDot, NumberStyles.Number, CultureInfo.InvariantCulture, out var topUpAmount) && topUpAmount > 0)
         {
-            int  userId = Preferences.Get("UserId", 0);
+            string formattedAmount = topUpAmount.ToString("F2", CultureInfo.InvariantCulture);
+
+            int userId = Preferences.Get("UserId", 0);
             TopUpRequest topUpRequest = new()
             {
                 UserId = userId,
-                Amount = topUpAmount
+                Amount = decimal.Parse(formattedAmount, CultureInfo.InvariantCulture)
             };
 
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");

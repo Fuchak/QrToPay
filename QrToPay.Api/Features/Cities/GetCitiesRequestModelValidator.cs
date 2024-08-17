@@ -6,7 +6,7 @@ public class GetCitiesRequestModelValidator : AbstractValidator<GetCitiesRequest
 {
     public GetCitiesRequestModelValidator()
     {
-        RuleFor(x => x.EntityType)
+        RuleFor(x => x.ServiceType)
             .IsInEnum()
             .WithMessage("Nieprawidłowy typ encji.");
     }

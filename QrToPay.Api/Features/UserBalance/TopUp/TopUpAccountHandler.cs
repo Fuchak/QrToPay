@@ -22,12 +22,13 @@ public class TopUpAccountHandler : IRequestHandler<TopUpRequestModel, Result<dec
             return Result<decimal>.Failure("Użytkownik nieodnaleziony.");
         }
 
-        user.AccountBalance = (user.AccountBalance ?? 0) + request.Amount;
+        user.AccountBalance = (user.AccountBalance) + request.Amount;
         user.UpdatedAt = DateTime.Now;
 
         _context.Users.Update(user);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return Result<decimal>.Success(user.AccountBalance ?? 0);
+        return Result<decimal>.Success(user.AccountBalance);
     }
+    //(user.AccountBalance ?? 0)
 }
