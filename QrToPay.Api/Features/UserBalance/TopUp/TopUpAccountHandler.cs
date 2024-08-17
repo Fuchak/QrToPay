@@ -23,7 +23,7 @@ public class TopUpAccountHandler : IRequestHandler<TopUpRequestModel, Result<dec
         }
 
         user.AccountBalance = (user.AccountBalance) + request.Amount;
-        user.UpdatedAt = DateTime.Now;
+        user.UpdatedAt = DateTime.UtcNow;
 
         _context.Users.Update(user);
         await _context.SaveChangesAsync(cancellationToken);

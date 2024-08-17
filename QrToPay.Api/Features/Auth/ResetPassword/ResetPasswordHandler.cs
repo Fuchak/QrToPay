@@ -38,7 +38,7 @@ public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequestModel, R
         // Aktualizacja hasła
         user.PasswordHash = AuthenticationHelper.HashPassword(request.NewPassword);
         user.VerificationCode = null;  // Resetowanie kodu weryfikacyjnego
-        user.UpdatedAt = DateTime.Now;
+        user.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync(cancellationToken);
 

@@ -38,7 +38,7 @@ public class CreateUserHandler : IRequestHandler<CreateUserRequestModel, Result<
             existingUser.PasswordHash = AuthenticationHelper.HashPassword(request.PasswordHash);
             existingUser.VerificationCode = AuthenticationHelper.GenerateVerificationCode();
             existingUser.IsVerified = false;
-            existingUser.UpdatedAt = DateTime.Now;
+            existingUser.UpdatedAt = DateTime.UtcNow;
         }
         else
         {
@@ -49,8 +49,8 @@ public class CreateUserHandler : IRequestHandler<CreateUserRequestModel, Result<
                 PasswordHash = AuthenticationHelper.HashPassword(request.PasswordHash),
                 VerificationCode = AuthenticationHelper.GenerateVerificationCode(),
                 IsVerified = false,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             };
 
             _context.Users.Add(newUser);

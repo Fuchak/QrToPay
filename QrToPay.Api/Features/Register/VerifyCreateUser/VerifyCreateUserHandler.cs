@@ -25,7 +25,7 @@ public class VerifyCreateUserHandler : IRequestHandler<VerifyCreateUserRequestMo
         }
 
         user.IsVerified = true;
-        user.UpdatedAt = DateTime.Now;
+        user.UpdatedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync(cancellationToken);
 
         return Result<string>.Success("Użytkownik został zweryfikowany.");

@@ -54,7 +54,7 @@ public class VerifyHandler : IRequestHandler<VerifyRequestModel, Result<string>>
         }
 
         user.VerificationCode = null;
-        user.UpdatedAt = DateTime.Now;
+        user.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync(cancellationToken);
 

@@ -60,7 +60,7 @@ public class ChangeEmailPhoneRequestHandler : IRequestHandler<ChangeEmailPhoneRe
 
         string verificationCode = AuthenticationHelper.GenerateVerificationCode();
         user.VerificationCode = verificationCode;
-        user.UpdatedAt = DateTime.Now;
+        user.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync(cancellationToken);
 

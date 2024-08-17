@@ -12,11 +12,13 @@ public partial class ActiveBiletsViewModel : ViewModelBase
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly QrCodeStorageService _qrCodeStorageService;
+    private readonly QrCodeService _qrCodeService;
 
-    public ActiveBiletsViewModel(IHttpClientFactory httpClientFactory, QrCodeStorageService qrCodeStorageService)
+    public ActiveBiletsViewModel(IHttpClientFactory httpClientFactory, QrCodeStorageService qrCodeStorageService, QrCodeService qrCodeService)
     {
         _httpClientFactory = httpClientFactory;
         _qrCodeStorageService = qrCodeStorageService;
+        _qrCodeService = qrCodeService;
     }
 
     [ObservableProperty]
@@ -60,6 +62,10 @@ public partial class ActiveBiletsViewModel : ViewModelBase
                 foreach (var ticket in tickets)
                 {
                     ActiveTickets.Add(ticket);
+
+                    // Sprawdź, czy istnieje zapisany czas aktywacji w Preferencjach
+                    var activationTime = Preferences.Get($"ActivationTime_{ticket.QrCode}", DateTime.MinValue);
+
                 }
             }
 
@@ -91,7 +97,15 @@ public partial class ActiveBiletsViewModel : ViewModelBase
             return;
         }
 
-        QrCodePopup qrCodePopup = new(imageSource);
+        DateTime activationTime = Preferences.Get($"ActivationTime_{ticket.QrCode}", DateTime.MinValue);
+        int? remainingTime = null;
+        if (activationTime != DateTime.MinValue)
+        {
+            var elapsedTime = DateTime.UtcNow - activationTime;
+            remainingTime = Math.Max(0, (int)(5 * 60 - elapsedTime.TotalSeconds));
+        }
+
+        QrCodePopup qrCodePopup = new(imageSource, _qrCodeService, ticket.UserId, ticket.QrCode!, remainingTime);
         await Shell.Current.ShowPopupAsync(qrCodePopup);
     }
 }

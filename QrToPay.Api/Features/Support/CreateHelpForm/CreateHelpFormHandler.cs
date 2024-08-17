@@ -22,8 +22,8 @@ public class CreateHelpFormHandler : IRequestHandler<CreateHelpFormRequestModel,
             Subject = request.Subject,
             Description = request.Description,
             Status = request.Status,
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
             IsDeleted = false
         };
 

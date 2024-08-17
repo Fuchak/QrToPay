@@ -3,6 +3,8 @@ using MediatR;
 using QrToPay.Api.Features.Tickets.Active;
 using QrToPay.Api.Features.Tickets.History;
 using QrToPay.Api.Features.Tickets.Purchase;
+using QrToPay.Api.Features.Tickets.Activate;
+using QrToPay.Api.Features.Tickets.Deactivate;
 
 namespace QrToPay.Api.Features.Tickets;
 
@@ -49,4 +51,24 @@ public class TicketsController : ControllerBase
             : Ok(result.Value);
     }
     #pragma warning restore ASP0018
+
+    [HttpPost("activate")]
+    public async Task<IActionResult> ActivateQrCode([FromBody] ActivateQrCodeRequestModel request)
+    {
+        var result = await _mediator.Send(request);
+
+        return !result.IsSuccess
+            ? StatusCode(500, new { Message = result.Error })
+            : Ok(result.Value);
+    }
+
+    [HttpPost("deactivate")]
+    public async Task<IActionResult> DeactivateQrCode([FromBody] DeactivateQrCodeRequestModel request)
+    {
+        var result = await _mediator.Send(request);
+
+        return !result.IsSuccess
+            ? StatusCode(500, new { Message = result.Error })
+            : Ok();
+    }
 }

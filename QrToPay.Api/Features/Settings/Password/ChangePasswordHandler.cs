@@ -30,7 +30,7 @@ public class ChangePasswordHandler : IRequestHandler<ChangePasswordRequestModel,
         }
 
         user.PasswordHash = AuthenticationHelper.HashPassword(request.NewPassword);
-        user.UpdatedAt = DateTime.Now;
+        user.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync(cancellationToken);
 

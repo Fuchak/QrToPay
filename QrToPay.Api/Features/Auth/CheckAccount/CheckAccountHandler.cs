@@ -45,7 +45,7 @@ public class CheckAccountHandler : IRequestHandler<CheckAccountRequestModel, Res
 
         string verificationCode = AuthenticationHelper.GenerateVerificationCode();
         user.VerificationCode = verificationCode;
-        user.UpdatedAt = DateTime.Now;
+        user.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync(cancellationToken);
 

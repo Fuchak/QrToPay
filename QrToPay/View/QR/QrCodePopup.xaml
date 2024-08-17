@@ -7,9 +7,10 @@
     xmlns:vm="clr-namespace:QrToPay.ViewModels.QR"
     x:Class="QrToPay.View.QrCodePopup"
     Color="Transparent"
+    CanBeDismissedByTappingOutsideOfPopup="False"
     x:DataType="vm:QrCodePopupViewModel">
 
-    <Border HeightRequest="350"
+    <Border HeightRequest="400"
            WidthRequest="300"
            Stroke="Transparent"
            BackgroundColor="White">
@@ -22,11 +23,34 @@
                        HeightRequest="300" 
                        HorizontalOptions="Center" 
                        VerticalOptions="Center" />
+            <Label Text="{Binding RemainingTimeDisplay}" 
+                       FontSize="16"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+
+                <Button Text="Aktywuj" 
+                        Command="{Binding ActivateQrCodeCommand}"
+                        HorizontalOptions="Center"
+                        WidthRequest="100"
+                        VerticalOptions="Start" 
+                        IsVisible="{Binding IsActive, Converter={StaticResource FalseToTrueConverter}}" />
+                
+                <Button Text="Deaktywuj" 
+                        Command="{Binding DeactivateQrCodeCommand}"
+                        HorizontalOptions="Center"
+                        WidthRequest="100"
+                        VerticalOptions="Start" 
+                        
+                        IsVisible="{Binding IsActive}" />
+
                 <Button Text="Zamknij" 
                         Command="{Binding ClosePopupCommand}"
                         CommandParameter="{x:Reference popup}"
                         HorizontalOptions="Center" 
+                        WidthRequest="100"
                         VerticalOptions="Start" />
-            </VerticalStackLayout>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
     </Border>
 </popup:Popup>
