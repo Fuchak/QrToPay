@@ -1,0 +1,36 @@
+name: Code Quality Analysis
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Install .NET Analyzers
+      run: |
+        dotnet add package Microsoft.CodeAnalysis.NetAnalyzers
+        dotnet add package StyleCop.Analyzers
+        dotnet add package Roslynator.Analyzers
+        dotnet add package SonarAnalyzer.CSharp
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Run Static Code Analysis
+      run: dotnet build --no-restore --configuration Release /p:EnableNETAnalyzers=true /warnaserror
+
+    - name: Run StyleCop Analysis
+      run: dotnet build --no-restore --configuration Release /p:GenerateMSBuildEditorConfigFile=true /p:StyleCopAnalyzers=true /warnaserror
