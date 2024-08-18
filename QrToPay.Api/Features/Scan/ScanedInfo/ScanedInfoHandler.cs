@@ -25,7 +25,6 @@ public class ScanedInfoHandler : IRequestHandler<ScanedInfoRequestModel, Result<
 
             var prefix = request.QrCode.Substring(3, 1);
 
-
             if (prefix == "F")
             {
                 var funFairAttraction = await _context.FunFairAttractions

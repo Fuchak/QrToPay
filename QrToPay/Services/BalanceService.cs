@@ -13,12 +13,11 @@ public class BalanceService
         _httpClientFactory = httpClientFactory;
     }
 
-    private int userId;
-
     public event EventHandler<decimal>? BalanceUpdated;
 
     public async Task<(decimal? AccountBalance, string? ErrorMessage)> LoadUserDataAsync()
     {
+        int userId;
         try
         {
             userId = Preferences.Get("UserId", 0);

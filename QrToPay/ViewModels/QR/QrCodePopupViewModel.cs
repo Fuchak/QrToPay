@@ -33,7 +33,6 @@ public partial class QrCodePopupViewModel : ViewModelBase
         }
         else
         {
-            // Sprawdzenie, czy czas aktywacji jest już zapisany
             DateTime activationTime = Preferences.Get($"ActivationTime_{_token}", DateTime.MinValue);
             if (activationTime != DateTime.MinValue)
             {
@@ -95,15 +94,11 @@ public partial class QrCodePopupViewModel : ViewModelBase
         });
     }
 
-    private async void UpdateRemainingTimeDisplay()
+    private void UpdateRemainingTimeDisplay()
     {
         if (RemainingTime > 0)
         {
             RemainingTimeDisplay = $"Pozostały czas: {RemainingTime / 60:D2}:{RemainingTime % 60:D2}";
-        }
-        else
-        {
-            await DeactivateQrCodeAsync();
         }
     }
 

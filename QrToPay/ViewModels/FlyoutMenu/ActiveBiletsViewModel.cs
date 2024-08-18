@@ -72,9 +72,6 @@ public partial class ActiveBiletsViewModel : ViewModelBase
                 foreach (var ticket in tickets)
                 {
                     ActiveTickets.Add(ticket);
-
-                    // Sprawdź, czy istnieje zapisany czas aktywacji w Preferencjach
-                    var activationTime = Preferences.Get($"ActivationTime_{ticket.QrCode}", DateTime.MinValue);
                 }
                 HasActiveTickets = true;
                 ErrorMessage = null;
