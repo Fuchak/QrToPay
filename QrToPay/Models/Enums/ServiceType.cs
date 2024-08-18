@@ -1,6 +1,6 @@
 ﻿namespace QrToPay.Models.Enums;
 
-public enum EntityCategory
+public enum ServiceType
 {
     SkiResort = 0,
     FunFair = 1,

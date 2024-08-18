@@ -17,7 +17,9 @@ public partial class TopUpAccountViewModel : ViewModelBase
     [ObservableProperty]
     private string? amount;
 
-    //TODO widzę coś nie tak z tym topurequest a respoonse
+    [ObservableProperty]
+    private string? errorMessage;
+
     [RelayCommand]
     private async Task NavigateToTopUp()
     {
@@ -34,39 +36,49 @@ public partial class TopUpAccountViewModel : ViewModelBase
                 Amount = decimal.Parse(formattedAmount, CultureInfo.InvariantCulture)
             };
 
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            Debug.WriteLine($"Sending top-up request: {JsonSerializer.Serialize(topUpRequest)}");
-            HttpResponseMessage response = await client.PostAsJsonAsync("/api/UserBalance/topUp", topUpRequest);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                string responseData = await response.Content.ReadAsStringAsync();
-                Debug.WriteLine($"Response data: {responseData}");
+                HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+                Debug.WriteLine($"Sending top-up request: {JsonSerializer.Serialize(topUpRequest)}");
+                HttpResponseMessage response = await client.PostAsJsonAsync("/api/UserBalance/topUp", topUpRequest);
 
-                using JsonDocument doc = JsonDocument.Parse(responseData);
-                if (doc.RootElement.TryGetProperty("accountBalance", out JsonElement accountBalanceElement))
+                if (response.IsSuccessStatusCode)
                 {
-                    decimal accountBalance = accountBalanceElement.GetDecimal();
-                    Debug.WriteLine($"Top-up successful, new balance: {accountBalance}");
-                    await Shell.Current.DisplayAlert("Potwierdzenie", $"Konto zostało doładowane. Nowe saldo: {accountBalance:C}", "OK");
+                    string responseData = await response.Content.ReadAsStringAsync();
+                    Debug.WriteLine($"Response data: {responseData}");
 
-                    Amount = string.Empty;
+                    using JsonDocument doc = JsonDocument.Parse(responseData);
+                    if (doc.RootElement.TryGetProperty("accountBalance", out JsonElement accountBalanceElement))
+                    {
+                        decimal accountBalance = accountBalanceElement.GetDecimal();
+                        Debug.WriteLine($"Top-up successful, new balance: {accountBalance}");
+                        await Shell.Current.DisplayAlert("Potwierdzenie", $"Konto zostało doładowane. Nowe saldo: {accountBalance:C}", "OK");
+
+                        Amount = string.Empty;
+                        ErrorMessage = null;
+                    }
+                    else
+                    {
+                        ErrorMessage = "Nie udało się pobrać salda konta z odpowiedzi.";
+                    }
                 }
                 else
                 {
-                    Debug.WriteLine("Failed to retrieve account balance from response.");
-                    await Shell.Current.DisplayAlert("Błąd", "Nie udało się doładować konta. Spróbuj ponownie.", "OK");
+                    ErrorMessage = HttpError.HandleHttpError(new HttpRequestException(response.ReasonPhrase, null, response.StatusCode));
                 }
             }
-            else
+            catch (HttpRequestException httpEx)
             {
-                Debug.WriteLine($"Top-up failed: {response.ReasonPhrase}");
-                await Shell.Current.DisplayAlert("Błąd", "Nie udało się doładować konta. Spróbuj ponownie.", "OK");
+                ErrorMessage = HttpError.HandleHttpError(httpEx);
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Wystąpił nieoczekiwany błąd: {ex.Message}";
             }
         }
         else
         {
-            await Shell.Current.DisplayAlert("Błąd", "Wprowadź poprawną kwotę doładowania.", "OK");
+            ErrorMessage = "Wprowadź poprawną kwotę doładowania.";
         }
     }
 }

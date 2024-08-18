@@ -23,12 +23,12 @@ public partial class FunFairCityViewModel : ViewModelBase
     string? errorMessage;
 
     [RelayCommand]
-    public async Task LoadCitiesAsync(int entityType)
+    public async Task LoadCitiesAsync(int serviceType)
     {
         try
         {
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            HttpResponseMessage response = await client.GetAsync($"/api/Cities?entityType={entityType}");
+            HttpResponseMessage response = await client.GetAsync($"/api/Cities?serviceType={serviceType}");
             response.EnsureSuccessStatusCode();
 
             List<City>? cities = await response.Content.ReadFromJsonAsync<List<City>>();

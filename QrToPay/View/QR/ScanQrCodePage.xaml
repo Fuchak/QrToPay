@@ -42,13 +42,18 @@
                                 VibrationOnDetected="False"
                                 TapToFocusEnabled="True"
                                 />
-            <Label Text="{Binding CurrentAttraction.Type}" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
+            <Label Text="{Binding CurrentAttraction.ServiceName}" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
             <Label Text="{Binding CurrentAttraction.AttractionName}" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center" />
             <Label Text="{Binding CurrentAttraction.Price, StringFormat='Cena: {0:F2}'}" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center" />
 
+            <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                               IsVisible="{Binding IsBusy}"
+                               Color="{StaticResource Orange}"/>
+            
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
                 <Button Text="Zapłać" 
                         Command="{Binding PurchaseCommand}"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource FalseToTrueConverter}}" 
                         IsVisible="{Binding IsAttractionValid}" 
                         HorizontalOptions="Center" VerticalOptions="Center" />
                 <Button Text="Anuluj" 

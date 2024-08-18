@@ -53,6 +53,10 @@
                     Text="{Binding Amount, Mode=TwoWay}" />
             </Frame>
             <Button Text="Doładuj" Command="{Binding NavigateToTopUpCommand}" IsEnabled="{Binding IsNotBusy}" />
+            <Label
+                    Text="{Binding ErrorMessage}"
+                    TextColor="Red" 
+                    HorizontalOptions="Center"/>
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

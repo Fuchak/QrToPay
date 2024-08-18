@@ -1,5 +1,4 @@
 using CommunityToolkit.Maui.Views;
-using QrToPay.ViewModels.FlyoutMenu;
 using QrToPay.ViewModels.QR;
 
 namespace QrToPay.View;

@@ -44,8 +44,9 @@ public class ScanedInfoHandler : IRequestHandler<ScanedInfoRequestModel, Result<
 
                     ScanedInfoDto response = new()
                     {
-                        Type = entity.ServiceName,
+                        ServiceName = entity.ServiceName,
                         AttractionName = funFairAttraction.AttractionName,
+                        ServiceId = entity.ServiceId,
                         Price = funFairAttraction.TokensPerUse
                     };
                     return Result<ScanedInfoDto>.Success(response);
@@ -69,8 +70,9 @@ public class ScanedInfoHandler : IRequestHandler<ScanedInfoRequestModel, Result<
 
                     ScanedInfoDto response = new()
                     {
-                        Type = entity.ServiceName,
+                        ServiceName = entity.ServiceName,
                         AttractionName = skiLift.LiftName,
+                        ServiceId = entity.ServiceId,
                         Price = skiLift.TokensPerUse
                     };
                     return Result<ScanedInfoDto>.Success(response);

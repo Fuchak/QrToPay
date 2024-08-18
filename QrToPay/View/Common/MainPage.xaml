@@ -89,8 +89,8 @@
                                        HorizontalOptions="Center"
                                        VerticalOptions="Center"
                                        Color="{StaticResource Orange}"
-                                       WidthRequest="20"
-                                       HeightRequest="20"/>
+                                       WidthRequest="30"
+                                       HeightRequest="30"/>
                     <ImageButton Grid.Column="1"
                                  Source="refresh.png"
                                  Command="{Binding LoadUserDataCommand}"

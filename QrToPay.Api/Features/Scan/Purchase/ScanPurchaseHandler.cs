@@ -35,7 +35,8 @@ public class ScanPurchaseHandler : IRequestHandler<ScanPurchaseRequestModel, Res
             {
                 UserId = request.UserId,
                 ServiceId = request.ServiceId,
-                //Gdzie attraction name? do historii
+                //Dodać do bazy kolumnę attracion name do historii biletów
+                //AttractionName = request.ServiceName,
                 PurchaseDate = DateTime.UtcNow,
                 Quantity = 1,
                 TotalPrice = request.Price

@@ -44,6 +44,9 @@ public partial class SkiResortBuyViewModel : ViewModelBase
     [ObservableProperty]
     private Guid serviceId;
 
+    [ObservableProperty]
+    private bool isBusy;
+
     private int userId;
 
     public Task InitializeAsync()
@@ -61,6 +64,9 @@ public partial class SkiResortBuyViewModel : ViewModelBase
     [RelayCommand]
     private async Task GenerateQrCodeAsync()
     {
+        if (IsBusy) return; // Zapobiega wielokrotnemu kliknięciu
+        IsBusy = true;
+
         if (string.IsNullOrEmpty(ResortName) || string.IsNullOrEmpty(CityName))
         {
             await Shell.Current.DisplayAlert("Błąd", "Wszystkie pola muszą być wypełnione", "OK");
@@ -123,6 +129,10 @@ public partial class SkiResortBuyViewModel : ViewModelBase
         {
             Debug.WriteLine($"Błąd przy generowaniu kodu qr lub aktualizowaniu bazy: {ex.Message}");
             await Shell.Current.DisplayAlert("Błąd", "Wystąpił błąd podczas zakupu biletu", "OK");
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 }

@@ -30,9 +30,19 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-
-        <ScrollView Grid.Row="1"
-                    VerticalOptions="FillAndExpand">
+        
+        <ActivityIndicator 
+            IsRunning="{Binding IsBusy}" 
+            IsVisible="{Binding IsBusy}"
+            Color="{StaticResource Orange}"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"/>
+        
+        <Label  Text="{Binding ErrorMessage}"
+                TextColor="Red" 
+                HorizontalOptions="Center"
+                IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"/>
+        <ScrollView Grid.Row="1" VerticalOptions="FillAndExpand">
             <VerticalStackLayout Padding="10" Margin="0,10,0,0">
                 <CollectionView ItemsSource="{Binding ActiveTickets}">
                     <CollectionView.ItemTemplate>
@@ -53,7 +63,11 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
-                <Label Text="Brak aktywnych biletów" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center">
+                <Label Text="Brak aktywnych biletów" 
+                       FontSize="18" 
+                       HorizontalOptions="Center" 
+                       VerticalOptions="Center"
+                       IsVisible="{Binding HasActiveTickets, Converter={StaticResource FalseToTrueConverter}}">
                     <Label.Triggers>
                         <DataTrigger TargetType="Label" Binding="{Binding HasActiveTickets}" Value="True">
                             <Setter Property="IsVisible" Value="False" />

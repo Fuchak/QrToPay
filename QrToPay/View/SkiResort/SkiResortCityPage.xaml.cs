@@ -14,6 +14,6 @@ public partial class SkiResortCityPage : ContentPage
 
     private async void InitializeAsync()
     {
-        await _viewModel.LoadCitiesAsync((int)EntityCategory.SkiResort);
+        await _viewModel.LoadCitiesAsync((int)ServiceType.SkiResort);
     }
 }

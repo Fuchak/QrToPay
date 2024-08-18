@@ -26,6 +26,9 @@ public partial class ScanQrCodeViewModel : ViewModelBase
     [ObservableProperty]
     private bool pauseScanning = false;
 
+    [ObservableProperty]
+    private bool isBusy = false;
+
     private const int PauseDuration = 4000; // Pauza w milisekundach (4 sekundy) by nie zawalać api zbyt dużą ilością zapytań
 
     [RelayCommand]
@@ -79,7 +82,8 @@ public partial class ScanQrCodeViewModel : ViewModelBase
     }
 
     public bool IsAttractionValid =>
-            !string.IsNullOrEmpty(CurrentAttraction?.Type) &&
+            !string.IsNullOrEmpty(CurrentAttraction?.ServiceName) &&
+            CurrentAttraction?.ServiceId != null &&
             !string.IsNullOrEmpty(CurrentAttraction?.AttractionName) &&
             CurrentAttraction?.Price != null;
 
@@ -89,6 +93,8 @@ public partial class ScanQrCodeViewModel : ViewModelBase
     {
         try
         {
+            IsBusy = true;
+
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
             int userId = Preferences.Get("UserId", 0);
 
@@ -97,7 +103,8 @@ public partial class ScanQrCodeViewModel : ViewModelBase
                 PurchaseRequest purchaseRequest = new()
                 {
                     UserId = userId,
-                    Type = CurrentAttraction.Type,
+                    ServiceName = CurrentAttraction.ServiceName,
+                    ServiceId = CurrentAttraction.ServiceId,
                     AttractionName = CurrentAttraction.AttractionName,
                     Price = CurrentAttraction!.Price
                 };
@@ -124,6 +131,10 @@ public partial class ScanQrCodeViewModel : ViewModelBase
         catch (Exception ex)
         {
             Debug.WriteLine($"Error during purchase: {ex.Message}");
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 

@@ -17,42 +17,61 @@ public partial class HistoryViewModel : ViewModelBase
     }
 
     [ObservableProperty]
-    private ObservableCollection<HistoryItemRequest> historyItems = new();
+    private ObservableCollection<HistoryItemRequest> historyItems = [];
+
+    [ObservableProperty]
+    private bool hasHistory = true;
+
+    [ObservableProperty]
+    private string? errorMessage;
+
+    [ObservableProperty]
+    private bool isBusy;
 
     public async Task LoadHistoryAsync()
     {
-        int userId = Preferences.Get("UserId", 0);
-        List<HistoryItemResponse> history = await GetTicketHistoryAsync(userId);
-
-        Debug.WriteLine($"Received history data: {JsonSerializer.Serialize(history)}");
-
-        foreach (var item in history)
+        try
         {
-            HistoryItemRequest historyItem = new()
+            IsBusy = true;
+            ErrorMessage = null;
+
+            int userId = Preferences.Get("UserId", 0);
+            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+            var response = await client.GetFromJsonAsync<List<HistoryItemResponse>>($"/api/Tickets/getHistory/{userId}");
+
+            if (response != null && response.Count > 0)
             {
-                Date = item.Date,
-                Type = item.Type,
-                Name = item.Name,
-                TotalPrice = item.TotalPrice
-            };
-            HistoryItems.Add(historyItem);
+                foreach (var item in response)
+                {
+                    HistoryItems.Add(new HistoryItemRequest
+                    {
+                        Date = item.Date,
+                        Type = item.Type.ToString(),
+                        Name = item.Name,
+                        TotalPrice = item.TotalPrice
+                    });
+                    HasHistory = true;
+                }
+            }
+            else
+            {
+                ErrorMessage = "Błąd: Nie udało się pobrać historii biletów.";
+                HasHistory = false;
+            }
         }
-    }
-
-    private async Task<List<HistoryItemResponse>> GetTicketHistoryAsync(int userId)
-    {
-        HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-        Debug.WriteLine($"Sending request to get history for UserID: {userId}");
-        HttpResponseMessage response = await client.GetAsync($"/api/Tickets/getHistory/{userId}");
-
-        if (!response.IsSuccessStatusCode)
+        catch (HttpRequestException httpEx)
         {
-            Debug.WriteLine($"Failed to retrieve ticket history: {response.ReasonPhrase}");
-            return new List<HistoryItemResponse>();
+            ErrorMessage = HttpError.HandleHttpError(httpEx);
+            HasHistory = false;
         }
-
-        List<HistoryItemResponse>? result = await response.Content.ReadFromJsonAsync<List<HistoryItemResponse>>();
-        Debug.WriteLine($"History data from API: {JsonSerializer.Serialize(result)}");
-        return result ?? new List<HistoryItemResponse>();
+        catch (Exception)
+        {
+            ErrorMessage = HttpError.HandleGeneralError();
+            HasHistory = false;
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 }

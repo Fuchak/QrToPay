@@ -54,7 +54,14 @@
                         <Label Text="{Binding Points}" FontSize="18" />
                         <Label Text=" punkty" FontSize="18"/>
                     </HorizontalStackLayout>
-                    <Button Text="Kup bilet/Wygeneruj QR" Command="{Binding GenerateQrCodeCommand}" HorizontalOptions="Center" Margin="0,20,0,0"/>
+                    <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                                       IsVisible="{Binding IsBusy}"
+                                       Color="{StaticResource Orange}"/>
+                    <Button Text="Kup bilet/Wygeneruj QR" 
+                            Command="{Binding GenerateQrCodeCommand}" 
+                            HorizontalOptions="Center"
+                            Margin="0,20,0,0"
+                            IsEnabled="{Binding IsBusy, Converter={StaticResource FalseToTrueConverter}}"/>
                 </StackLayout>
             </Frame>
         </VerticalStackLayout>

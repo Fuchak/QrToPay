@@ -43,13 +43,22 @@ public partial class ActiveBiletsViewModel : ViewModelBase
     private string? points;
 
     [ObservableProperty]
-    private bool hasActiveTickets;
+    private bool hasActiveTickets = true;
+
+    [ObservableProperty]
+    private string? errorMessage;
+
+    [ObservableProperty]
+    private bool isBusy;
 
     [RelayCommand]
     public async Task LoadActiveTicketsAsync()
     {
         try
         {
+            IsBusy = true;
+            ErrorMessage = null;
+
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
             int userId = Preferences.Get("UserId", 0);
             HttpResponseMessage response = await client.GetAsync($"/api/Tickets/active?userId={userId}");
@@ -57,7 +66,8 @@ public partial class ActiveBiletsViewModel : ViewModelBase
 
             List<Ticket>? tickets = await response.Content.ReadFromJsonAsync<List<Ticket>>();
             ActiveTickets.Clear();
-            if (tickets != null)
+
+            if (tickets != null && tickets.Count > 0)
             {
                 foreach (var ticket in tickets)
                 {
@@ -65,16 +75,29 @@ public partial class ActiveBiletsViewModel : ViewModelBase
 
                     // Sprawdź, czy istnieje zapisany czas aktywacji w Preferencjach
                     var activationTime = Preferences.Get($"ActivationTime_{ticket.QrCode}", DateTime.MinValue);
-
                 }
+                HasActiveTickets = true;
+                ErrorMessage = null;
             }
-
-            HasActiveTickets = ActiveTickets.Count > 0;
+            else
+            {
+                HasActiveTickets = false;
+                ErrorMessage = null;
+            }
         }
-        catch (Exception ex)
+        catch (HttpRequestException httpEx)
         {
-            Debug.WriteLine($"Failed to load active tickets: {ex.Message}");
+            ErrorMessage = HttpError.HandleHttpError(httpEx);
             HasActiveTickets = false;
+        }
+        catch (Exception)
+        {
+            ErrorMessage = HttpError.HandleGeneralError();
+            HasActiveTickets = false;
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 

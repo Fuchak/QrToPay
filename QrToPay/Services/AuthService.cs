@@ -27,44 +27,53 @@ namespace QrToPay.Services
             return Preferences.Get(AuthStateKey, false);
         }
 
-        public async Task<ApiResponse> Login(string emailPhone, string password)
+        public async Task<ApiResponse> LoginAsync(string emailPhone, string password)
         {
-            HttpClient httpClient = _httpClientFactory.CreateClient("ApiHttpClient");
-
-            LoginUserRequest loginData = ValidationHelper.IsEmail(emailPhone)
-                ? new LoginUserRequest { Email = emailPhone, PasswordHash = password }
-                : new LoginUserRequest { PhoneNumber = emailPhone, PasswordHash = password };
-
-            StringContent content = new (JsonConvert.SerializeObject(loginData), Encoding.UTF8, "application/json");
-
-            HttpResponseMessage response = await httpClient.PostAsync("/api/Auth/login/", content);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                string result = await response.Content.ReadAsStringAsync();
-                UserResponse? userResponse = JsonConvert.DeserializeObject<UserResponse>(result);
+                HttpClient httpClient = _httpClientFactory.CreateClient("ApiHttpClient");
 
-                if (userResponse != null)
+                LoginUserRequest loginData = ValidationHelper.IsEmail(emailPhone)
+                    ? new LoginUserRequest { Email = emailPhone, PasswordHash = password }
+                    : new LoginUserRequest { PhoneNumber = emailPhone, PasswordHash = password };
+
+                StringContent content = new(JsonConvert.SerializeObject(loginData), Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await httpClient.PostAsync("/api/Auth/login/", content);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    Preferences.Set(AuthStateKey, true);
-                    Preferences.Set(UserIdKey, userResponse.UserId);
-                    Preferences.Set(UserEmailKey, userResponse.Email ?? "Brak");
-                    Preferences.Set(UserPhoneKey, userResponse.PhoneNumber ?? "Brak");
+                    string result = await response.Content.ReadAsStringAsync();
+                    UserResponse? userResponse = JsonConvert.DeserializeObject<UserResponse>(result);
 
-                    WeakReferenceMessenger.Default.Send(new UserLoggedInMessage());
+                    if (userResponse != null)
+                    {
+                        Preferences.Set(AuthStateKey, true);
+                        Preferences.Set(UserIdKey, userResponse.UserId);
+                        Preferences.Set(UserEmailKey, userResponse.Email ?? "Brak");
+                        Preferences.Set(UserPhoneKey, userResponse.PhoneNumber ?? "Brak");
 
-                    return ApiResponse.SuccessResponse("Login successful.");
+                        return ApiResponse.SuccessResponse("Login successful.");
+                    }
+                    else
+                    {
+                        return ApiResponse.ErrorResponse("Błąd: Nie udało się przetworzyć odpowiedzi serwera.");
+                    }
+                }
+                else
+                {
+                    string errorContent = await response.Content.ReadAsStringAsync();
+                    return ApiResponse.ErrorResponse(errorContent);
                 }
             }
-            else
+            catch (HttpRequestException httpEx)
             {
-                string errorContent = await response.Content.ReadAsStringAsync();
-                ApiResponse? errorResponse = JsonConvert.DeserializeObject<ApiResponse>(errorContent);
-
-                return ApiResponse.ErrorResponse(errorResponse?.Message ?? "Błąd podczas logowania.");
+                return ApiResponse.ErrorResponse(HttpError.HandleHttpError(httpEx));
             }
-
-            return ApiResponse.ErrorResponse("Błąd podczas logowania.");
+            catch (Exception ex)
+            {
+                return ApiResponse.ErrorResponse("Wystąpił nieoczekiwany błąd: " + ex.Message);
+            }
         }
 
         public void Logout()

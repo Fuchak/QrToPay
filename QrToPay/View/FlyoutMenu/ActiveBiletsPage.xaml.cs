@@ -8,11 +8,16 @@ public partial class ActiveBiletsPage : ContentPage
     {
         InitializeComponent();
         BindingContext = _viewModel = vm;
-        InitializeAsync();
     }
 
-    private async void InitializeAsync()
+    protected override async void OnAppearing()
     {
+        base.OnAppearing();
+        if (Shell.Current.FlyoutIsPresented)
+        {
+            Shell.Current.FlyoutIsPresented = false;
+            await Task.Delay(250);
+        }
         await _viewModel.LoadActiveTicketsAsync();
     }
 }

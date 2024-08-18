@@ -35,12 +35,13 @@ public partial class LoginViewModel : ViewModelBase
             return;
         }
 
-        ApiResponse loginResult = await _authService.Login(EmailPhone, Password);
+        ApiResponse loginResult = await _authService.LoginAsync(EmailPhone, Password);
 
         if (loginResult.Success)
         {
             EmailPhone = null;
             Password = null;
+            ErrorMessage = null;
             await Shell.Current.GoToAsync("///MainPage");
         }
         else
