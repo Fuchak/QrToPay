@@ -15,20 +15,19 @@ public class TopUpAccountHandler : IRequestHandler<TopUpRequestModel, Result<dec
 
     public async Task<Result<decimal>> Handle(TopUpRequestModel request, CancellationToken cancellationToken)
     {
-        User? user = await _context.Users.FindAsync([request.UserId], cancellationToken);
-
-        if (user == null)
+        return await ResultHandler.HandleRequestAsync(async () =>
         {
-            return Result<decimal>.Failure("Użytkownik nieodnaleziony.");
-        }
+            User? user = await _context.Users
+                .FindAsync([request.UserId], cancellationToken)
+                ?? throw new Exception("Użytkownik nieodnaleziony.");
 
-        user.AccountBalance = (user.AccountBalance) + request.Amount;
-        user.UpdatedAt = DateTime.UtcNow;
+            user.AccountBalance += request.Amount;
+            user.UpdatedAt = DateTime.UtcNow;
 
-        _context.Users.Update(user);
-        await _context.SaveChangesAsync(cancellationToken);
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync(cancellationToken);
 
-        return Result<decimal>.Success(user.AccountBalance);
+            return user.AccountBalance;
+        });
     }
-    //(user.AccountBalance ?? 0)
 }

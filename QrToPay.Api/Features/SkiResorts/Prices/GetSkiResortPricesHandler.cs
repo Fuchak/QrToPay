@@ -16,23 +16,26 @@ public class GetSkiResortPricesHandler : IRequestHandler<GetSkiResortPricesReque
 
     public async Task<Result<IEnumerable<SkiResortPriceDto>>> Handle(GetSkiResortPricesRequestModel request, CancellationToken cancellationToken)
     {
-        var prices = await _context.SkiResortPrices
-            .Where(p => p.SkiResortId == request.SkiResortId && !p.IsDeleted)
-            .Select(p => new { p.Tokens, p.Price, p.SkiResortPriceId })
-            .Distinct()
-            .Select(p => new SkiResortPriceDto
-            {
-                SkiResortPriceId = p.SkiResortPriceId,
-                Tokens = p.Tokens,
-                Price = p.Price
-            })
-            .ToListAsync(cancellationToken);
-
-        if (prices.Count == 0)
+        return await ResultHandler.HandleRequestAsync(async () =>
         {
-            return Result<IEnumerable<SkiResortPriceDto>>.Failure($"Nie znaleziono ofer zakupu biletów dla tego resortu");
-        }
+            List<SkiResortPriceDto> response = await _context.SkiResortPrices
+                            .Where(p => p.SkiResortId == request.SkiResortId && !p.IsDeleted)
+                            .Select(p => new { p.Tokens, p.Price, p.SkiResortPriceId })
+                            .Distinct()
+                            .Select(p => new SkiResortPriceDto
+                            {
+                                SkiResortPriceId = p.SkiResortPriceId,
+                                Tokens = p.Tokens,
+                                Price = p.Price
+                            })
+                            .ToListAsync(cancellationToken);
 
-        return Result<IEnumerable<SkiResortPriceDto>>.Success(prices);
+            if (response.Count == 0)
+            {
+                throw new Exception("Nie znaleziono ofert zakupu biletów dla tego resortu.");
+            }
+
+            return response.AsEnumerable();
+        });
     }
 }

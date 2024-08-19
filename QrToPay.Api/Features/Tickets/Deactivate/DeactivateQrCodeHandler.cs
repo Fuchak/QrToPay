@@ -15,25 +15,17 @@ public class DeactivateQrCodeHandler : IRequestHandler<DeactivateQrCodeRequestMo
 
     public async Task<Result<bool>> Handle(DeactivateQrCodeRequestModel request, CancellationToken cancellationToken)
     {
-        try
+        return await ResultHandler.HandleRequestAsync(async () =>
         {
-            var ticket = await _context.UserTickets
-                .Where(t => t.Token == request.Token && t.UserId == request.UserID)
-                .FirstOrDefaultAsync(cancellationToken);
+            UserTicket response = await _context.UserTickets
+                            .Where(t => t.Token == request.Token && t.UserId == request.UserID)
+                            .FirstOrDefaultAsync(cancellationToken)
+                            ?? throw new Exception("Nie znaleziono biletu.");
 
-            if (ticket == null)
-            {
-                return Result<bool>.Failure("Nie znaleziono biletu.");
-            }
-
-            ticket.QrCodeIsActive = false; // Deaktywacja kodu
+            response.QrCodeIsActive = false; // Deaktywacja kodu
             await _context.SaveChangesAsync(cancellationToken);
-
-            return Result<bool>.Success(true);
-        }
-        catch (Exception ex)
-        {
-            return Result<bool>.Failure($"Wewnętrzny błąd serwera: {ex.Message}");
-        }
+            
+            return true;
+        });
     }
 }

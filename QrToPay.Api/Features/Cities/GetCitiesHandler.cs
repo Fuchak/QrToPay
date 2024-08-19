@@ -3,35 +3,37 @@ using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.Common.Results;
 using QrToPay.Api.Models;
 
-namespace QrToPay.Api.Features.Cities
+namespace QrToPay.Api.Features.Cities;
+
+public class GetCitiesHandler : IRequestHandler<GetCitiesRequestModel, Result<IEnumerable<CitiesDto>>>
 {
-    public class GetCitiesHandler : IRequestHandler<GetCitiesRequestModel, Result<IEnumerable<CitiesDto>>>
+    private readonly QrToPayDbContext _context;
+
+    public GetCitiesHandler(QrToPayDbContext context)
     {
-        private readonly QrToPayDbContext _context;
+        _context = context;
+    }
 
-        public GetCitiesHandler(QrToPayDbContext context)
+    public async Task<Result<IEnumerable<CitiesDto>>> Handle(GetCitiesRequestModel request, CancellationToken cancellationToken)
+    {
+        return await ResultHandler.HandleRequestAsync(async () =>
         {
-            _context = context;
-        }
+            List<CitiesDto> response = await _context.ServiceCategories
+                            .Where(e => !e.IsDeleted && e.ServiceType == (int)request.ServiceType)
+                            .Select(e => new CitiesDto
+                            {
+                                CityName = e.CityName,
+                                ServiceId = e.ServiceId
+                            })
+                            .Distinct()
+                            .ToListAsync(cancellationToken);
 
-        public async Task<Result<IEnumerable<CitiesDto>>> Handle(GetCitiesRequestModel request, CancellationToken cancellationToken)
-        {
-            var cities = await _context.ServiceCategories
-                .Where(e => !e.IsDeleted && e.ServiceType == (int)request.ServiceType)
-                .Select(e => new CitiesDto
-                {
-                    CityName = e.CityName,
-                    ServiceId = e.ServiceId
-                })
-                .Distinct()
-                .ToListAsync(cancellationToken);
-
-            if (cities.Count == 0)
+            if (response.Count == 0)
             {
-                return Result<IEnumerable<CitiesDto>>.Failure($"Nie znaleziono miast dla, {request.ServiceType}.");
+                throw new Exception($"Nie znaleziono miast.");
             }
 
-            return Result<IEnumerable<CitiesDto>>.Success(cities);
-        }
+            return response.AsEnumerable();
+        });
     }
 }

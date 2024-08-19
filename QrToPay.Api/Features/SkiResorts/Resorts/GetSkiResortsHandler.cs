@@ -16,27 +16,30 @@ public class GetSkiResortsHandler : IRequestHandler<GetSkiResortsRequestModel, R
 
     public async Task<Result<IEnumerable<SkiResortsDto>>> Handle(GetSkiResortsRequestModel request, CancellationToken cancellationToken)
     {
-        List<SkiResortsDto> response = await _context.SkiResorts
-                    .Where(s => !s.IsDeleted && s.ServiceId == request.ServiceId)
-                    .Select(s => new SkiResortsDto
-                    {
-                        SkiResortId = s.SkiResortId,
-                        ResortName = _context.ServiceCategories
-                            .Where(e => e.ServiceId == s.ServiceId && !e.IsDeleted)
-                            .Select(e => e.ServiceName)
-                            .FirstOrDefault()!,
-                        CityName = _context.ServiceCategories
-                            .Where(e => e.ServiceId == s.ServiceId && !e.IsDeleted)
-                            .Select(e => e.CityName)
-                            .FirstOrDefault()!,
-                    })
-                    .ToListAsync(cancellationToken);
-
-        if (response.Count == 0)
+        return await ResultHandler.HandleRequestAsync(async () =>
         {
-            return Result<IEnumerable<SkiResortsDto>>.Failure($"Nie znalezionio stoków narciarskich w tym mieście");
-        }
+            List<SkiResortsDto> response = await _context.SkiResorts
+                .Where(s => !s.IsDeleted && s.ServiceId == request.ServiceId)
+                .Select(s => new SkiResortsDto
+                {
+                    SkiResortId = s.SkiResortId,
+                    ResortName = _context.ServiceCategories
+                        .Where(e => e.ServiceId == s.ServiceId && !e.IsDeleted)
+                        .Select(e => e.ServiceName)
+                        .FirstOrDefault()!,
+                    CityName = _context.ServiceCategories
+                        .Where(e => e.ServiceId == s.ServiceId && !e.IsDeleted)
+                        .Select(e => e.CityName)
+                        .FirstOrDefault()!,
+                })
+                .ToListAsync(cancellationToken);
 
-        return Result<IEnumerable<SkiResortsDto>>.Success(response);
+            if (response.Count == 0)
+            {
+                throw new Exception("Nie znaleziono stoków narciarskich w tym mieście.");
+            }
+
+            return response.AsEnumerable();
+        });
     }
 }

@@ -16,16 +16,15 @@ public class GetUserBalanceHandler : IRequestHandler<GetUserBalanceRequestModel,
 
     public async Task<Result<UserBalanceDto>> Handle(GetUserBalanceRequestModel request, CancellationToken cancellationToken)
     {
-        UserBalanceDto? balance = await _context.Users
-            .Where(u => u.UserId == request.UserId)
-            .Select(u => new UserBalanceDto { AccountBalance = u.AccountBalance })
-            .FirstOrDefaultAsync(cancellationToken);
-
-        if (balance == null)
+        return await ResultHandler.HandleRequestAsync(async () =>
         {
-            return Result<UserBalanceDto>.Failure("Użytkownik nieodnaleziony.");
-        }
+            UserBalanceDto? response = await _context.Users
+                .Where(u => u.UserId == request.UserId)
+                .Select(u => new UserBalanceDto { AccountBalance = u.AccountBalance })
+                .FirstOrDefaultAsync(cancellationToken) 
+                ?? throw new Exception("Użytkownik nieodnaleziony.");
 
-        return Result<UserBalanceDto>.Success(balance);
+            return response;
+        });
     }
 }

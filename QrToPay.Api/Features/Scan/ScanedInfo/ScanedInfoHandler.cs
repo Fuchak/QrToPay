@@ -16,77 +16,65 @@ public class ScanedInfoHandler : IRequestHandler<ScanedInfoRequestModel, Result<
 
     public async Task<Result<ScanedInfoDto>> Handle(ScanedInfoRequestModel request, CancellationToken cancellationToken)
     {
-        try
+        return await ResultHandler.HandleRequestAsync(async () =>
         {
-            if (string.IsNullOrWhiteSpace(request.QrCode) || request.QrCode.Length < 5)
+            if (string.IsNullOrWhiteSpace(request.QrCode) || request.QrCode.Length < 8)
             {
-                return Result<ScanedInfoDto>.Failure("Nieprawidłowy kod QR. Odczekaj chwilę przed ponownym skanowaniem.");
+                throw new Exception("Nieprawidłowy kod QR. Odczekaj chwilę przed ponownym skanowaniem.");
             }
 
-            var prefix = request.QrCode.Substring(3, 1);
+            var prefix = request.QrCode.Substring(3, 2); // Użycie dwóch liter jako prefixu Chyba to tak powinno chodzić jak trzeba ZAK to 3 i używamy 2 jako te prefixy
 
-            if (prefix == "F")
+            Dictionary<string, Func<Task<ScanedInfoDto>>> handlers = new()
             {
-                var funFairAttraction = await _context.FunFairAttractions
+                { "FA", async () => await HandleFunFairAttraction(request.QrCode, cancellationToken) },
+                { "SL", async () => await HandleSkiLift(request.QrCode, cancellationToken) },
+            };
+
+            return handlers.TryGetValue(prefix, out var handler) 
+                ? await handler() 
+                : throw new Exception("Nieprawidłowy prefix kodu QR.");
+        });
+    }
+
+    private async Task<ScanedInfoDto> HandleFunFairAttraction(string qrCode, CancellationToken cancellationToken)
+    {
+        FunFairAttraction funFairAttractionResponse = await _context.FunFairAttractions
                     .Include(ffa => ffa.FunFair)
-                    .FirstOrDefaultAsync(ffa => ffa.Qrcode == request.QrCode && !ffa.IsDeleted, cancellationToken);
+                    .FirstOrDefaultAsync(ffa => ffa.Qrcode == qrCode && !ffa.IsDeleted, cancellationToken)
+                    ?? throw new Exception("Atrakcja nie została znaleziona.");
 
-                if (funFairAttraction != null)
-                {
-                    var entity = await _context.ServiceCategories
-                        .FirstOrDefaultAsync(e => e.ServiceId == funFairAttraction.FunFair.ServiceId && !e.IsDeleted, cancellationToken);
 
-                    if (entity == null)
-                    {
-                        return Result<ScanedInfoDto>.Failure("Park nie został znaleziony.");
-                    }
+        ServiceCategory serviceCategoryResponse = await _context.ServiceCategories
+                    .FirstOrDefaultAsync(e => e.ServiceId == funFairAttractionResponse.FunFair.ServiceId && !e.IsDeleted, cancellationToken)
+                    ?? throw new Exception("Park nie został znaleziony.");
 
-                    ScanedInfoDto response = new()
-                    {
-                        ServiceName = entity.ServiceName,
-                        AttractionName = funFairAttraction.AttractionName,
-                        ServiceId = entity.ServiceId,
-                        Price = funFairAttraction.TokensPerUse
-                    };
-                    return Result<ScanedInfoDto>.Success(response);
-                }
-            }
-            else if (prefix == "S")
-            {
-                var skiLift = await _context.SkiLifts
-                    .Include(sl => sl.SkiResort)
-                    .FirstOrDefaultAsync(sl => sl.Qrcode == request.QrCode && !sl.IsDeleted, cancellationToken);
-
-                if (skiLift != null)
-                {
-                    var entity = await _context.ServiceCategories
-                        .FirstOrDefaultAsync(e => e.ServiceId == skiLift.SkiResort.ServiceId && !e.IsDeleted, cancellationToken);
-
-                    if (entity == null)
-                    {
-                        return Result<ScanedInfoDto>.Failure("Ośrodek narciarski nie został znaleziony.");
-                    }
-
-                    ScanedInfoDto response = new()
-                    {
-                        ServiceName = entity.ServiceName,
-                        AttractionName = skiLift.LiftName,
-                        ServiceId = entity.ServiceId,
-                        Price = skiLift.TokensPerUse
-                    };
-                    return Result<ScanedInfoDto>.Success(response);
-                }
-            }
-            else
-            {
-                return Result<ScanedInfoDto>.Failure("Nieprawidłowy prefix kodu QR.");
-            }
-
-            return Result<ScanedInfoDto>.Failure("Atrakcja nie została znaleziona. Odczekaj chwilę przed ponownym skanowaniem.");
-        }
-        catch (Exception ex)
+        return new ScanedInfoDto
         {
-            return Result<ScanedInfoDto>.Failure($"Wystąpił błąd serwera: {ex.Message}");
-        }
+            ServiceName = serviceCategoryResponse.ServiceName,
+            AttractionName = funFairAttractionResponse.AttractionName,
+            ServiceId = serviceCategoryResponse.ServiceId,
+            Price = funFairAttractionResponse.TokensPerUse
+        };
+    }
+
+    private async Task<ScanedInfoDto> HandleSkiLift(string qrCode, CancellationToken cancellationToken)
+    {
+        SkiLift skiLiftResponse = await _context.SkiLifts
+                    .Include(sl => sl.SkiResort)
+                    .FirstOrDefaultAsync(sl => sl.Qrcode == qrCode && !sl.IsDeleted, cancellationToken)
+                    ?? throw new Exception("Atrakcja nie została znaleziona.");
+
+        ServiceCategory serviceCategoryResponse = await _context.ServiceCategories
+                    .FirstOrDefaultAsync(e => e.ServiceId == skiLiftResponse.SkiResort.ServiceId && !e.IsDeleted, cancellationToken)
+                    ?? throw new Exception("Ośrodek narciarski nie został znaleziony.");
+
+        return new ScanedInfoDto
+        {
+            ServiceName = serviceCategoryResponse.ServiceName,
+            AttractionName = skiLiftResponse.LiftName,
+            ServiceId = serviceCategoryResponse.ServiceId,
+            Price = skiLiftResponse.TokensPerUse
+        };
     }
 }

@@ -15,21 +15,24 @@ public class CreateHelpFormHandler : IRequestHandler<CreateHelpFormRequestModel,
 
     public async Task<Result<string>> Handle(CreateHelpFormRequestModel request, CancellationToken cancellationToken)
     {
-        var helpForm = new HelpForm
+        return await ResultHandler.HandleRequestAsync(async () =>
         {
-            UserName = request.UserName,
-            UserEmail = request.UserEmail,
-            Subject = request.Subject,
-            Description = request.Description,
-            Status = request.Status,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow,
-            IsDeleted = false
-        };
+            HelpForm helpForm = new()
+            {
+                UserName = request.UserName,
+                UserEmail = request.UserEmail,
+                Subject = request.Subject,
+                Description = request.Description,
+                Status = request.Status,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                IsDeleted = false
+            };
 
-        _context.HelpForms.Add(helpForm);
-        await _context.SaveChangesAsync(cancellationToken);
+            _context.HelpForms.Add(helpForm);
+            await _context.SaveChangesAsync(cancellationToken);
 
-        return Result<string>.Success("Zgłoszenie zostało utworzone.");
+            return "Zgłoszenie zostało utworzone.";
+        });
     }
 }

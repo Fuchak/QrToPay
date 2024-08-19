@@ -17,25 +17,21 @@ public class GetTicketHistoryHandler : IRequestHandler<GetTicketHistoryRequestMo
 
     public async Task<Result<List<TicketHistoryDto>>> Handle(GetTicketHistoryRequestModel request, CancellationToken cancellationToken)
     {
-        try
+        return await ResultHandler.HandleRequestAsync(async () =>
         {
-            var ticketHistory = await _context.TicketHistories
-                .Where(th => th.UserId == request.UserId)
-                .OrderByDescending(th => th.PurchaseDate)
-                .Select(th => new TicketHistoryDto
-                {
-                    Date = th.PurchaseDate.ToString("yyyy-MM-dd"),
-                    Type = (ServiceType)th.Service.ServiceType,
-                    Name = th.Service.ServiceName,
-                    TotalPrice = th.TotalPrice
-                })
-                .ToListAsync(cancellationToken);
+            List<TicketHistoryDto> response = await _context.TicketHistories
+                            .Where(th => th.UserId == request.UserId)
+                            .OrderByDescending(th => th.PurchaseDate)
+                            .Select(th => new TicketHistoryDto
+                            {
+                                Date = th.PurchaseDate.ToString("yyyy-MM-dd"),
+                                Type = (ServiceType)th.Service.ServiceType,
+                                Name = th.Service.ServiceName,
+                                TotalPrice = th.TotalPrice
+                            })
+                            .ToListAsync(cancellationToken);
 
-            return Result<List<TicketHistoryDto>>.Success(ticketHistory);
-        }
-        catch (Exception ex)
-        {
-            return Result<List<TicketHistoryDto>>.Failure($"Internal server error: {ex.Message}");
-        }
+            return response;
+        });
     }
 }

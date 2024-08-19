@@ -21,51 +21,48 @@ public class ChangeEmailPhoneRequestHandler : IRequestHandler<ChangeEmailPhoneRe
 
     public async Task<Result<string>> Handle(ChangeEmailPhoneRequestModel request, CancellationToken cancellationToken)
     {
-        User? user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == request.UserId && u.IsVerified, cancellationToken);
-
-        if (user == null)
+        return await ResultHandler.HandleRequestAsync(async () =>
         {
-            return Result<string>.Failure("Użytkownik z podanym identyfikatorem nie istnieje lub nie został zweryfikowany.");
-        }
+            User? user = await _context.Users
+                .FirstOrDefaultAsync(u => u.UserId == request.UserId && u.IsVerified, cancellationToken) 
+                ?? throw new Exception("Użytkownik z podanym identyfikatorem nie istnieje lub nie został zweryfikowany.");
 
-        if (!AuthenticationHelper.VerifyPassword(request.Password, user.PasswordHash))
-        {
-            return Result<string>.Failure("Nieprawidłowe hasło.");
-        }
+            if (!AuthenticationHelper.VerifyPassword(request.Password, user.PasswordHash))
+            {
+                throw new Exception("Nieprawidłowe hasło.");
+            }
 
-        User? existingUser = null;
-        //Action<string, string> sendVerification = null;
+            //User? existingUser = null;
 
-        if (request.ChangeType == ChangeType.Email)
-        {
-            existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.NewValue, cancellationToken);
-            _verificationStorageService.StoreEmailVerification(user.UserId, request.NewValue);
-            //sendVerification = SendVerificationCodeEmail;
-        }
-        else if (request.ChangeType == ChangeType.Phone)
-        {
-            existingUser = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.NewValue, cancellationToken);
-            _verificationStorageService.StorePhoneVerification(user.UserId, request.NewValue);
-            //sendVerification = SendVerificationCodeSMS;
-        }
-        else
-        {
-            return Result<string>.Failure("Nieprawidłowy typ zmiany.");
-        }
+            if (request.ChangeType == ChangeType.Email)
+            {
+                User? existingUser = await _context.Users
+                    .FirstOrDefaultAsync(u => u.Email == request.NewValue, cancellationToken)
+                    ?? throw new Exception($"Użytkownik z takim adresem email już istnieje.");
 
-        if (existingUser != null)
-        {
-            return Result<string>.Failure($"Użytkownik z nowym {(request.ChangeType == ChangeType.Email ? "adresem email" : "numerem telefonu")} już istnieje.");
-        }
+                _verificationStorageService.StoreEmailVerification(user.UserId, request.NewValue);
+            }
+            else if (request.ChangeType == ChangeType.Phone)
+            {
+                User? existingUser = await _context.Users
+                    .FirstOrDefaultAsync(u => u.PhoneNumber == request.NewValue, cancellationToken)
+                    ?? throw new Exception($"Użytkownik z takim numerem telefonu już istnieje.");
 
-        string verificationCode = AuthenticationHelper.GenerateVerificationCode();
-        user.VerificationCode = verificationCode;
-        user.UpdatedAt = DateTime.UtcNow;
+                _verificationStorageService.StorePhoneVerification(user.UserId, request.NewValue);
+            }
+            else
+            {
+                throw new Exception("Nieprawidłowy typ zmiany.");
+            }
 
-        await _context.SaveChangesAsync(cancellationToken);
+            string response = AuthenticationHelper.GenerateVerificationCode();
+            user.VerificationCode = response;
+            user.UpdatedAt = DateTime.UtcNow;
 
-        //sendVerification(request.NewValue, verificationCode);
+            await _context.SaveChangesAsync(cancellationToken);
 
-        return Result<string>.Success(verificationCode);
+            return response;
+        });
     }
+
 }

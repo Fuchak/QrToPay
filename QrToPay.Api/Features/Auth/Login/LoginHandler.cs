@@ -16,44 +16,39 @@ public class LoginHandler : IRequestHandler<LoginRequestModel, Result<LoginDto>>
 
     public async Task<Result<LoginDto>> Handle(LoginRequestModel request, CancellationToken cancellationToken)
     {
-        IQueryable<User> userQuery = _context.Users.AsQueryable();
-
-        if (!string.IsNullOrEmpty(request.Email))
+        return await ResultHandler.HandleRequestAsync(async () =>
         {
-            userQuery = userQuery.Where(u => u.Email == request.Email);
-        }
-        else if (!string.IsNullOrEmpty(request.PhoneNumber))
-        {
-            userQuery = userQuery.Where(u => u.PhoneNumber == request.PhoneNumber);
-        }
+            User? user = await _context.Users
+                .Where(u => (!string.IsNullOrEmpty(request.Email) && u.Email == request.Email) ||
+                            (!string.IsNullOrEmpty(request.PhoneNumber) && u.PhoneNumber == request.PhoneNumber))
+                .FirstOrDefaultAsync(cancellationToken);
 
-        User? user = await userQuery.FirstOrDefaultAsync(cancellationToken);
+            if (user == null || !BCrypt.Net.BCrypt.Verify(request.PasswordHash, user.PasswordHash))
+            {
+                throw new Exception("Nieprawidłowy email, numer telefonu lub hasło.");
+            }
 
-        if (user == null || !BCrypt.Net.BCrypt.Verify(request.PasswordHash, user.PasswordHash))
-        {
-            return Result<LoginDto>.Failure("Nieprawidłowy email, numer telefonu lub hasło.");
-        }
+            if (!user.IsVerified)
+            {
+                throw new Exception("Konto nie zostało aktywowane.");
+            }
 
-        if (!user.IsVerified)
-        {
-            return Result<LoginDto>.Failure("Konto nie zostało aktywowane.");
-        }
+            if (user.IsDeleted)
+            {
+                throw new Exception("Konto zostało zablokowane.");
+            }
 
-        if (user.IsDeleted)
-        {
-            return Result<LoginDto>.Failure("Konto zostało zablokowane.");
-        }
+            LoginDto response = new()
+            {
+                UserId = user.UserId,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                AccountBalance = user.AccountBalance,
+                IsActive = user.IsVerified,
+                IsBlocked = user.IsDeleted
+            };
 
-        LoginDto loginDto = new()
-        {
-            UserId = user.UserId,
-            Email = user.Email,
-            PhoneNumber = user.PhoneNumber,
-            AccountBalance = user.AccountBalance,
-            IsActive = user.IsVerified,
-            IsBlocked = user.IsDeleted
-        };
-
-        return Result<LoginDto>.Success(loginDto);
+            return response;
+        });
     }
 }

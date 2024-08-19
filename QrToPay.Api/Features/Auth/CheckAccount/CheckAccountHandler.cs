@@ -18,37 +18,26 @@ public class CheckAccountHandler : IRequestHandler<CheckAccountRequestModel, Res
 
     public async Task<Result<string>> Handle(CheckAccountRequestModel request, CancellationToken cancellationToken)
     {
-        User? user = null;
-
-        if (request.ChangeType == ChangeType.Email)
+        return await ResultHandler.HandleRequestAsync(async () =>
         {
-            user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Contact, cancellationToken);
-        }
-        else if (request.ChangeType == ChangeType.Phone)
-        {
-            user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.Contact, cancellationToken);
-        }
-        else
-        {
-            return Result<string>.Failure("Nieprawidłowy typ zmiany.");
-        }
+            User? user = await _context.Users
+                .Where(u => (request.ChangeType == ChangeType.Email && u.Email == request.Contact) ||
+                            (request.ChangeType == ChangeType.Phone && u.PhoneNumber == request.Contact))
+                .FirstOrDefaultAsync(cancellationToken) 
+                ?? throw new Exception($"Użytkownik z podanym {(request.ChangeType == ChangeType.Email ? "e-mailem" : "numerem telefonu")} nie istnieje.");
 
-        if (user == null)
-        {
-            return Result<string>.Failure($"Użytkownik z podanym {(request.ChangeType == ChangeType.Email ? "e-mailem" : "numerem telefonu")} nie istnieje.");
-        }
+            if (!user.IsVerified)
+            {
+                throw new Exception("Konto użytkownika nie zostało potwierdzone.");
+            }
 
-        if (!user.IsVerified)
-        {
-            return Result<string>.Failure("Konto użytkownika nie zostało potwierdzone.");
-        }
+            string response = AuthenticationHelper.GenerateVerificationCode();
+            user.VerificationCode = response;
+            user.UpdatedAt = DateTime.UtcNow;
 
-        string verificationCode = AuthenticationHelper.GenerateVerificationCode();
-        user.VerificationCode = verificationCode;
-        user.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync(cancellationToken);
 
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return Result<string>.Success(verificationCode);
+            return response;
+        });
     }
 }

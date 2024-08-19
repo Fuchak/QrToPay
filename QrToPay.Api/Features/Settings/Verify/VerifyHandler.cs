@@ -20,44 +20,45 @@ public class VerifyHandler : IRequestHandler<VerifyRequestModel, Result<string>>
 
     public async Task<Result<string>> Handle(VerifyRequestModel request, CancellationToken cancellationToken)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == request.UserId && u.IsVerified, cancellationToken);
-
-        if (user == null)
+        return await ResultHandler.HandleRequestAsync(async () =>
         {
-            return Result<string>.Failure("Użytkownik z podanym identyfikatorem nie istnieje lub nie został zweryfikowany.");
-        }
+            User response = await _context.Users
+                .FirstOrDefaultAsync(u => u.UserId == request.UserId && u.IsVerified, cancellationToken) 
+                ?? throw new Exception("Użytkownik z podanym identyfikatorem nie istnieje lub nie został zweryfikowany.");
 
-        if (user.VerificationCode != request.VerificationCode)
-        {
-            return Result<string>.Failure("Nieprawidłowy kod weryfikacyjny.");
-        }
-
-        if (request.ChangeType == ChangeType.Email)
-        {
-            if (!_verificationStorageService.TryGetEmailVerification(request.UserId, out var newEmail))
+            if (response.VerificationCode != request.VerificationCode)
             {
-                return Result<string>.Failure("Kod weryfikacyjny wygasł lub jest nieprawidłowy.");
+                throw new Exception("Nieprawidłowy kod weryfikacyjny.");
             }
 
-            user.Email = newEmail;
-            _verificationStorageService.RemoveEmailVerification(request.UserId);
-        }
-        else if (request.ChangeType == ChangeType.Phone)
-        {
-            if (!_verificationStorageService.TryGetPhoneVerification(request.UserId, out var newPhone))
+
+            if (request.ChangeType == ChangeType.Email)
             {
-                return Result<string>.Failure("Kod weryfikacyjny wygasł lub jest nieprawidłowy.");
+                if (!_verificationStorageService.TryGetEmailVerification(request.UserId, out var newEmail))
+                {
+                    throw new Exception("Kod weryfikacyjny wygasł lub jest nieprawidłowy.");
+                }
+
+                response.Email = newEmail;
+                _verificationStorageService.RemoveEmailVerification(request.UserId);
+            }
+            else if (request.ChangeType == ChangeType.Phone)
+            {
+                if (!_verificationStorageService.TryGetPhoneVerification(request.UserId, out var newPhone))
+                {
+                    throw new Exception("Kod weryfikacyjny wygasł lub jest nieprawidłowy.");
+                }
+
+                response.PhoneNumber = newPhone;
+                _verificationStorageService.RemovePhoneVerification(request.UserId);
             }
 
-            user.PhoneNumber = newPhone;
-            _verificationStorageService.RemovePhoneVerification(request.UserId);
-        }
+            response.VerificationCode = null;
+            response.UpdatedAt = DateTime.UtcNow;
 
-        user.VerificationCode = null;
-        user.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync(cancellationToken);
 
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return Result<string>.Success("Zmiana została zweryfikowana.");
+            return "Zmiana została zweryfikowana.";
+        });
     }
 }

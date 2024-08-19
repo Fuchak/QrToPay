@@ -17,14 +17,18 @@ public class PurchaseTicketHandler : IRequestHandler<PurchaseTicketRequestModel,
 
     public async Task<Result<string>> Handle(PurchaseTicketRequestModel request, CancellationToken cancellationToken)
     {
-        try
+        return await ResultHandler.HandleRequestAsync(async () =>
         {
             Guid token;
+
             using (var connection = new SqlConnection(_context.Database.GetConnectionString()))
             {
                 await connection.OpenAsync(cancellationToken);
-                using var command = new SqlCommand("dbo.UpdateUserTicketsAndGenerateToken", connection);
-                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                using var command = new SqlCommand("dbo.UpdateUserTicketsAndGenerateToken", connection)
+                {
+                    CommandType = System.Data.CommandType.StoredProcedure
+                };
 
                 command.Parameters.AddWithValue("@UserID", request.UserId);
                 command.Parameters.AddWithValue("@ServiceID", request.ServiceId);
@@ -32,21 +36,17 @@ public class PurchaseTicketHandler : IRequestHandler<PurchaseTicketRequestModel,
                 command.Parameters.AddWithValue("@Tokens", request.Tokens);
                 command.Parameters.AddWithValue("@TotalPrice", request.TotalPrice);
 
-                var outputParam = new SqlParameter("@Token", System.Data.SqlDbType.UniqueIdentifier)
+                SqlParameter response = new("@Token", System.Data.SqlDbType.UniqueIdentifier)
                 {
                     Direction = System.Data.ParameterDirection.Output
                 };
-                command.Parameters.Add(outputParam);
+                command.Parameters.Add(response);
 
                 await command.ExecuteNonQueryAsync(cancellationToken);
-                token = (Guid)outputParam.Value;
+                token = (Guid)response.Value;
             }
 
-            return Result<string>.Success(token.ToString());
-        }
-        catch (Exception ex)
-        {
-            return Result<string>.Failure($"Wewnętrzny błąd serwera: {ex.Message}");
-        }
+            return token.ToString();
+        });
     }
 }

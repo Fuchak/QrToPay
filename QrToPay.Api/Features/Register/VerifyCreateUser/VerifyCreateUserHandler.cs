@@ -16,18 +16,17 @@ public class VerifyCreateUserHandler : IRequestHandler<VerifyCreateUserRequestMo
 
     public async Task<Result<string>> Handle(VerifyCreateUserRequestModel request, CancellationToken cancellationToken)
     {
-        var user = await _context.Users
-            .FirstOrDefaultAsync(u => (u.Email == request.EmailOrPhone || u.PhoneNumber == request.EmailOrPhone) && u.VerificationCode == request.VerificationCode, cancellationToken);
-
-        if (user == null)
+        return await ResultHandler.HandleRequestAsync(async () =>
         {
-            return Result<string>.Failure("Nieprawidłowy kod weryfikacyjny.");
-        }
+            User response = await _context.Users
+                            .FirstOrDefaultAsync(u => (u.Email == request.EmailOrPhone || u.PhoneNumber == request.EmailOrPhone) && u.VerificationCode == request.VerificationCode, cancellationToken)
+                            ?? throw new Exception("Nieprawidłowy kod weryfikacyjny.");
 
-        user.IsVerified = true;
-        user.UpdatedAt = DateTime.UtcNow;
-        await _context.SaveChangesAsync(cancellationToken);
+            response.IsVerified = true;
+            response.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync(cancellationToken);
 
-        return Result<string>.Success("Użytkownik został zweryfikowany.");
+            return "Użytkownik został zweryfikowany.";
+        });
     }
 }

@@ -17,55 +17,55 @@ public class CreateUserHandler : IRequestHandler<CreateUserRequestModel, Result<
 
     public async Task<Result<CreateUserDto>> Handle(CreateUserRequestModel request, CancellationToken cancellationToken)
     {
-        User? existingUser = null;
+        return await ResultHandler.HandleRequestAsync(async () =>
+        {
+            User? existingUser = await _context.Users
+                .FirstOrDefaultAsync(u =>
+                    (request.Email != null && u.Email == request.Email) ||
+                    (request.PhoneNumber != null && u.PhoneNumber == request.PhoneNumber),
+                    cancellationToken);
 
-        if (!string.IsNullOrEmpty(request.Email))
-        {
-            existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email, cancellationToken);
-        }
-        else if (!string.IsNullOrEmpty(request.PhoneNumber))
-        {
-            existingUser = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber, cancellationToken);
-        }
-
-        if (existingUser != null)
-        {
-            if (existingUser.IsVerified)
+            if (existingUser != null)
             {
-                return Result<CreateUserDto>.Failure("Użytkownik z podanym e-mailem lub numerem telefonu już istnieje.");
+                if (existingUser.IsVerified)
+                {
+                    throw new Exception("Użytkownik z podanym e-mailem lub numerem telefonu już istnieje.");
+                }
+
+                existingUser.PasswordHash = AuthenticationHelper.HashPassword(request.PasswordHash);
+                existingUser.VerificationCode = AuthenticationHelper.GenerateVerificationCode();
+                existingUser.IsVerified = false;
+                existingUser.UpdatedAt = DateTime.UtcNow;
+            }
+            else
+            {
+                User newUser = new()
+                {
+                    Email = request.Email,
+                    PhoneNumber = request.PhoneNumber,
+                    PasswordHash = AuthenticationHelper.HashPassword(request.PasswordHash),
+                    VerificationCode = AuthenticationHelper.GenerateVerificationCode(),
+                    IsVerified = false,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                };
+
+                _context.Users.Add(newUser);
             }
 
-            existingUser.PasswordHash = AuthenticationHelper.HashPassword(request.PasswordHash);
-            existingUser.VerificationCode = AuthenticationHelper.GenerateVerificationCode();
-            existingUser.IsVerified = false;
-            existingUser.UpdatedAt = DateTime.UtcNow;
-        }
-        else
-        {
-            User newUser = new()
+            await _context.SaveChangesAsync(cancellationToken);
+
+            User? user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == request.Email || u.PhoneNumber == request.PhoneNumber, cancellationToken) 
+                ?? throw new Exception("Błąd wewnętrzny serwera.");
+
+            CreateUserDto result = new() 
             {
-                Email = request.Email,
-                PhoneNumber = request.PhoneNumber,
-                PasswordHash = AuthenticationHelper.HashPassword(request.PasswordHash),
-                VerificationCode = AuthenticationHelper.GenerateVerificationCode(),
-                IsVerified = false,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                VerificationCode = user.VerificationCode!, 
+                EmailOrPhone = user.Email ?? user.PhoneNumber!
             };
 
-            _context.Users.Add(newUser);
-        }
-
-        await _context.SaveChangesAsync(cancellationToken);
-
-        User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email || u.PhoneNumber == request.PhoneNumber, cancellationToken);
-
-        if (user == null)
-        {
-            return Result<CreateUserDto>.Failure("Błąd wewnętrzny serwera.");
-        }
-        string? emailOrPhone = user.Email ?? user.PhoneNumber;
-        CreateUserDto result = new() { VerificationCode = user.VerificationCode!, EmailOrPhone = emailOrPhone! };
-        return Result<CreateUserDto>.Success(result);
+            return result;
+        });
     }
 }

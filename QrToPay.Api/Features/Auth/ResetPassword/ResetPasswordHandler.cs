@@ -17,31 +17,24 @@ public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequestModel, R
 
     public async Task<Result<string>> Handle(ResetPasswordRequestModel request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(request.NewPassword))
+        return await ResultHandler.HandleRequestAsync(async () =>
         {
-            return Result<string>.Failure("Nowe hasło jest wymagane.");
-        }
+            User? user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == request.EmailOrPhone || u.PhoneNumber == request.EmailOrPhone, cancellationToken) 
+                ?? throw new Exception("Użytkownik z podanym e-mailem lub numerem telefonu nie istnieje.");
 
-        User? user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Email == request.EmailOrPhone || u.PhoneNumber == request.EmailOrPhone, cancellationToken);
+            if (user.VerificationCode != request.VerificationCode)
+            {
+                throw new Exception("Nieprawidłowy kod weryfikacyjny.");
+            }
 
-        if (user == null)
-        {
-            return Result<string>.Failure("Użytkownik z podanym e-mailem lub numerem telefonu nie istnieje.");
-        }
+            user.PasswordHash = AuthenticationHelper.HashPassword(request.NewPassword);
+            user.VerificationCode = null;  // Resetowanie kodu weryfikacyjnego
+            user.UpdatedAt = DateTime.UtcNow;
 
-        if (user.VerificationCode != request.VerificationCode)
-        {
-            return Result<string>.Failure("Nieprawidłowy kod weryfikacyjny.");
-        }
+            await _context.SaveChangesAsync(cancellationToken);
 
-        // Aktualizacja hasła
-        user.PasswordHash = AuthenticationHelper.HashPassword(request.NewPassword);
-        user.VerificationCode = null;  // Resetowanie kodu weryfikacyjnego
-        user.UpdatedAt = DateTime.UtcNow;
-
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return Result<string>.Success("Hasło zostało pomyślnie zaktualizowane.");
+            return "Hasło zostało pomyślnie zaktualizowane.";
+        });
     }
 }
