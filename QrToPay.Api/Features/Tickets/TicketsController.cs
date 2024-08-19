@@ -39,10 +39,8 @@ public class TicketsController : ControllerBase
             : Ok(new { qrCode = result.Value });
     }
 
-    //[GitHub issue `#54212`](https://github.com/dotnet/aspnetcore/issues/54212).
-    #pragma warning disable ASP0018
-    [HttpGet("getHistory/{userId}")]
-    public async Task<IActionResult> GetTicketHistory([FromRoute] GetTicketHistoryRequestModel request)
+    [HttpGet("getHistory")]
+    public async Task<IActionResult> GetTicketHistory([FromQuery] GetTicketHistoryRequestModel request)
     {
         var result = await _mediator.Send(request);
 
@@ -50,7 +48,6 @@ public class TicketsController : ControllerBase
             ? StatusCode(500, new { Message = result.Error }) 
             : Ok(result.Value);
     }
-    #pragma warning restore ASP0018
 
     [HttpPost("activate")]
     public async Task<IActionResult> ActivateQrCode([FromBody] ActivateQrCodeRequestModel request)

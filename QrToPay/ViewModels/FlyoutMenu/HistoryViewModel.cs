@@ -37,7 +37,7 @@ public partial class HistoryViewModel : ViewModelBase
 
             int userId = Preferences.Get("UserId", 0);
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            var response = await client.GetFromJsonAsync<List<HistoryItemResponse>>($"/api/Tickets/getHistory/{userId}");
+            List<HistoryItemResponse>? response = await client.GetFromJsonAsync<List<HistoryItemResponse>>($"/api/Tickets/getHistory?userId={userId}");
 
             if (response != null && response.Count > 0)
             {
@@ -50,8 +50,8 @@ public partial class HistoryViewModel : ViewModelBase
                         Name = item.Name,
                         TotalPrice = item.TotalPrice
                     });
-                    HasHistory = true;
                 }
+                HasHistory = true;
             }
             else
             {

@@ -6,6 +6,5 @@ namespace QrToPay.Api.Features.Tickets.History;
 
 public class GetTicketHistoryRequestModel : IRequest<Result<List<TicketHistoryDto>>>
 {
-    [FromRoute(Name = "userId")]
     public required int UserId { get; init; }
 }

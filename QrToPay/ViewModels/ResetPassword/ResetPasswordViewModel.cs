@@ -64,16 +64,18 @@ public partial class ResetPasswordViewModel : ViewModelBase
 
                 if (changeResponse != null)
                 {
+                    //Cant set notification time in release mode
+                    //https://github.com/thudugala/Plugin.LocalNotification/issues/516
                     NotificationRequest notificationRequest = new()
                     {
                         Title = "Kod weryfikacyjny",
                         Description = $"Twój kod weryfikacyjny to: {changeResponse.VerificationCode}",
                         ReturningData = "VerificationCode",
-                        NotificationId = 1337,
-                        Schedule =
+                        NotificationId = 1337
+                        /*Schedule =
                         {
                             NotifyTime = DateTime.Now.AddSeconds(5) // Można dostosować czas powiadomienia
-                        }
+                        }*/
                     };
                     await LocalNotificationCenter.Current.Show(notificationRequest);
 

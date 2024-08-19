@@ -84,11 +84,7 @@ namespace QrToPay.ViewModels.Authentication
                             Title = "Kod weryfikacyjny",
                             Description = $"Twój kod weryfikacyjny to: {registerResponse.VerificationCode}",
                             ReturningData = "VerificationCode",
-                            NotificationId = 1337,
-                            Schedule =
-                        {
-                            NotifyTime = DateTime.Now.AddSeconds(5) // Można dostosować czas powiadomienia
-                        }
+                            NotificationId = 1337
                         };
                         await LocalNotificationCenter.Current.Show(notification);
 

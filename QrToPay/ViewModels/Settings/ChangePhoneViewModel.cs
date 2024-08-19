@@ -80,11 +80,7 @@ public partial class ChangePhoneViewModel : ViewModelBase
                         Title = "Kod weryfikacyjny",
                         Description = $"Twój kod weryfikacyjny to: {changePhoneResponse.VerificationCode}",
                         ReturningData = "VerificationCode",
-                        NotificationId = 1338,
-                        Schedule =
-                        {
-                            NotifyTime = DateTime.Now.AddSeconds(5) // Można dostosować czas powiadomienia
-                        }
+                        NotificationId = 1337
                     };
                     await LocalNotificationCenter.Current.Show(request);
 
