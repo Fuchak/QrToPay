@@ -1,4 +1,7 @@
-﻿namespace QrToPay.ViewModels.Common;
+﻿using QrToPay.Services.Api;
+using QrToPay.Services.Local;
+
+namespace QrToPay.ViewModels.Common;
 
 public partial class LoadingViewModel : ViewModelBase
 {

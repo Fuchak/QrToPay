@@ -1,5 +1,6 @@
 ﻿using QrToPay.Models.Common;
 using QrToPay.Models.Enums;
+using QrToPay.Services.Api;
 
 namespace QrToPay.ViewModels.Common;
 

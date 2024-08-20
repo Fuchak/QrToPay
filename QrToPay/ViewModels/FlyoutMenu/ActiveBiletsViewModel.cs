@@ -4,7 +4,8 @@ using System.Net.Http.Json;
 using QRCoder;
 using CommunityToolkit.Maui.Views;
 using QrToPay.Models.Common;
-using QrToPay.Services;
+using QrToPay.Services.Api;
+using QrToPay.Services.Local;
 
 namespace QrToPay.ViewModels.FlyoutMenu;
 

@@ -1,4 +1,4 @@
-﻿namespace QrToPay.Services;
+﻿namespace QrToPay.Messages;
 public class UserLoggedInMessage
 {
 }

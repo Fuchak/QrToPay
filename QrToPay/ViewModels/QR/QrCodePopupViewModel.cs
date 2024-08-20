@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui.Views;
+using QrToPay.Services.Api;
 
 namespace QrToPay.ViewModels.QR;
 public partial class QrCodePopupViewModel : ViewModelBase

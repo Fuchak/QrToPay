@@ -1,7 +1,7 @@
 ﻿using Microsoft.Maui.ApplicationModel;
 using Plugin.LocalNotification;
 
-namespace QrToPay.Services;
+namespace QrToPay.Services.Local;
 public class PermissionService
 {
     public static async Task<bool> RequestPermissionAsync<TPermission>(string permissionName) where TPermission : Permissions.BasePermission, new()

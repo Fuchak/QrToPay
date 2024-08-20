@@ -8,6 +8,8 @@ using QrToPay.View.Extensions;
 using QrToPay.Models.Common;
 using QrToPay.ViewModels.Authentication;
 using QrToPay.ViewModels.QR;
+using QrToPay.Services.Api;
+using QrToPay.Services.Local;
 
 namespace QrToPay;
 
