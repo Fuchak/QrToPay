@@ -23,12 +23,16 @@ public class CheckAccountHandler : IRequestHandler<CheckAccountRequestModel, Res
             User? user = await _context.Users
                 .Where(u => (request.ChangeType == ChangeType.Email && u.Email == request.Contact) ||
                             (request.ChangeType == ChangeType.Phone && u.PhoneNumber == request.Contact))
-                .FirstOrDefaultAsync(cancellationToken) 
-                ?? throw new Exception($"Użytkownik z podanym {(request.ChangeType == ChangeType.Email ? "e-mailem" : "numerem telefonu")} nie istnieje.");
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (user is null)
+            {
+                return Result<string>.Failure($"Użytkownik z podanym {(request.ChangeType == ChangeType.Email ? "e-mailem" : "numerem telefonu")} nie istnieje.");
+            }
 
             if (!user.IsVerified)
             {
-                throw new Exception("Konto użytkownika nie zostało potwierdzone.");
+                return Result<string>.Failure("Konto użytkownika nie zostało potwierdzone.");
             }
 
             string response = AuthenticationHelper.GenerateVerificationCode();
@@ -37,7 +41,7 @@ public class CheckAccountHandler : IRequestHandler<CheckAccountRequestModel, Res
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return response;
+            return Result<string>.Success(response);
         });
     }
 }

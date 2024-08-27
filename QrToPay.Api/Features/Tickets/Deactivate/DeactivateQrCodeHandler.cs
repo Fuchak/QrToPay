@@ -17,15 +17,19 @@ public class DeactivateQrCodeHandler : IRequestHandler<DeactivateQrCodeRequestMo
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
-            UserTicket response = await _context.UserTickets
+            UserTicket? response = await _context.UserTickets
                             .Where(t => t.Token == request.Token && t.UserId == request.UserID)
-                            .FirstOrDefaultAsync(cancellationToken)
-                            ?? throw new Exception("Nie znaleziono biletu.");
+                            .FirstOrDefaultAsync(cancellationToken);
+
+            if(response is null)
+            {
+                return Result<bool>.Failure("Nie znaleziono biletu.");
+            }
 
             response.QrCodeIsActive = false; // Deaktywacja kodu
             await _context.SaveChangesAsync(cancellationToken);
-            
-            return true;
+
+            return Result<bool>.Success(true);
         });
     }
 }

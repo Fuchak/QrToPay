@@ -46,7 +46,7 @@ public class PurchaseTicketHandler : IRequestHandler<PurchaseTicketRequestModel,
                 token = (Guid)response.Value;
             }
 
-            return token.ToString();
+            return Result<string>.Success(token.ToString());
         });
     }
 }

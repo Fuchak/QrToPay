@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.Models;
 using QrToPay.Api.Common.Results;
 using QrToPay.Api.Common.Helpers;
+using QrToPay.Api.Features.Cities;
 
 namespace QrToPay.Api.Features.Register.CreateUser;
 
@@ -29,7 +30,7 @@ public class CreateUserHandler : IRequestHandler<CreateUserRequestModel, Result<
             {
                 if (existingUser.IsVerified)
                 {
-                    throw new Exception("Użytkownik z podanym e-mailem lub numerem telefonu już istnieje.");
+                    return Result<CreateUserDto>.Failure("Użytkownik z podanym e-mailem lub numerem telefonu już istnieje.");
                 }
 
                 existingUser.PasswordHash = AuthenticationHelper.HashPassword(request.PasswordHash);
@@ -56,8 +57,12 @@ public class CreateUserHandler : IRequestHandler<CreateUserRequestModel, Result<
             await _context.SaveChangesAsync(cancellationToken);
 
             User? user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == request.Email || u.PhoneNumber == request.PhoneNumber, cancellationToken) 
-                ?? throw new Exception("Błąd wewnętrzny serwera.");
+                .FirstOrDefaultAsync(u => u.Email == request.Email || u.PhoneNumber == request.PhoneNumber, cancellationToken);
+
+            if (user is null)
+            {
+                return Result<CreateUserDto>.Failure("Błąd wewnętrzny serwera.");
+            }
 
             CreateUserDto result = new() 
             {
@@ -65,7 +70,7 @@ public class CreateUserHandler : IRequestHandler<CreateUserRequestModel, Result<
                 EmailOrPhone = user.Email ?? user.PhoneNumber!
             };
 
-            return result;
+            return Result<CreateUserDto>.Success(result);
         });
     }
 }

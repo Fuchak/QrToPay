@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.Common.Helpers;
 using QrToPay.Api.Common.Results;
+using QrToPay.Api.Features.Auth.Login;
 using QrToPay.Api.Models;
 
 namespace QrToPay.Api.Features.Auth.ResetPassword;
@@ -20,12 +21,16 @@ public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequestModel, R
         return await ResultHandler.HandleRequestAsync(async () =>
         {
             User? user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == request.EmailOrPhone || u.PhoneNumber == request.EmailOrPhone, cancellationToken) 
-                ?? throw new Exception("Użytkownik z podanym e-mailem lub numerem telefonu nie istnieje.");
+                .FirstOrDefaultAsync(u => u.Email == request.EmailOrPhone || u.PhoneNumber == request.EmailOrPhone, cancellationToken);
+
+            if (user is null)
+            {
+                return Result<string>.Failure("Użytkownik z podanym e-mailem lub numerem telefonu nie istnieje.");
+            }
 
             if (user.VerificationCode != request.VerificationCode)
             {
-                throw new Exception("Nieprawidłowy kod weryfikacyjny.");
+                return Result<string>.Failure("Nieprawidłowy kod weryfikacyjny.");
             }
 
             user.PasswordHash = AuthenticationHelper.HashPassword(request.NewPassword);
@@ -34,7 +39,7 @@ public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequestModel, R
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return "Hasło zostało pomyślnie zaktualizowane.";
+            return Result<string>.Success("Hasło zostało pomyślnie zaktualizowane.");
         });
     }
 }

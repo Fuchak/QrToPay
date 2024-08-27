@@ -23,19 +23,19 @@ public class LoginHandler : IRequestHandler<LoginRequestModel, Result<LoginDto>>
                             (!string.IsNullOrEmpty(request.PhoneNumber) && u.PhoneNumber == request.PhoneNumber))
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (user == null || !BCrypt.Net.BCrypt.Verify(request.PasswordHash, user.PasswordHash))
+            if (user is null || !BCrypt.Net.BCrypt.Verify(request.PasswordHash, user.PasswordHash))
             {
-                throw new Exception("Nieprawidłowy email, numer telefonu lub hasło.");
+                return Result<LoginDto>.Failure("Nieprawidłowy email, numer telefonu lub hasło.");
             }
 
             if (!user.IsVerified)
             {
-                throw new Exception("Konto nie zostało aktywowane.");
+                return Result<LoginDto>.Failure("Konto nie zostało aktywowane.");
             }
 
             if (user.IsDeleted)
             {
-                throw new Exception("Konto zostało zablokowane.");
+                return Result<LoginDto>.Failure("Konto zostało zablokowane.");
             }
 
             LoginDto response = new()
@@ -48,7 +48,7 @@ public class LoginHandler : IRequestHandler<LoginRequestModel, Result<LoginDto>>
                 IsBlocked = user.IsDeleted
             };
 
-            return response;
+            return Result<LoginDto>.Success(response);
         });
     }
 }

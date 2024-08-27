@@ -26,7 +26,7 @@ public class GetActiveTicketsHandler : IRequestHandler<GetActiveTicketsRequestMo
 
             if (activeTickets.Count == 0)
             {
-                throw new Exception("Brak aktywnych biletów dla tego użytkownika.");
+                return Result<List<ActiveTicketDto>>.Failure("Brak aktywnych biletów dla tego użytkownika.");
             }
 
             List<ActiveTicketDto> response = activeTickets.Select(t => new ActiveTicketDto
@@ -43,7 +43,7 @@ public class GetActiveTicketsHandler : IRequestHandler<GetActiveTicketsRequestMo
                 IsActive = t.IsActive
             }).ToList();
 
-            return response;
+            return Result<List<ActiveTicketDto>>.Success(response);
         });
     }
 }

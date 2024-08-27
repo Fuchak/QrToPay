@@ -32,10 +32,10 @@ public class GetSkiResortPricesHandler : IRequestHandler<GetSkiResortPricesReque
 
             if (response.Count == 0)
             {
-                throw new Exception("Nie znaleziono ofert zakupu biletów dla tego resortu.");
+                return Result<IEnumerable<SkiResortPriceDto>>.Failure("Nie znaleziono ofert zakupu biletów dla tego resortu.");
             }
 
-            return response.AsEnumerable();
+            return Result<IEnumerable<SkiResortPriceDto>>.Success(response.AsEnumerable());
         });
     }
 }

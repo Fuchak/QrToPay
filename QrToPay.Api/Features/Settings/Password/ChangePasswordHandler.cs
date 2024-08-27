@@ -20,12 +20,16 @@ public class ChangePasswordHandler : IRequestHandler<ChangePasswordRequestModel,
         return await ResultHandler.HandleRequestAsync(async () =>
         {
             User? user = await _context.Users
-                .FirstOrDefaultAsync(u => u.UserId == request.UserId, cancellationToken) 
-                ?? throw new Exception("Użytkownik z podanym identyfikatorem nie istnieje.");
+                .FirstOrDefaultAsync(u => u.UserId == request.UserId, cancellationToken);
+
+            if (user is null)
+            {
+                return Result<string>.Failure("Użytkownik z podanym identyfikatorem nie istnieje.");
+            }
 
             if (!AuthenticationHelper.VerifyPassword(request.OldPassword, user.PasswordHash))
             {
-                throw new Exception("Nieprawidłowe stare hasło.");
+                return Result<string>.Failure("Nieprawidłowe stare hasło.");
             }
 
             user.PasswordHash = AuthenticationHelper.HashPassword(request.NewPassword);
@@ -33,7 +37,7 @@ public class ChangePasswordHandler : IRequestHandler<ChangePasswordRequestModel,
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return "Hasło zostało zmienione.";
+            return Result<string>.Success("Hasło zostało zmienione.");
         });
     }
 }

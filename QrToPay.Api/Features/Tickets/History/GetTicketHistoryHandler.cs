@@ -31,7 +31,7 @@ public class GetTicketHistoryHandler : IRequestHandler<GetTicketHistoryRequestMo
                             })
                             .ToListAsync(cancellationToken);
 
-            return response;
+            return Result<List<TicketHistoryDto>>.Success(response);
         });
     }
 }

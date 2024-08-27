@@ -19,12 +19,17 @@ public class ScanPurchaseHandler : IRequestHandler<ScanPurchaseRequestModel, Res
         return await ResultHandler.HandleRequestAsync(async () =>
         {
             User? response = await _context.Users
-                .FirstOrDefaultAsync(u => u.UserId == request.UserId, cancellationToken)
-                ?? throw new Exception("Użytkownik nie został znaleziony.");
+                .FirstOrDefaultAsync(u => u.UserId == request.UserId, cancellationToken);
+
+
+            if (response is null)
+            {
+                return Result<string>.Failure("Użytkownik nie został znaleziony.");
+            }
 
             if (response.AccountBalance < request.Price)
             {
-                throw new Exception("Niewystarczające środki na koncie.");
+                return Result<string>.Failure("Niewystarczające środki na koncie.");
             }
 
             response.AccountBalance -= request.Price;
@@ -43,7 +48,7 @@ public class ScanPurchaseHandler : IRequestHandler<ScanPurchaseRequestModel, Res
             _context.TicketHistories.Add(ticketHistoryRequest);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return "Zakup został dodany do historii.";
+            return Result<string>.Success("Zakup został dodany do historii.");
         });
     }
 

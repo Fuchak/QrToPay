@@ -21,10 +21,14 @@ public class GetUserBalanceHandler : IRequestHandler<GetUserBalanceRequestModel,
             UserBalanceDto? response = await _context.Users
                 .Where(u => u.UserId == request.UserId)
                 .Select(u => new UserBalanceDto { AccountBalance = u.AccountBalance })
-                .FirstOrDefaultAsync(cancellationToken) 
-                ?? throw new Exception("Użytkownik nieodnaleziony.");
+                .FirstOrDefaultAsync(cancellationToken);
 
-            return response;
+            if(response is null)
+            {
+                return Result<UserBalanceDto>.Failure("Użytkownik nieodnaleziony.");
+            }
+
+            return Result<UserBalanceDto>.Success(response);
         });
     }
 }

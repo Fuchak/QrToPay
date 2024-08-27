@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using QrToPay.Api.Models;
 using QrToPay.Api.Common.Results;
+using QrToPay.Api.Features.SkiResorts.Resorts;
 
 namespace QrToPay.Api.Features.Support.CreateHelpForm;
 
@@ -32,7 +33,7 @@ public class CreateHelpFormHandler : IRequestHandler<CreateHelpFormRequestModel,
             _context.HelpForms.Add(helpForm);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return "Zgłoszenie zostało utworzone.";
+            return Result<string>.Success("Zgłoszenie zostało utworzone.");
         });
     }
 }

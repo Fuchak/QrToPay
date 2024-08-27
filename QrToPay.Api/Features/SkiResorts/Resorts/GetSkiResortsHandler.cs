@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.Common.Results;
+using QrToPay.Api.Features.SkiResorts.Prices;
 using QrToPay.Api.Models;
 
 namespace QrToPay.Api.Features.SkiResorts.Resorts;
@@ -36,10 +37,10 @@ public class GetSkiResortsHandler : IRequestHandler<GetSkiResortsRequestModel, R
 
             if (response.Count == 0)
             {
-                throw new Exception("Nie znaleziono stoków narciarskich w tym mieście.");
+                return Result<IEnumerable<SkiResortsDto>>.Failure("Nie znaleziono stoków narciarskich w tym mieście.");
             }
 
-            return response.AsEnumerable();
+            return Result<IEnumerable<SkiResortsDto>>.Success(response.AsEnumerable());
         });
     }
 }

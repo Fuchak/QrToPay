@@ -2,11 +2,11 @@
 
 public static class ResultHandler
 {
-    public static async Task<Result<T>> HandleRequestAsync<T>(Func<Task<T>> request)
+    public static async Task<Result<T>> HandleRequestAsync<T>(Func<Task<Result<T>>> request)
     {
         try
         {
-            return Result<T>.Success(await request());
+            return await request();
         }
         catch (Exception ex)
         {

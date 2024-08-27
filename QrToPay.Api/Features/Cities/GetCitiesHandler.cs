@@ -30,10 +30,10 @@ public class GetCitiesHandler : IRequestHandler<GetCitiesRequestModel, Result<IE
 
             if (response.Count == 0)
             {
-                throw new Exception($"Nie znaleziono miast.");
+                return Result<IEnumerable<CitiesDto>>.Failure($"Nie znaleziono miast.");
             }
 
-            return response.AsEnumerable();
+            return Result<IEnumerable<CitiesDto>>.Success(response.AsEnumerable());
         });
     }
 }

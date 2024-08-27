@@ -24,12 +24,16 @@ public class ChangeEmailPhoneRequestHandler : IRequestHandler<ChangeEmailPhoneRe
         return await ResultHandler.HandleRequestAsync(async () =>
         {
             User? user = await _context.Users
-                .FirstOrDefaultAsync(u => u.UserId == request.UserId && u.IsVerified, cancellationToken) 
-                ?? throw new Exception("Użytkownik z podanym identyfikatorem nie istnieje lub nie został zweryfikowany.");
+                .FirstOrDefaultAsync(u => u.UserId == request.UserId && u.IsVerified, cancellationToken);
+
+            if(user is null)
+            {
+                return Result<string>.Failure("Użytkownik z podanym identyfikatorem nie istnieje lub nie został zweryfikowany.");
+            }
 
             if (!AuthenticationHelper.VerifyPassword(request.Password, user.PasswordHash))
             {
-                throw new Exception("Nieprawidłowe hasło.");
+                return Result<string>.Failure("Nieprawidłowe hasło.");
             }
 
             //User? existingUser = null;
@@ -37,22 +41,30 @@ public class ChangeEmailPhoneRequestHandler : IRequestHandler<ChangeEmailPhoneRe
             if (request.ChangeType == ChangeType.Email)
             {
                 User? existingUser = await _context.Users
-                    .FirstOrDefaultAsync(u => u.Email == request.NewValue, cancellationToken)
-                    ?? throw new Exception($"Użytkownik z takim adresem email już istnieje.");
+                    .FirstOrDefaultAsync(u => u.Email == request.NewValue, cancellationToken);
+
+                if(existingUser != null)
+                {
+                    return Result<string>.Failure($"Użytkownik z takim adresem email już istnieje.");
+                }
 
                 _verificationStorageService.StoreEmailVerification(user.UserId, request.NewValue);
             }
             else if (request.ChangeType == ChangeType.Phone)
             {
                 User? existingUser = await _context.Users
-                    .FirstOrDefaultAsync(u => u.PhoneNumber == request.NewValue, cancellationToken)
-                    ?? throw new Exception($"Użytkownik z takim numerem telefonu już istnieje.");
+                    .FirstOrDefaultAsync(u => u.PhoneNumber == request.NewValue, cancellationToken);
+
+                if (existingUser != null)
+                {
+                    return Result<string>.Failure($"Użytkownik z takim numerem telefonu już istnieje.");
+                }
 
                 _verificationStorageService.StorePhoneVerification(user.UserId, request.NewValue);
             }
             else
             {
-                throw new Exception("Nieprawidłowy typ zmiany.");
+                return Result<string>.Failure("Nieprawidłowy typ zmiany.");
             }
 
             string response = AuthenticationHelper.GenerateVerificationCode();
@@ -61,7 +73,7 @@ public class ChangeEmailPhoneRequestHandler : IRequestHandler<ChangeEmailPhoneRe
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return response;
+            return Result<string>.Success(response);
         });
     }
 

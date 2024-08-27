@@ -22,21 +22,24 @@ public class VerifyHandler : IRequestHandler<VerifyRequestModel, Result<string>>
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
-            User response = await _context.Users
-                .FirstOrDefaultAsync(u => u.UserId == request.UserId && u.IsVerified, cancellationToken) 
-                ?? throw new Exception("Użytkownik z podanym identyfikatorem nie istnieje lub nie został zweryfikowany.");
+            User? response = await _context.Users
+                .FirstOrDefaultAsync(u => u.UserId == request.UserId && u.IsVerified, cancellationToken);
+
+            if (response is null)
+            {
+                   return Result<string>.Failure("Użytkownik z podanym identyfikatorem nie istnieje lub nie został zweryfikowany.");
+            }
 
             if (response.VerificationCode != request.VerificationCode)
             {
-                throw new Exception("Nieprawidłowy kod weryfikacyjny.");
+                return Result<string>.Failure("Nieprawidłowy kod weryfikacyjny.");
             }
-
 
             if (request.ChangeType == ChangeType.Email)
             {
                 if (!_verificationStorageService.TryGetEmailVerification(request.UserId, out var newEmail))
                 {
-                    throw new Exception("Kod weryfikacyjny wygasł lub jest nieprawidłowy.");
+                    return Result<string>.Failure("Kod weryfikacyjny wygasł lub jest nieprawidłowy.");
                 }
 
                 response.Email = newEmail;
@@ -46,7 +49,7 @@ public class VerifyHandler : IRequestHandler<VerifyRequestModel, Result<string>>
             {
                 if (!_verificationStorageService.TryGetPhoneVerification(request.UserId, out var newPhone))
                 {
-                    throw new Exception("Kod weryfikacyjny wygasł lub jest nieprawidłowy.");
+                    return Result<string>.Failure("Kod weryfikacyjny wygasł lub jest nieprawidłowy.");
                 }
 
                 response.PhoneNumber = newPhone;
@@ -58,7 +61,7 @@ public class VerifyHandler : IRequestHandler<VerifyRequestModel, Result<string>>
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return "Zmiana została zweryfikowana.";
+            return Result<string>.Success("Zmiana została zweryfikowana.");
         });
     }
 }

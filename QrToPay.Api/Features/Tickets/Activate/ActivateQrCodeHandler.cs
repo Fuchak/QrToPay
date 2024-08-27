@@ -19,15 +19,19 @@ public class ActivateQrCodeHandler : IRequestHandler<ActivateQrCodeRequestModel,
         {
             UserTicket? response = await _context.UserTickets
                 .Where(t => t.Token == request.Token && t.UserId == request.UserID)
-                .FirstOrDefaultAsync(cancellationToken) 
-                ?? throw new Exception("Nie znaleziono biletu.");
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (response is null)
+            {
+                return Result<bool>.Failure("Nie znaleziono biletu.");
+            }
 
             response.QrCodeIsActive = true;
             response.QrCodeGeneratedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return true;
+            return Result<bool>.Success(true);
         });
     }
 }

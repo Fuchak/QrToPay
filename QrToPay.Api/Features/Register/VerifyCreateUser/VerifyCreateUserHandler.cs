@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.Common.Results;
+using QrToPay.Api.Features.Register.CreateUser;
 using QrToPay.Api.Models;
 
 namespace QrToPay.Api.Features.Register.VerifyCreateUser;
@@ -18,15 +19,19 @@ public class VerifyCreateUserHandler : IRequestHandler<VerifyCreateUserRequestMo
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
-            User response = await _context.Users
-                            .FirstOrDefaultAsync(u => (u.Email == request.EmailOrPhone || u.PhoneNumber == request.EmailOrPhone) && u.VerificationCode == request.VerificationCode, cancellationToken)
-                            ?? throw new Exception("Nieprawidłowy kod weryfikacyjny.");
+            User? response = await _context.Users
+                            .FirstOrDefaultAsync(u => (u.Email == request.EmailOrPhone || u.PhoneNumber == request.EmailOrPhone) && u.VerificationCode == request.VerificationCode, cancellationToken);
+
+            if (response is null)
+            {
+                return Result<string>.Failure("Nieprawidłowy kod weryfikacyjny.");
+            }
 
             response.IsVerified = true;
             response.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync(cancellationToken);
 
-            return "Użytkownik został zweryfikowany.";
+            return Result<string>.Success("Użytkownik został zweryfikowany.");
         });
     }
 }
