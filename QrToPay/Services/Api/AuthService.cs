@@ -5,7 +5,7 @@ using QrToPay.Models.Responses;
 using QrToPay.Models.Requests;
 using QrToPay.Models.Common;
 
-namespace QrToPay.Services
+namespace QrToPay.Services.Api
 {
     public class AuthService
     {

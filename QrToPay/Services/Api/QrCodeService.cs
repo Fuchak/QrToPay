@@ -5,7 +5,7 @@ using QrToPay.Models.Requests;
 using System.Net.Http;
 using System.Text.Json;
 
-namespace QrToPay.Services;
+namespace QrToPay.Services.Api;
 public class QrCodeService
 {
     private readonly IHttpClientFactory _httpClientFactory;
@@ -30,7 +30,7 @@ public class QrCodeService
         UpdateTicketResponse? result = await response.Content.ReadFromJsonAsync<UpdateTicketResponse>();
         return result?.QrCode ?? string.Empty;
     }
-    
+
     public async Task ActivateQrCodeAsync(string token, int userId)
     {
 

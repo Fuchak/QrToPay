@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Http.Json;
 using QrToPay.Models.Responses;
 
-namespace QrToPay.Services;
+namespace QrToPay.Services.Api;
 public class BalanceService
 {
     private readonly IHttpClientFactory _httpClientFactory;

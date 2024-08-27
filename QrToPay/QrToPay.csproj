@@ -165,7 +165,7 @@
 	  <Compile Update="View\ResetPassword\ResetPasswordPage.xaml.cs">
 	    <DependentUpon>ResetPasswordPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Services\AuthService.cs">
+	  <Compile Update="Services\Api\AuthService.cs">
 	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </Compile>
 	  <Compile Update="View\QR\ScanQrCodePage.xaml.cs">

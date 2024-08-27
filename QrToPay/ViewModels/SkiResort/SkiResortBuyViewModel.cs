@@ -4,6 +4,8 @@ using System.Globalization;
 using QRCoder;
 using QrToPay.Models.Common;
 using QrToPay.Models.Requests;
+using QrToPay.Services.Api;
+using QrToPay.Services.Local;
 
 namespace QrToPay.ViewModels.SkiResort;
 

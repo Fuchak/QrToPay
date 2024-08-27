@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using QrToPay.Messages;
 using QrToPay.ViewModels.Common;
 
 namespace QrToPay.View;

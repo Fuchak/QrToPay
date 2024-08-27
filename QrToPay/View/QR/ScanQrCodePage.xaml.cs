@@ -8,7 +8,7 @@ using QrToPay.ViewModels.QR;
 using QrToPay.ViewModels.ResetPassword;
 using QrToPay.ViewModels.Settings;
 using QrToPay.ViewModels.SkiResort;
-using QrToPay.Services;
+using QrToPay.Services.Local;
 
 namespace QrToPay.View;
 public partial class ScanQrCodePage : ContentPage

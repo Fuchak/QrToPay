@@ -1,4 +1,5 @@
 ﻿using QrToPay.Models.Responses;
+using QrToPay.Services.Api;
 
 namespace QrToPay.ViewModels.Authentication;
 

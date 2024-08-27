@@ -1,3 +1,4 @@
+using QrToPay.Services.Local;
 using QrToPay.ViewModels.Authentication;
 
 namespace QrToPay.View;

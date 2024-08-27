@@ -1,6 +1,6 @@
 ﻿using QRCoder;
 
-namespace QrToPay.Services;
+namespace QrToPay.Services.Local;
 
 public class QrCodeStorageService
 {
