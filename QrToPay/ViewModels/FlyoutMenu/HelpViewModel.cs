@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net.Http.Json;
 using QrToPay.Models.Responses;
@@ -81,11 +80,7 @@ public partial class HelpViewModel : ViewModelBase
                 Status = "Nowe"
             };
 
-            Debug.WriteLine($"Request Data: {JsonConvert.SerializeObject(request)}");
-
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/Support", request);
-
-            Debug.WriteLine($"Response Status: {response.StatusCode}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -108,10 +103,9 @@ public partial class HelpViewModel : ViewModelBase
         {
             ErrorMessage = "Brak połączenia z internetem.";
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Debug.WriteLine($"Unexpected error: {ex}");
-            ErrorMessage = $"Wystąpił nieoczekiwany błąd: {ex.Message}. Spróbuj ponownie.";
+            ErrorMessage = $"Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.";
         }
         finally
         {

@@ -98,9 +98,6 @@ public partial class SkiResortBuyViewModel : ViewModelBase
                 Tokens = Points,
                 TotalPrice = formattedPrice
             };
-            //TODO usun debug potem xd
-            Debug.WriteLine($"Sending Update Request: UserID={updateRequest.UserId}, ServiceId={updateRequest.ServiceId}, Quantity={updateRequest.Quantity}, Tokens={updateRequest.Tokens}, TotalPrice={updateRequest.TotalPrice}");
-
 
             var token = await _qrCodeService.GenerateAndUpdateTicketAsync(updateRequest);
             if (string.IsNullOrEmpty(token))
@@ -127,9 +124,8 @@ public partial class SkiResortBuyViewModel : ViewModelBase
 
             await Shell.Current.GoToAsync($"//MainPage/ActiveBiletsPage");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Debug.WriteLine($"Błąd przy generowaniu kodu qr lub aktualizowaniu bazy: {ex.Message}");
             await Shell.Current.DisplayAlert("Błąd", "Wystąpił błąd podczas zakupu biletu", "OK");
         }
         finally

@@ -3,7 +3,6 @@ using System.Diagnostics;
 using QrToPay.Models.Responses;
 using CommunityToolkit.Maui.Views;
 using Plugin.LocalNotification;
-using Newtonsoft.Json;
 using QrToPay.Models.Requests;
 using QrToPay.Models.Enums;
 
@@ -51,8 +50,6 @@ public partial class ChangeEmailViewModel: ViewModelBase
                 return;
             }
 
-            Debug.WriteLine($"UserId: {userId}");
-
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
             ChangeRequest changeRequest = new()
             {
@@ -62,16 +59,11 @@ public partial class ChangeEmailViewModel: ViewModelBase
                 ChangeType = ChangeType.Email
             };
 
-            Debug.WriteLine($"Request Data: {JsonConvert.SerializeObject(changeRequest)}");
-
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/Settings/requestChange", changeRequest);
-
-            Debug.WriteLine($"Response Status: {response.StatusCode}");
 
             if (response.IsSuccessStatusCode)
             {
                 ChangeResponse? changeEmailResponse = await response.Content.ReadFromJsonAsync<ChangeResponse>();
-                Debug.WriteLine($"Response Data: {JsonConvert.SerializeObject(changeEmailResponse)}");
 
                 if (changeEmailResponse != null)
                 {
@@ -127,10 +119,10 @@ public partial class ChangeEmailViewModel: ViewModelBase
         {
             ErrorMessage = "Brak połączenia z internetem.";
         }
-        catch (Exception ex)
+        //TODO dla tego catcha może być ogólny bład tak samo dla tego z netem
+        catch (Exception)
         {
-            Debug.WriteLine($"Unexpected error: {ex}");
-            ErrorMessage = $"Wystąpił nieoczekiwany błąd: {ex.Message}. Spróbuj ponownie.";
+            ErrorMessage = $"Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.";
         }
         finally
         {

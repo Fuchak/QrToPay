@@ -29,6 +29,9 @@ public partial class ScanQrCodeViewModel : ViewModelBase
     [ObservableProperty]
     private bool isBusy = false;
 
+    [ObservableProperty]
+    private string? errorMessage;
+
     private const int PauseDuration = 4000; // Pauza w milisekundach (4 sekundy) by nie zawalać api zbyt dużą ilością zapytań
 
     [RelayCommand]
@@ -72,12 +75,12 @@ public partial class ScanQrCodeViewModel : ViewModelBase
             else
             {
                 ApiResponse? errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                await Shell.Current.DisplayAlert("Błąd", errorResponse?.Message, "OK");
+                ErrorMessage = $"Błąd: {errorResponse?.Message}";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Debug.WriteLine($"Error fetching attraction data: {ex.Message}");
+            ErrorMessage = "Wystąpił nieoczekiwany błąd. Spróbuj ponownie.";
         }
     }
 
@@ -127,13 +130,13 @@ public partial class ScanQrCodeViewModel : ViewModelBase
                 else
                 {
                     ApiResponse? errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                    Debug.WriteLine(errorResponse?.Message ?? "Błąd podczas zakupu.");
+                    ErrorMessage = $"Błąd: {errorResponse?.Message}";
                 }
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Debug.WriteLine($"Error during purchase: {ex.Message}");
+            ErrorMessage = "Wystąpił nieoczekiwany błąd. Spróbuj ponownie.";
         }
         finally
         {

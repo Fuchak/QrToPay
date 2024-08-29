@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using QrToPay.Models.Responses;
 using QrToPay.Models.Requests;
-using Newtonsoft.Json;
 
 namespace QrToPay.ViewModels.Settings;
 public partial class ChangePasswordViewModel : ViewModelBase
@@ -55,8 +54,6 @@ public partial class ChangePasswordViewModel : ViewModelBase
                 return;
             }
 
-            Debug.WriteLine($"UserId: {userId}");
-
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
             ChangePasswordRequest changePasswordRequest = new()
             {
@@ -66,11 +63,7 @@ public partial class ChangePasswordViewModel : ViewModelBase
                 ConfirmNewPassword = PasswordConfirm
             };
 
-            Debug.WriteLine($"Request Data: {JsonConvert.SerializeObject(changePasswordRequest)}");
-
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/Settings/changePassword", changePasswordRequest);
-
-            Debug.WriteLine($"Response Status: {response.StatusCode}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -86,9 +79,8 @@ public partial class ChangePasswordViewModel : ViewModelBase
         {
             ErrorMessage = "Brak połączenia z internetem.";
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Debug.WriteLine($"Unexpected error: {ex.Message}");
             ErrorMessage = "Wystąpił nieoczekiwany błąd. Spróbuj ponownie.";
         }
         finally

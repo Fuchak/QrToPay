@@ -50,9 +50,8 @@ public partial class FunFairCityViewModel : ViewModelBase
         {
             ErrorMessage = "Brak połączenia z internetem.";
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Debug.WriteLine($"Unexpected error: {ex}");
             ErrorMessage = "Wystąpił nieoczekiwany błąd.";
         }
     }

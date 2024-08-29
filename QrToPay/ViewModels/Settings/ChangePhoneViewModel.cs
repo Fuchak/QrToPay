@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using CommunityToolkit.Maui.Views;
 using Plugin.LocalNotification;
-using Newtonsoft.Json;
 using QrToPay.Models.Responses;
 using QrToPay.Models.Enums;
 using QrToPay.Models.Requests;
@@ -51,8 +50,6 @@ public partial class ChangePhoneViewModel : ViewModelBase
                 return;
             }
 
-            Debug.WriteLine($"UserId: {userId}");
-
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
             ChangeRequest changeRequest = new()
             {
@@ -62,16 +59,11 @@ public partial class ChangePhoneViewModel : ViewModelBase
                 ChangeType = ChangeType.Phone
             };
 
-            Debug.WriteLine($"Request Data: {JsonConvert.SerializeObject(changeRequest)}");
-
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/Settings/requestChange", changeRequest);
-
-            Debug.WriteLine($"Response Status: {response.StatusCode}");
 
             if (response.IsSuccessStatusCode)
             {
                 ChangeResponse? changePhoneResponse = await response.Content.ReadFromJsonAsync<ChangeResponse>();
-                Debug.WriteLine($"Response Data: {JsonConvert.SerializeObject(changePhoneResponse)}");
 
                 if (changePhoneResponse != null)
                 {
@@ -86,7 +78,6 @@ public partial class ChangePhoneViewModel : ViewModelBase
 
                     bool verificationResult = await VerificationCodeHelper.VerifyCodeAsync(changePhoneResponse.VerificationCode);
 
-                    Debug.WriteLine($"Verification Result: {verificationResult}");
                     if (verificationResult)
                     {
                         VerifyChangeRequest VerifyRequest = new()
@@ -128,10 +119,9 @@ public partial class ChangePhoneViewModel : ViewModelBase
         {
             ErrorMessage = "Brak połączenia z internetem.";
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Debug.WriteLine($"Unexpected error: {ex}");
-            ErrorMessage = $"Wystąpił nieoczekiwany błąd: {ex.Message}. Spróbuj ponownie.";
+            ErrorMessage = $"Wystąpił nieoczekiwany błąd Spróbuj ponownie.";
         }
         finally
         {

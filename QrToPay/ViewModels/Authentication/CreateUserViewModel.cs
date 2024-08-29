@@ -131,9 +131,8 @@ namespace QrToPay.ViewModels.Authentication
             {
                 ErrorMessage = "Brak połączenia z internetem.";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine($"Unexpected error: {ex.Message}");
                 ErrorMessage = "Wystąpił nieoczekiwany błąd. Spróbuj ponownie.";
             }
             finally

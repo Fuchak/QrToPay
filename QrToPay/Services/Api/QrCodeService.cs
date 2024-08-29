@@ -23,7 +23,6 @@ public class QrCodeService
 
         if (!response.IsSuccessStatusCode)
         {
-            Debug.WriteLine($"Nieudane generowanie lub aktualizacja biletu: {response.ReasonPhrase}");
             return string.Empty;
         }
 
@@ -42,12 +41,8 @@ public class QrCodeService
 
         HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
 
-        HttpResponseMessage response = await client.PostAsJsonAsync("api/Tickets/activate", requestModel);
+        await client.PostAsJsonAsync("api/Tickets/activate", requestModel);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            Console.WriteLine($"Failed to activate QR code. Status code: {response.StatusCode}");
-        }
     }
 
     public async Task DeactivateQrCodeAsync(string token, int userId)
@@ -60,11 +55,6 @@ public class QrCodeService
 
         HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
 
-        HttpResponseMessage response = await client.PostAsJsonAsync("api/Tickets/deactivate", requestModel);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            Console.WriteLine($"Failed to deactivate QR code. Status code: {response.StatusCode}");
-        }
+        await client.PostAsJsonAsync("api/Tickets/deactivate", requestModel);
     }
 }

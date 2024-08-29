@@ -54,9 +54,8 @@ public partial class SkiViewModel : ViewModelBase
         {
             ErrorMessage = "Brak połączenia z internetem.";
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Debug.WriteLine($"Unexpected error: {ex}");
             ErrorMessage = "Wystąpił nieoczekiwany błąd.";
         }
     }
@@ -64,9 +63,6 @@ public partial class SkiViewModel : ViewModelBase
     [RelayCommand]
     private async Task GotoSkiResortAsync(SkiResortData skiresort)
     {
-
-        Debug.WriteLine($"Selected SkiResortID: {skiresort.SkiResortId}, ResortName: {skiresort.ResortName}");
-
         _appState.UpdateAttractionId(skiresort.SkiResortId);
         _appState.UpdateResortName(skiresort.ResortName);
 
