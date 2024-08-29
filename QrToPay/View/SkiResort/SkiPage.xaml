@@ -42,9 +42,9 @@
         </Border>
 
         <VerticalStackLayout Grid.Row="1" Padding="10,10,10,0" Spacing="10">
-            <CollectionView  ItemsSource="{Binding Skislopes}">
+            <CollectionView  ItemsSource="{Binding SkiResorts}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:SkiSlope">
+                    <DataTemplate x:DataType="models:SkiResortData">
                         <Frame Padding="10"
                                Margin="2"
                                BackgroundColor="{StaticResource Orange}"

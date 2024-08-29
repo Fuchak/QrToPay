@@ -16,7 +16,7 @@ public partial class SkiViewModel : ViewModelBase
     }
 
     [ObservableProperty]
-    private ObservableCollection<SkiSlope> skislopes = [];
+    private ObservableCollection<SkiResortData> skiResorts = [];
 
     [ObservableProperty]
     string? errorMessage;
@@ -30,14 +30,14 @@ public partial class SkiViewModel : ViewModelBase
             HttpResponseMessage response = await client.GetAsync($"/api/SkiResorts/resorts?serviceId={_appState.ServiceId}");
             response.EnsureSuccessStatusCode();
 
-            List<SkiSlope>? skiSlopes = await response.Content.ReadFromJsonAsync<List<SkiSlope>>();
+            List<SkiResortData>? skiResorts = await response.Content.ReadFromJsonAsync<List<SkiResortData>>();
 
-            if (skiSlopes != null)
+            if (skiResorts != null)
             {
-                Skislopes.Clear();
-                foreach (var skiResort in skiSlopes)
+                SkiResorts.Clear();
+                foreach (var skiResort in SkiResorts)
                 {
-                    Skislopes.Add(new SkiSlope
+                    SkiResorts.Add(new SkiResortData
                     {
                         SkiResortId = skiResort.SkiResortId,
                         ResortName = skiResort.ResortName,
@@ -62,7 +62,7 @@ public partial class SkiViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task GotoSkiResortAsync(SkiSlope skiresort)
+    private async Task GotoSkiResortAsync(SkiResortData skiresort)
     {
 
         Debug.WriteLine($"Selected SkiResortID: {skiresort.SkiResortId}, ResortName: {skiresort.ResortName}");

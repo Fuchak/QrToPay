@@ -18,7 +18,7 @@ public class SkiResortsController : ControllerBase
 
     // GET: api/skiresorts
     [HttpGet("resorts")]
-    public async Task<IActionResult> GetSkiSlopes([FromQuery] GetSkiResortsRequestModel request)
+    public async Task<IActionResult> GetSkiResorts([FromQuery] GetSkiResortsRequestModel request)
     {
         var result = await _mediator.Send(request);
 
@@ -29,7 +29,7 @@ public class SkiResortsController : ControllerBase
 
     // GET: api/skiresorts/prices
     [HttpGet("prices")]
-    public async Task<IActionResult> GetSkiSlopePrices([FromQuery] GetSkiResortPricesRequestModel request)
+    public async Task<IActionResult> GetSkiResortsPrices([FromQuery] GetSkiResortPricesRequestModel request)
     {
         var result = await _mediator.Send(request);
 

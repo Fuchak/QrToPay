@@ -1,6 +1,6 @@
 ﻿namespace QrToPay.Models.Responses;
 
-public sealed class SkiSlopePriceResponse
+public sealed class SkiResortPriceResponse
 {
     //public int SkiSlopePriceId { get; init; }
     public required int Tokens { get; init; }

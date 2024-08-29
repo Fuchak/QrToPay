@@ -1,5 +1,5 @@
 ﻿namespace QrToPay.Models.Common;
-public sealed class SkiSlope
+public sealed class SkiResortData
 {
     //public Guid ServiceId { get; init; }
     public int? SkiResortId { get; init; }

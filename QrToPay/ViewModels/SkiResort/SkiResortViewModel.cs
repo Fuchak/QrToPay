@@ -33,12 +33,12 @@ public partial class SkiResortViewModel : ViewModelBase
         HttpResponseMessage response = await client.GetAsync($"/api/SkiResorts/prices?skiResortId={_appState.AttractionId}");
         response.EnsureSuccessStatusCode();
 
-        List<SkiSlopePriceResponse>? skiSlopePrices = await response.Content.ReadFromJsonAsync<List<SkiSlopePriceResponse>>();
+        List<SkiResortPriceResponse>? skiResortPrices = await response.Content.ReadFromJsonAsync<List<SkiResortPriceResponse>>();
 
-        if (skiSlopePrices != null)
+        if (skiResortPrices != null)
         {
             Tickets.Clear();
-            foreach (var price in skiSlopePrices)
+            foreach (var price in skiResortPrices)
             {
                 Tickets.Add(new Ticket
                 {
