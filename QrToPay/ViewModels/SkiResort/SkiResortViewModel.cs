@@ -53,8 +53,8 @@ public partial class SkiResortViewModel : ViewModelBase
     [RelayCommand]
     public async Task GotoSkiResortBuyAsync(Ticket ticket)
     {
-        _appState.Points = ticket.Points;
-        _appState.Price = ticket.Price;
+        _appState.UpdatePoints(ticket.Points);
+        _appState.UpdatePrice(ticket.Price);
 
         await Shell.Current.GoToAsync($"{nameof(SkiResortBuyPage)}");
     }

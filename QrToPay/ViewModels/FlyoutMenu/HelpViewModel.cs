@@ -66,6 +66,7 @@ public partial class HelpViewModel : ViewModelBase
             return;
         }
 
+        //if (IsBusy) return; Może poprostu tak zamiast tego true false??? https://www.youtube.com/watch?v=ve0DFu-arD8 8:17 tak ma napisane może to git
         IsBusy = true;
         try
         {
@@ -102,7 +103,8 @@ public partial class HelpViewModel : ViewModelBase
                 ErrorMessage = errorResponse?.Message ?? "Wysłanie zgłoszenia nie powiodło się. Spróbuj ponownie.";
             }
         }
-        catch (HttpRequestException)
+        catch (HttpRequestException) //Może wydzielimy serwis pod iconnectivity z maui i to sprawdza czy jest internet będzie to działać lepiej?
+        //https://learn.microsoft.com/pl-pl/dotnet/maui/platform-integration/communication/networking?view=net-maui-8.0&tabs=android
         {
             ErrorMessage = "Brak połączenia z internetem.";
         }

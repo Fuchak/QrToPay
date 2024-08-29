@@ -20,18 +20,16 @@ public class GetSkiResortsHandler : IRequestHandler<GetSkiResortsRequestModel, R
         return await ResultHandler.HandleRequestAsync(async () =>
         {
             List<SkiResortsDto> response = await _context.SkiResorts
-                .Where(s => !s.IsDeleted && s.ServiceId == request.ServiceId)
+                .Where(s => !s.IsDeleted &&
+                            _context.ServiceCategories.Any(e => e.CityName == request.CityName && e.ServiceId == s.ServiceId && !e.IsDeleted))
                 .Select(s => new SkiResortsDto
                 {
                     SkiResortId = s.SkiResortId,
                     ResortName = _context.ServiceCategories
-                        .Where(e => e.ServiceId == s.ServiceId && !e.IsDeleted)
+                        .Where(e => e.ServiceId == s.ServiceId && e.CityName == request.CityName && !e.IsDeleted)
                         .Select(e => e.ServiceName)
                         .FirstOrDefault()!,
-                    CityName = _context.ServiceCategories
-                        .Where(e => e.ServiceId == s.ServiceId && !e.IsDeleted)
-                        .Select(e => e.CityName)
-                        .FirstOrDefault()!,
+                    CityName = request.CityName
                 })
                 .ToListAsync(cancellationToken);
 

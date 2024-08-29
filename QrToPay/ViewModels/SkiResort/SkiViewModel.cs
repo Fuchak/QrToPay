@@ -27,15 +27,15 @@ public partial class SkiViewModel : ViewModelBase
         try
         {
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            HttpResponseMessage response = await client.GetAsync($"/api/SkiResorts/resorts?serviceId={_appState.ServiceId}");
+            HttpResponseMessage response = await client.GetAsync($"/api/SkiResorts/resorts?cityName={_appState.CityName}");
             response.EnsureSuccessStatusCode();
 
-            List<SkiResortData>? skiResorts = await response.Content.ReadFromJsonAsync<List<SkiResortData>>();
+            List<SkiResortData>? skiResortsData = await response.Content.ReadFromJsonAsync<List<SkiResortData>>();
 
-            if (skiResorts != null)
+            if (skiResortsData != null)
             {
                 SkiResorts.Clear();
-                foreach (var skiResort in SkiResorts)
+                foreach (var skiResort in skiResortsData)
                 {
                     SkiResorts.Add(new SkiResortData
                     {
@@ -67,8 +67,8 @@ public partial class SkiViewModel : ViewModelBase
 
         Debug.WriteLine($"Selected SkiResortID: {skiresort.SkiResortId}, ResortName: {skiresort.ResortName}");
 
-        _appState.AttractionId = skiresort.SkiResortId;
-        _appState.ResortName = skiresort.ResortName;
+        _appState.UpdateAttractionId(skiresort.SkiResortId);
+        _appState.UpdateResortName(skiresort.ResortName);
 
         await Shell.Current.GoToAsync($"{nameof(SkiResortPage)}");
     }

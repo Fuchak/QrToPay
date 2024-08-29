@@ -60,8 +60,8 @@ public partial class SkiResortCityViewModel : ViewModelBase
     [RelayCommand]
     public async Task SelectCityAsync(City city)
     {
-        _appState.ServiceId = city.ServiceId;
-        _appState.CityName = city.CityName;
+        _appState.UpdateServiceId(city.ServiceId);
+        _appState.UpdateCityName(city.CityName);
 
         await Shell.Current.GoToAsync(nameof(SkiPage));
     }

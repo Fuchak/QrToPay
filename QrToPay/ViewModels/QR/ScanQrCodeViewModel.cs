@@ -103,10 +103,13 @@ public partial class ScanQrCodeViewModel : ViewModelBase
                 PurchaseRequest purchaseRequest = new()
                 {
                     UserId = userId,
-                    ServiceName = CurrentAttraction.ServiceName,
-                    ServiceId = CurrentAttraction.ServiceId,
-                    AttractionName = CurrentAttraction.AttractionName,
-                    Price = CurrentAttraction!.Price
+                    Purchase = new Purchase
+                    {
+                        ServiceName = CurrentAttraction.ServiceName,
+                        ServiceId = CurrentAttraction.ServiceId,
+                        AttractionName = CurrentAttraction.AttractionName,
+                        Price = CurrentAttraction!.Price
+                    }
                 };
 
                 HttpResponseMessage response = await client.PostAsJsonAsync("/api/Scan/purchase", purchaseRequest);
