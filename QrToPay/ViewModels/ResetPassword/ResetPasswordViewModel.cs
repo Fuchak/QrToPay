@@ -26,15 +26,17 @@ public partial class ResetPasswordViewModel : ViewModelBase
     [RelayCommand]
     private async Task Confirm()
     {
-        if (string.IsNullOrWhiteSpace(EmailPhone))
-        {
-            ErrorMessage = "Podaj email lub numer telefonu.";
-            return;
-        }
+        if(IsBusy) return;
 
-        IsBusy = true;
         try
         {
+            IsBusy = true;
+            if (string.IsNullOrWhiteSpace(EmailPhone))
+            {
+                ErrorMessage = "Podaj email lub numer telefonu.";
+                return;
+            }
+
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
 
             ChangeType changeType;
@@ -93,13 +95,9 @@ public partial class ResetPasswordViewModel : ViewModelBase
                 ErrorMessage = errorResponse?.Message ?? "Błąd podczas resetowania hasła. Spróbuj ponownie.";
             }
         }
-        catch (HttpRequestException)
+        catch (Exception ex)
         {
-            ErrorMessage = "Brak połączenia z internetem.";
-        }
-        catch (Exception)
-        {
-            ErrorMessage = "Wystąpił nieoczekiwany błąd. Spróbuj ponownie.";
+            ErrorMessage = HttpError.HandleError(ex);
         }
         finally
         {

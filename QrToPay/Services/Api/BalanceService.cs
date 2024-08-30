@@ -40,7 +40,7 @@ public class BalanceService
         }
         catch (Exception)
         {
-            return (null, "Wystąpił nieoczekiwany błąd.");
+            return (null, HttpError.HandleGeneralError());
         }
     }
 }

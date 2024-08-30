@@ -31,27 +31,28 @@ namespace QrToPay.ViewModels.Authentication
         [RelayCommand]
         private async Task Confirm()
         {
-            if (string.IsNullOrWhiteSpace(EmailPhone) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(PasswordConfirm))
-            {
-                ErrorMessage = "Wszystkie pola są wymagane.";
-                return;
-            }
-
-            if (Password != PasswordConfirm)
-            {
-                ErrorMessage = "Hasła nie są zgodne.";
-                return;
-            }
-
-            if (Password.Length < 8 || !Password.Any(char.IsDigit) || !Password.Any(char.IsUpper) || !Password.Any(ch => !char.IsLetterOrDigit(ch)))
-            {
-                ErrorMessage = "Hasło nie spełnia wymagań.";
-                return;
-            }
-
-            IsBusy = true;
+            if (IsBusy) return;
             try
             {
+                IsBusy = true;
+                if (string.IsNullOrWhiteSpace(EmailPhone) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(PasswordConfirm))
+                {
+                    ErrorMessage = "Wszystkie pola są wymagane.";
+                    return;
+                }
+
+                if (Password != PasswordConfirm)
+                {
+                    ErrorMessage = "Hasła nie są zgodne.";
+                    return;
+                }
+
+                if (Password.Length < 8 || !Password.Any(char.IsDigit) || !Password.Any(char.IsUpper) || !Password.Any(ch => !char.IsLetterOrDigit(ch)))
+                {
+                    ErrorMessage = "Hasło nie spełnia wymagań.";
+                    return;
+                }
+
                 HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
 
                 object request;
@@ -127,13 +128,9 @@ namespace QrToPay.ViewModels.Authentication
                     ErrorMessage = errorResponse?.Message ?? "Rejestracja nie powiodła się. Spróbuj ponownie.";
                 }
             }
-            catch (HttpRequestException)
+            catch (Exception ex)
             {
-                ErrorMessage = "Brak połączenia z internetem.";
-            }
-            catch (Exception)
-            {
-                ErrorMessage = "Wystąpił nieoczekiwany błąd. Spróbuj ponownie.";
+                ErrorMessage = HttpError.HandleError(ex);
             }
             finally
             {

@@ -4,8 +4,17 @@ using System.Threading.Tasks;
 
 namespace QrToPay.Helpers;
 
-public class HttpError
+public static class HttpError
 {
+    public static string HandleError(Exception ex)
+    {
+        if (ex is HttpRequestException httpEx)
+        {
+            return HandleHttpError(httpEx);
+        }
+        return HandleGeneralError();
+    }
+
     public static string HandleHttpError(HttpRequestException httpEx)
     {
         if (httpEx.StatusCode.HasValue)
@@ -31,6 +40,6 @@ public class HttpError
 
     public static string HandleGeneralError()
     {
-        return "Wystąpił nieoczekiwany błąd.";
+        return "Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.";
     }
 }

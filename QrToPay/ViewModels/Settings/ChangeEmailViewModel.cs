@@ -28,21 +28,22 @@ public partial class ChangeEmailViewModel: ViewModelBase
     [RelayCommand]
     private async Task RequestEmailChange()
     {
-        if (string.IsNullOrWhiteSpace(NewEmail) || string.IsNullOrWhiteSpace(Password))
-        {
-            ErrorMessage = "Wszystkie pola są wymagane.";
-            return;
-        }
-
-        if (!ValidationHelper.IsEmail(NewEmail))
-        {
-            ErrorMessage = "Podaj poprawny adres e-mail.";
-            return;
-        }
-
-        IsBusy = true;
+        if (IsBusy) return;
         try
         {
+            IsBusy = true;
+            if (string.IsNullOrWhiteSpace(NewEmail) || string.IsNullOrWhiteSpace(Password))
+            {
+                ErrorMessage = "Wszystkie pola są wymagane.";
+                return;
+            }
+
+            if (!ValidationHelper.IsEmail(NewEmail))
+            {
+                ErrorMessage = "Podaj poprawny adres e-mail.";
+                return;
+            }
+
             int userId = Preferences.Get("UserId", 0);
             if (userId == 0)
             {
@@ -115,14 +116,9 @@ public partial class ChangeEmailViewModel: ViewModelBase
                 ErrorMessage = errorResponse?.Message ?? "Żądanie zmiany adresu e-mail nie powiodło się. Spróbuj ponownie.";
             }
         }
-        catch (HttpRequestException)
+        catch (Exception ex)
         {
-            ErrorMessage = "Brak połączenia z internetem.";
-        }
-        //TODO dla tego catcha może być ogólny bład tak samo dla tego z netem
-        catch (Exception)
-        {
-            ErrorMessage = $"Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.";
+            ErrorMessage = HttpError.HandleError(ex);
         }
         finally
         {

@@ -1,5 +1,6 @@
 ﻿using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Net.Http.Json;
 using CommunityToolkit.Mvvm.Messaging;
 using QrToPay.Models.Responses;
 using QrToPay.Models.Requests;
@@ -37,14 +38,13 @@ namespace QrToPay.Services.Api
                     ? new LoginUserRequest { Email = emailPhone, PasswordHash = password }
                     : new LoginUserRequest { PhoneNumber = emailPhone, PasswordHash = password };
 
-                StringContent content = new(JsonConvert.SerializeObject(loginData), Encoding.UTF8, "application/json");
+                StringContent content = new(JsonSerializer.Serialize(loginData), Encoding.UTF8, "application/json");
 
                 HttpResponseMessage response = await httpClient.PostAsync("/api/Auth/login/", content);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    string result = await response.Content.ReadAsStringAsync();
-                    UserResponse? userResponse = JsonConvert.DeserializeObject<UserResponse>(result);
+                    UserResponse? userResponse = await response.Content.ReadFromJsonAsync<UserResponse>();
 
                     if (userResponse != null)
                     {
@@ -66,13 +66,9 @@ namespace QrToPay.Services.Api
                     return ApiResponse.ErrorResponse(errorContent);
                 }
             }
-            catch (HttpRequestException httpEx)
-            {
-                return ApiResponse.ErrorResponse(HttpError.HandleHttpError(httpEx));
-            }
             catch (Exception ex)
             {
-                return ApiResponse.ErrorResponse("Wystąpił nieoczekiwany błąd: " + ex.Message);
+                return ApiResponse.ErrorResponse(HttpError.HandleError(ex));
             }
         }
 

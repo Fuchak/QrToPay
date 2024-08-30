@@ -9,7 +9,7 @@ public partial class VerificationCodePopupViewModel : ViewModelBase
 
     [RelayCommand]
     private void Confirm()
-    {
+    {//TODO tutaj isbusy?
         ClosePopupAction?.Invoke(VerificationCode);
     }
 

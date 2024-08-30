@@ -47,7 +47,7 @@ public partial class SkiResortBuyViewModel : ViewModelBase
     private Guid serviceId;
 
     [ObservableProperty]
-    private bool isBusy;
+    private string? errorMessage;
 
     private int userId;
 
@@ -67,16 +67,17 @@ public partial class SkiResortBuyViewModel : ViewModelBase
     private async Task GenerateQrCodeAsync()
     {
         if (IsBusy) return; // Zapobiega wielokrotnemu kliknięciu
-        IsBusy = true;
-
-        if (string.IsNullOrEmpty(ResortName) || string.IsNullOrEmpty(CityName))
-        {
-            await Shell.Current.DisplayAlert("Błąd", "Wszystkie pola muszą być wypełnione", "OK");
-            return;
-        }
-            string formattedPrice = Price.ToString(CultureInfo.InvariantCulture);
         try
         {
+            IsBusy = true;
+
+            if (string.IsNullOrEmpty(ResortName) || string.IsNullOrEmpty(CityName))
+            {
+                await Shell.Current.DisplayAlert("Błąd", "Wszystkie pola muszą być wypełnione", "OK");
+                return;
+            }
+            string formattedPrice = Price.ToString(CultureInfo.InvariantCulture);
+
             var (accountBalance, errorMessage) = await _balanceService.LoadUserDataAsync();
             if (accountBalance == null)
             {
@@ -124,10 +125,15 @@ public partial class SkiResortBuyViewModel : ViewModelBase
 
             await Shell.Current.GoToAsync($"//MainPage/ActiveBiletsPage");
         }
-        catch (Exception)
+        catch (Exception ex)
+        {
+            ErrorMessage = HttpError.HandleError(ex);
+        }
+/*        catch (Exception)
         {
             await Shell.Current.DisplayAlert("Błąd", "Wystąpił błąd podczas zakupu biletu", "OK");
-        }
+            //ErrorMessage = HttpError.HandleGeneralError();
+        }*/
         finally
         {
             IsBusy = false;

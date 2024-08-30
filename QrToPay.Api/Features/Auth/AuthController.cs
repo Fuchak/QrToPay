@@ -45,6 +45,6 @@ public class AuthController : ControllerBase
 
         return !result.IsSuccess 
             ? StatusCode(500, new { Message = result.Error }) 
-            : Ok(new { Message = "Hasło zostało zaktualizowane." });
+            : Ok(new { Message = result.Value });
     }
 }

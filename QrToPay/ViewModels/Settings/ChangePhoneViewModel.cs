@@ -28,21 +28,23 @@ public partial class ChangePhoneViewModel : ViewModelBase
     [RelayCommand]
     private async Task RequestPhoneChange()
     {
-        if (string.IsNullOrWhiteSpace(NewPhoneNumber) || string.IsNullOrWhiteSpace(Password))
-        {
-            ErrorMessage = "Wszystkie pola są wymagane.";
-            return;
-        }
-
-        if (!ValidationHelper.IsPhoneNumber(NewPhoneNumber))
-        {
-            ErrorMessage = "Podaj poprawny numer telefonu (+48 i 9 cyfr).";
-            return;
-        }
-
-        IsBusy = true;
+        if (IsBusy) return;        
         try
         {
+            IsBusy = true;
+
+            if (string.IsNullOrWhiteSpace(NewPhoneNumber) || string.IsNullOrWhiteSpace(Password))
+            {
+                ErrorMessage = "Wszystkie pola są wymagane.";
+                return;
+            }
+
+            if (!ValidationHelper.IsPhoneNumber(NewPhoneNumber))
+            {
+                ErrorMessage = "Podaj poprawny numer telefonu (+48 i 9 cyfr).";
+                return;
+            }
+
             int userId = Preferences.Get("UserId", 0);
             if (userId == 0)
             {
@@ -115,13 +117,9 @@ public partial class ChangePhoneViewModel : ViewModelBase
                 ErrorMessage = errorResponse?.Message ?? "Żądanie zmiany numeru telefonu nie powiodło się. Spróbuj ponownie.";
             }
         }
-        catch (HttpRequestException)
+        catch (Exception ex)
         {
-            ErrorMessage = "Brak połączenia z internetem.";
-        }
-        catch (Exception)
-        {
-            ErrorMessage = $"Wystąpił nieoczekiwany błąd Spróbuj ponownie.";
+            ErrorMessage = HttpError.HandleError(ex);
         }
         finally
         {

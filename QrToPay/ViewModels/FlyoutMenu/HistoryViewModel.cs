@@ -30,6 +30,7 @@ public partial class HistoryViewModel : ViewModelBase
 
     public async Task LoadHistoryAsync()
     {
+        if (IsBusy) return;
         try
         {
             IsBusy = true;
@@ -59,14 +60,9 @@ public partial class HistoryViewModel : ViewModelBase
                 HasHistory = false;
             }
         }
-        catch (HttpRequestException httpEx)
+        catch (Exception ex)
         {
-            ErrorMessage = HttpError.HandleHttpError(httpEx);
-            HasHistory = false;
-        }
-        catch (Exception)
-        {
-            ErrorMessage = HttpError.HandleGeneralError();
+            ErrorMessage = HttpError.HandleError(ex);
             HasHistory = false;
         }
         finally

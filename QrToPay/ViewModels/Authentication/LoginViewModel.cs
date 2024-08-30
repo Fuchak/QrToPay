@@ -24,30 +24,42 @@ public partial class LoginViewModel : ViewModelBase
     [RelayCommand]
     private async Task Login()
     {
-        if (string.IsNullOrWhiteSpace(EmailPhone))
+        if(IsBusy) return;
+        try
         {
-            ErrorMessage = "Email lub numer telefonu nie może być pusty.";
-            return;
-        }
+            if (string.IsNullOrWhiteSpace(EmailPhone))
+            {
+                ErrorMessage = "Email lub numer telefonu nie może być pusty.";
+                return;
+            }
 
-        if (string.IsNullOrWhiteSpace(Password))
-        {
-            ErrorMessage = "Hasło nie może być puste.";
-            return;
-        }
+            if (string.IsNullOrWhiteSpace(Password))
+            {
+                ErrorMessage = "Hasło nie może być puste.";
+                return;
+            }
 
-        ApiResponse loginResult = await _authService.LoginAsync(EmailPhone, Password);
+            ApiResponse loginResult = await _authService.LoginAsync(EmailPhone, Password);
 
-        if (loginResult.Success)
-        {
-            EmailPhone = null;
-            Password = null;
-            ErrorMessage = null;
-            await Shell.Current.GoToAsync("///MainPage");
+            if (loginResult.Success)
+            {
+                EmailPhone = null;
+                Password = null;
+                ErrorMessage = null;
+                await Shell.Current.GoToAsync("///MainPage");
+            }
+            else
+            {
+                ErrorMessage = loginResult.Message;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            ErrorMessage = loginResult.Message;
+            ErrorMessage = HttpError.HandleError(ex);
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 

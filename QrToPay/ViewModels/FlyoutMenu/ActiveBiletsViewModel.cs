@@ -49,12 +49,10 @@ public partial class ActiveBiletsViewModel : ViewModelBase
     [ObservableProperty]
     private string? errorMessage;
 
-    [ObservableProperty]
-    private bool isBusy;
-
     [RelayCommand]
     public async Task LoadActiveTicketsAsync()
     {
+        if (IsBusy) return;
         try
         {
             IsBusy = true;
@@ -83,15 +81,9 @@ public partial class ActiveBiletsViewModel : ViewModelBase
                 ErrorMessage = null;
             }
         }
-        catch (HttpRequestException httpEx)
+        catch (Exception ex)
         {
-            ErrorMessage = HttpError.HandleHttpError(httpEx);
-            HasActiveTickets = false;
-        }
-        catch (Exception)
-        {
-            ErrorMessage = HttpError.HandleGeneralError();
-            HasActiveTickets = false;
+            ErrorMessage = HttpError.HandleError(ex);
         }
         finally
         {

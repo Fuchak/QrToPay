@@ -24,31 +24,49 @@ public partial class SkiResortViewModel : ViewModelBase
     [ObservableProperty]
     private string? cityName;
 
+    [ObservableProperty]
+    private string? errorMessage;
+
     public async Task InitializeAsync()
     {
-        ResortName = _appState.ResortName;
-        CityName = _appState.CityName;
-
-        HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-        HttpResponseMessage response = await client.GetAsync($"/api/SkiResorts/prices?skiResortId={_appState.AttractionId}");
-        response.EnsureSuccessStatusCode();
-
-        List<SkiResortPriceResponse>? skiResortPrices = await response.Content.ReadFromJsonAsync<List<SkiResortPriceResponse>>();
-
-        if (skiResortPrices != null)
+        if (IsBusy) return;
+        try
         {
-            Tickets.Clear();
-            foreach (var price in skiResortPrices)
+            ResortName = _appState.ResortName;
+            CityName = _appState.CityName;
+
+            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+            HttpResponseMessage response = await client.GetAsync($"/api/SkiResorts/prices?skiResortId={_appState.AttractionId}");
+            response.EnsureSuccessStatusCode();
+
+            List<SkiResortPriceResponse>? skiResortPrices = await response.Content.ReadFromJsonAsync<List<SkiResortPriceResponse>>();
+
+            if (skiResortPrices != null)
             {
-                Tickets.Add(new Ticket
+                Tickets.Clear();
+                foreach (var price in skiResortPrices)
                 {
-                    Points = price.Tokens,
-                    Price = price.Price
-                });
+                    Tickets.Add(new Ticket
+                    {
+                        Points = price.Tokens,
+                        Price = price.Price
+                    });
+                }
             }
+
+            OnPropertyChanged(nameof(Tickets));
         }
-        OnPropertyChanged(nameof(Tickets));
+        catch (Exception ex)
+        {
+            ErrorMessage = HttpError.HandleError(ex);
+        }
+        finally
+        {
+            IsBusy = false; // Resetowanie stanu po zakończeniu operacji
+        }
     }
+
+    //TODO gdzie tu jest jakiś try catch nic nie ma? xd
 
     [RelayCommand]
     public async Task GotoSkiResortBuyAsync(Ticket ticket)

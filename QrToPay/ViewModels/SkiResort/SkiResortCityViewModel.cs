@@ -25,8 +25,10 @@ public partial class SkiResortCityViewModel : ViewModelBase
     [RelayCommand]
     public async Task LoadCitiesAsync(int serviceType)
     {
+        if(IsBusy) return;
         try
         {
+            IsBusy = true;
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
             HttpResponseMessage response = await client.GetAsync($"/api/Cities?serviceType={serviceType}");
             response.EnsureSuccessStatusCode();
@@ -46,13 +48,13 @@ public partial class SkiResortCityViewModel : ViewModelBase
                 ErrorMessage = "Nie udało się pobrać listy miast.";
             }
         }
-        catch (HttpRequestException)
+        catch (Exception ex)
         {
-            ErrorMessage = "Brak połączenia z internetem.";
+            ErrorMessage = HttpError.HandleError(ex);
         }
-        catch (Exception)
+        finally
         {
-            ErrorMessage = "Wystąpił nieoczekiwany błąd.";
+            IsBusy = false;
         }
     }
 

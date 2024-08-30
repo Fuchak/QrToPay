@@ -53,22 +53,23 @@ public partial class HelpViewModel : ViewModelBase
     [RelayCommand]
     private async Task Submit()
     {
-        if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(UserEmail) || string.IsNullOrWhiteSpace(Description) || string.IsNullOrWhiteSpace(SelectedSubject))
-        {
-            ErrorMessage = "Wszystkie pola są wymagane.";
-            return;
-        }
-
-        if (!ValidationHelper.IsEmail(UserEmail))
-        {
-            ErrorMessage = "Podaj poprawny adres e-mail.";
-            return;
-        }
-
+        if (IsBusy) return;
         //if (IsBusy) return; Może poprostu tak zamiast tego true false??? https://www.youtube.com/watch?v=ve0DFu-arD8 8:17 tak ma napisane może to git
-        IsBusy = true;
         try
         {
+            IsBusy = true;
+            if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(UserEmail) || string.IsNullOrWhiteSpace(Description) || string.IsNullOrWhiteSpace(SelectedSubject))
+            {
+                ErrorMessage = "Wszystkie pola są wymagane.";
+                return;
+            }
+
+            if (!ValidationHelper.IsEmail(UserEmail))
+            {
+                ErrorMessage = "Podaj poprawny adres e-mail.";
+                return;
+            }
+
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
 
             HelpFormRequest request = new()
@@ -98,14 +99,11 @@ public partial class HelpViewModel : ViewModelBase
                 ErrorMessage = errorResponse?.Message ?? "Wysłanie zgłoszenia nie powiodło się. Spróbuj ponownie.";
             }
         }
-        catch (HttpRequestException) //Może wydzielimy serwis pod iconnectivity z maui i to sprawdza czy jest internet będzie to działać lepiej?
+        //Może wydzielimy serwis pod iconnectivity z maui i to sprawdza czy jest internet będzie to działać lepiej?
         //https://learn.microsoft.com/pl-pl/dotnet/maui/platform-integration/communication/networking?view=net-maui-8.0&tabs=android
+        catch (Exception ex)
         {
-            ErrorMessage = "Brak połączenia z internetem.";
-        }
-        catch (Exception)
-        {
-            ErrorMessage = $"Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.";
+            ErrorMessage = HttpError.HandleError(ex);
         }
         finally
         {

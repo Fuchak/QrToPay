@@ -25,6 +25,8 @@ public partial class TopUpAccountViewModel : ViewModelBase
     {
         string? amountWithDot = Amount?.Replace(',', '.');
 
+        if (IsBusy) return;
+
         if (decimal.TryParse(amountWithDot, NumberStyles.Number, CultureInfo.InvariantCulture, out var topUpAmount) && topUpAmount > 0)
         {
             string formattedAmount = topUpAmount.ToString("F2", CultureInfo.InvariantCulture);
@@ -65,13 +67,13 @@ public partial class TopUpAccountViewModel : ViewModelBase
                     ErrorMessage = HttpError.HandleHttpError(new HttpRequestException(response.ReasonPhrase, null, response.StatusCode));
                 }*/
             }
-            catch (HttpRequestException httpEx)
+            catch (Exception ex)
             {
-                ErrorMessage = HttpError.HandleHttpError(httpEx);
+                ErrorMessage = HttpError.HandleError(ex);
             }
-            catch (Exception)
+            finally
             {
-                ErrorMessage = $"Wystąpił nieoczekiwany błąd.";
+                IsBusy = false;
             }
         }
         else

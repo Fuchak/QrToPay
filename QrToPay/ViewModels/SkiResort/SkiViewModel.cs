@@ -24,8 +24,10 @@ public partial class SkiViewModel : ViewModelBase
     [RelayCommand]
     public async Task LoadSkiResortsAsync()
     {
+        if(IsBusy) return;
         try
         {
+            IsBusy = true;
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
             HttpResponseMessage response = await client.GetAsync($"/api/SkiResorts/resorts?cityName={_appState.CityName}");
             response.EnsureSuccessStatusCode();
@@ -50,13 +52,13 @@ public partial class SkiViewModel : ViewModelBase
                 ErrorMessage = "Nie udało się pobrać danych ze stoku narciarskiego.";
             }
         }
-        catch (HttpRequestException)
+        catch (Exception ex)
         {
-            ErrorMessage = "Brak połączenia z internetem.";
+            ErrorMessage = HttpError.HandleError(ex);
         }
-        catch (Exception)
+        finally
         {
-            ErrorMessage = "Wystąpił nieoczekiwany błąd.";
+            IsBusy = false;
         }
     }
 

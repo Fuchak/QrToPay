@@ -58,6 +58,7 @@ public partial class ScanQrCodeViewModel : ViewModelBase
     }
     private async Task FetchAttractionData(string qrCode)
     {
+        if (IsBusy) return;
         try
         {
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
@@ -75,12 +76,16 @@ public partial class ScanQrCodeViewModel : ViewModelBase
             else
             {
                 ApiResponse? errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                ErrorMessage = $"Błąd: {errorResponse?.Message}";
+                ErrorMessage = $"{errorResponse?.Message}";
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            ErrorMessage = "Wystąpił nieoczekiwany błąd. Spróbuj ponownie.";
+            ErrorMessage = HttpError.HandleError(ex);
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 
@@ -130,13 +135,13 @@ public partial class ScanQrCodeViewModel : ViewModelBase
                 else
                 {
                     ApiResponse? errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                    ErrorMessage = $"Błąd: {errorResponse?.Message}";
+                    ErrorMessage = $"{errorResponse?.Message}";
                 }
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            ErrorMessage = "Wystąpił nieoczekiwany błąd. Spróbuj ponownie.";
+            ErrorMessage = HttpError.HandleError(ex);
         }
         finally
         {
