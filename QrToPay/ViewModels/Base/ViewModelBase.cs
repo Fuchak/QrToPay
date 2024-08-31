@@ -2,28 +2,26 @@
 
 public partial class ViewModelBase : ObservableObject
 {
-    private bool isNavigating;
-
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsNotBusy))]
     bool isBusy;
 
-    public bool IsNotBusy => !IsBusy && !isNavigating;
+    public bool IsNotBusy => !IsBusy;
 
     protected async Task NavigateAsync(string route)
     {
-        if (isNavigating)
+        if (IsBusy)
             return;
 
-        isNavigating = true;
+        IsBusy = true;
         try
         {
             await Shell.Current.GoToAsync(route);
         }
         finally
         {
-            await Task.Delay(300);
-            isNavigating = false;
+            await Task.Delay(100);
+            IsBusy = false;
         }
     }
 

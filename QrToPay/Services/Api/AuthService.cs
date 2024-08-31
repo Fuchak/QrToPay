@@ -62,8 +62,8 @@ namespace QrToPay.Services.Api
                 }
                 else
                 {
-                    string errorContent = await response.Content.ReadAsStringAsync();
-                    return ApiResponse.ErrorResponse(errorContent);
+                    // Bez względu na szczegóły błędu, zwróć prosty komunikat
+                    return ApiResponse.ErrorResponse("Błąd serwera: Spróbuj ponownie później.");
                 }
             }
             catch (Exception ex)

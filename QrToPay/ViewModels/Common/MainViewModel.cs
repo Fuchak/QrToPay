@@ -44,6 +44,7 @@ public partial class MainViewModel : ViewModelBase
         try
         {
             IsBusy = true;
+            IsLoading = true;
 
             (decimal? balance, string? error) = await _balanceService.LoadUserDataAsync();
             if (balance.HasValue)
@@ -57,17 +58,12 @@ public partial class MainViewModel : ViewModelBase
                 ErrorMessage = error;
             }
         }
-        catch (Exception ex)
-        {
-            ErrorMessage = HttpError.HandleError(ex);
-        }
         finally
         {
+            IsLoading = false;
             IsBusy = false;
         }
     }
-
-    //TODO tu też dodać jakiegos try catch
 
     [RelayCommand]
     private Task NavigateToSkiResortPage() => NavigateAsync(nameof(SkiResortCityPage));

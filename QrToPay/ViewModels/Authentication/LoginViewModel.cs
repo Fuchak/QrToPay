@@ -67,13 +67,15 @@ public partial class LoginViewModel : ViewModelBase
     private async Task Register()
     {
         ErrorMessage = null; // TODO To czyści kod błędu żeby po powrocie na stronę go nie było ale potrzebujemy go jakoś globalniej bo tak co chwile go pisać to meh
-        await Shell.Current.GoToAsync("/CreateUserPage");
+        //await Shell.Current.GoToAsync("/CreateUserPage");
+        await NavigateAsync("/CreateUserPage");
     }
 
     [RelayCommand]
     private async Task ForgotPassword()
     {
         ErrorMessage = null; // To samo można dodać do ekranów Rejestracji i Resetowania hasła ale to potem jak nie będzie lepszej opcji globalnej
-        await Shell.Current.GoToAsync("/ResetPasswordPage");
+        //await Shell.Current.GoToAsync("/ResetPasswordPage");
+        await NavigateAsync("/ResetPasswordPage");
     }
 }

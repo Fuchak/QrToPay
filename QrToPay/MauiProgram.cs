@@ -35,7 +35,7 @@ public static class MauiProgram
 		    builder.Logging.AddDebug();
         #endif
 
-        #if ANDROID
+#if ANDROID
         Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoUnderline", (h, _) =>
         {
             h.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToPlatform());

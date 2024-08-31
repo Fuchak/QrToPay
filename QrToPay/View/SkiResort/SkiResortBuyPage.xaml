@@ -61,7 +61,7 @@
                             Command="{Binding GenerateQrCodeCommand}" 
                             HorizontalOptions="Center"
                             Margin="0,20,0,0"
-                            IsEnabled="{Binding IsBusy, Converter={StaticResource FalseToTrueConverter}}"/>
+                            IsEnabled="{Binding IsNotBusy}"/>
                 </StackLayout>
             </Frame>
         </VerticalStackLayout>

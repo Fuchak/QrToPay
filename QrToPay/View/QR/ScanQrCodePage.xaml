@@ -53,7 +53,7 @@
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
                 <Button Text="Zapłać" 
                         Command="{Binding PurchaseCommand}"
-                        IsEnabled="{Binding IsBusy, Converter={StaticResource FalseToTrueConverter}}" 
+                        IsEnabled="{Binding IsNotBusy}" 
                         IsVisible="{Binding IsAttractionValid}" 
                         HorizontalOptions="Center" VerticalOptions="Center" />
                 <Button Text="Anuluj" 
