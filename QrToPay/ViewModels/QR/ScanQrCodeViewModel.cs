@@ -69,8 +69,8 @@ public partial class ScanQrCodeViewModel : ViewModelBase
             }
             else
             {
-                ApiResponse? errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                ErrorMessage = $"{errorResponse?.Message}";
+                ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
+                    ?? "Błąd pobierania danych";
             }
         }
         catch (Exception ex)
@@ -129,8 +129,8 @@ public partial class ScanQrCodeViewModel : ViewModelBase
                 }
                 else
                 {
-                    ApiResponse? errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                    ErrorMessage = $"{errorResponse?.Message}";
+                    ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
+                        ?? "Błąd płatności";
                 }
             }
         }

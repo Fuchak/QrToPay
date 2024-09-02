@@ -92,8 +92,8 @@ public partial class HelpViewModel : ViewModelBase
             }
             else
             {
-                ApiResponse? errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                ErrorMessage = errorResponse?.Message ?? "Wysłanie zgłoszenia nie powiodło się. Spróbuj ponownie.";
+                ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
+                    ?? "Wysłanie zgłoszenia nie powiodło się. Spróbuj ponownie.";
             }
         }
         //Może wydzielimy serwis pod iconnectivity z maui i to sprawdza czy jest internet będzie to działać lepiej?

@@ -88,8 +88,8 @@ public partial class ResetPasswordViewModel : ViewModelBase
             }
             else
             {
-                ApiResponse? errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                ErrorMessage = errorResponse?.Message ?? "Błąd podczas resetowania hasła. Spróbuj ponownie.";
+                ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response) 
+                    ?? "Błąd podczas resetowania hasła. Spróbuj ponownie.";
             }
         }
         catch (Exception ex)

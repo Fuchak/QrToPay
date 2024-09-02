@@ -70,8 +70,8 @@ public partial class ChangePasswordViewModel : ViewModelBase
             }
             else
             {
-                ApiResponse? errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                ErrorMessage = errorResponse?.Message ?? "Zmiana hasła nie powiodła się. Spróbuj ponownie.";
+                ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
+                    ?? "Zmiana hasła nie powiodła się.";
             }
         }
         catch (Exception ex)

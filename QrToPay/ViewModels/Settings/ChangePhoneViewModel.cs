@@ -94,8 +94,8 @@ public partial class ChangePhoneViewModel : ViewModelBase
                         }
                         else
                         {
-                            ApiResponse? errorResponse = await verifyResponse.Content.ReadFromJsonAsync<ApiResponse>();
-                            ErrorMessage = errorResponse?.Message ?? "Błąd podczas weryfikacji numeru telefonu. Spróbuj ponownie.";
+                            ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response) 
+                                ?? "Błąd podczas weryfikacji numeru telefonu.";
                         }
                     }
                     else
@@ -110,8 +110,8 @@ public partial class ChangePhoneViewModel : ViewModelBase
             }
             else
             {
-                ApiResponse? errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                ErrorMessage = errorResponse?.Message ?? "Żądanie zmiany numeru telefonu nie powiodło się. Spróbuj ponownie.";
+                ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
+                    ?? "Żądanie zmiany numeru telefonu nie powiodło się.";
             }
         }
         catch (Exception ex)

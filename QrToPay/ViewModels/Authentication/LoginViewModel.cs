@@ -39,9 +39,9 @@ public partial class LoginViewModel : ViewModelBase
                 return;
             }
 
-            ApiResponse loginResult = await _authService.LoginAsync(EmailPhone, Password);
+            var loginResult = await _authService.LoginAsync(EmailPhone, Password);
 
-            if (loginResult.Success)
+            if (loginResult.IsSuccess)
             {
                 await Shell.Current.GoToAsync("///MainPage");
                 EmailPhone = null;
@@ -49,7 +49,7 @@ public partial class LoginViewModel : ViewModelBase
             }
             else
             {
-                ErrorMessage = loginResult.Message;
+                ErrorMessage = loginResult.ErrorMessage;
             }
         }
         finally

@@ -105,8 +105,9 @@ namespace QrToPay.ViewModels.Authentication
                             }
                             else
                             {
-                                ApiResponse? errorResponse = await verifyResponse.Content.ReadFromJsonAsync<ApiResponse>();
-                                ErrorMessage = errorResponse?.Message ?? "Błąd podczas weryfikacji użytkownika. Spróbuj ponownie.";
+                                // Przetwarzanie błędu weryfikacji
+                                ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(verifyResponse)
+                                    ?? "Błąd podczas weryfikacji użytkownika. Spróbuj ponownie.";
                             }
                         }
                         else
@@ -121,8 +122,8 @@ namespace QrToPay.ViewModels.Authentication
                 }
                 else
                 {
-                    ApiResponse? errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                    ErrorMessage = errorResponse?.Message ?? "Rejestracja nie powiodła się. Spróbuj ponownie.";
+                    ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response) 
+                        ?? "Rejestracja nie powiodła się. Spróbuj ponownie.";
                 }
             }
             catch (Exception ex)

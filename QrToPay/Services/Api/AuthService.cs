@@ -29,7 +29,7 @@ namespace QrToPay.Services.Api
             return Preferences.Get(AuthStateKey, false);
         }
 
-        public async Task<ApiResponse> LoginAsync(string emailPhone, string password)
+        public async Task<ServiceResult<UserResponse>> LoginAsync(string emailPhone, string password)
         {
             try
             {
@@ -54,24 +54,23 @@ namespace QrToPay.Services.Api
                         Preferences.Set(UserEmailKey, userResponse.Email ?? "Brak");
                         Preferences.Set(UserPhoneKey, userResponse.PhoneNumber ?? "Brak");
 
-                        return ApiResponse.SuccessResponse("Logowanie udane.");
+                        return ServiceResult<UserResponse>.Success(userResponse);
                     }
                     else
                     {
-                        return ApiResponse.ErrorResponse("Błąd: Nie udało się przetworzyć odpowiedzi serwera.");
+                        return ServiceResult<UserResponse>.Failure("Nie udało się przetworzyć odpowiedzi serwera.");
                     }
                 }
                 else
                 {
                     // Użycie JsonErrorExtractor do wyciągnięcia wiadomości błędu
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    var errorMessage = JsonErrorExtractor.ExtractErrorMessage(errorContent);
-                    return ApiResponse.ErrorResponse(errorMessage);
+                    var errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response);
+                    return ServiceResult<UserResponse>.Failure(errorMessage);
                 }
             }
             catch (Exception ex)
             {
-                return ApiResponse.ErrorResponse(HttpError.HandleError(ex));
+                return ServiceResult<UserResponse>.Failure(HttpError.HandleError(ex));
             }
         }
 

@@ -1,17 +1,22 @@
-﻿using System.Text.Json;
+﻿using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace QrToPay.Helpers;
+
 public static class JsonErrorExtractor
 {
     /// <summary>
-    /// Extracts the error message from a JSON response.
+    /// Extracts the error message from an HTTP response.
     /// </summary>
-    /// <param name="jsonContent">The JSON content as a string.</param>
+    /// <param name="response">The HTTP response message.</param>
     /// <returns>The extracted error message or a default message if not found.</returns>
-    public static string ExtractErrorMessage(string jsonContent)
+    public static async Task<string> ExtractErrorMessageAsync(HttpResponseMessage response)
     {
+        string jsonContent = await response.Content.ReadAsStringAsync();
         using var jsonDoc = JsonDocument.Parse(jsonContent);
-         if (jsonDoc.RootElement.TryGetProperty("message", out var message))
+
+        if (jsonDoc.RootElement.TryGetProperty("message", out var message))
         {
             return message.GetString() ?? "Nieznany błąd serwera.";
         }

@@ -15,28 +15,27 @@ public class BalanceService
 
     public event EventHandler<decimal>? BalanceUpdated;
 
-    public async Task<(decimal? AccountBalance, string? ErrorMessage)> LoadUserDataAsync()
+    public async Task<ServiceResult<decimal>> LoadUserDataAsync()
     {
-        int userId;
         try
         {
-            userId = Preferences.Get("UserId", 0);
+            int userId = Preferences.Get("UserId", 0);
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
             BalanceResponse? response = await client.GetFromJsonAsync<BalanceResponse>($"/api/UserBalance/{userId}/balance");
 
             if (response != null)
             {
                 BalanceUpdated?.Invoke(this, response.AccountBalance ?? 0);
-                return (response.AccountBalance, null);
+                return ServiceResult<decimal>.Success(response.AccountBalance ?? 0);
             }
             else
             {
-                return (null, "Błąd: Nie udało się pobrać salda.");
+                return ServiceResult<decimal>.Failure("Błąd: Nie udało się pobrać salda.");
             }
         }
         catch (Exception ex)
         {
-            return (null, HttpError.HandleError(ex));
+            return ServiceResult<decimal>.Failure(HttpError.HandleError(ex));
         }
     }
 }

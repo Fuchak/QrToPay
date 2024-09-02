@@ -75,16 +75,17 @@ public partial class SkiResortBuyViewModel : ViewModelBase
             }
             string formattedPrice = Price.ToString(CultureInfo.InvariantCulture);
 
-            var (accountBalance, errorMessage) = await _balanceService.LoadUserDataAsync();
-            if (accountBalance == null)
+            var balanceResult = await _balanceService.LoadUserDataAsync();
+            if (!balanceResult.IsSuccess)
             {
-                await Shell.Current.DisplayAlert("Błąd", errorMessage, "OK");
+                ErrorMessage = balanceResult.ErrorMessage;
                 return;
             }
 
-            if (accountBalance < Price)
+
+            if (balanceResult.Data < Price)
             {
-                await Shell.Current.DisplayAlert("Błąd", "Nie masz wystarczających środków na koncie.", "OK");
+                ErrorMessage = "Nie masz wystarczających środków na koncie.";
                 return;
             }
 
@@ -100,7 +101,7 @@ public partial class SkiResortBuyViewModel : ViewModelBase
             var token = await _qrCodeService.GenerateAndUpdateTicketAsync(updateRequest);
             if (string.IsNullOrEmpty(token))
             {
-                await Shell.Current.DisplayAlert("Błąd", "Nie udało się zaktualizować bazy danych", "OK");
+                ErrorMessage = "Nie udało się przetworzyć płatności";
                 return;
             }
 

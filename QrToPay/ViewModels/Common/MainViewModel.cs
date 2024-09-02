@@ -40,16 +40,16 @@ public partial class MainViewModel : ViewModelBase
             IsBusy = true;
             IsBalanceLoading = true;
 
-            (decimal? balance, string? error) = await _balanceService.LoadUserDataAsync();
-            if (balance.HasValue)
+            var result = await _balanceService.LoadUserDataAsync();
+            if (result.IsSuccess)
             {
-                AccountBalance = balance.Value;
+                AccountBalance = result.Data;
                 ErrorMessage = null;
             }
             else
             {
                 AccountBalance = 0;
-                ErrorMessage = error;
+                ErrorMessage = result.ErrorMessage;
             }
         }
         finally

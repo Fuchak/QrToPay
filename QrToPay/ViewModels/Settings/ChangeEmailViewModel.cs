@@ -93,8 +93,8 @@ public partial class ChangeEmailViewModel: ViewModelBase
                         }
                         else
                         {
-                            ApiResponse? errorResponse = await verifyResponse.Content.ReadFromJsonAsync<ApiResponse>();
-                            ErrorMessage = errorResponse?.Message ?? "Błąd podczas weryfikacji adresu e-mail. Spróbuj ponownie.";
+                            ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
+                                ?? "Błąd podczas weryfikacji adresu e-mail. Spróbuj ponownie.";
                         }
                     }
                     else
@@ -109,8 +109,8 @@ public partial class ChangeEmailViewModel: ViewModelBase
             }
             else
             {
-                ApiResponse? errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                ErrorMessage = errorResponse?.Message ?? "Żądanie zmiany adresu e-mail nie powiodło się. Spróbuj ponownie.";
+                ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
+                    ?? "Żądanie zmiany adresu e-mail nie powiodło się. Spróbuj ponownie.";
             }
         }
         catch (Exception ex)

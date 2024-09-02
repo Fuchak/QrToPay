@@ -69,8 +69,8 @@ public partial class ResetPasswordConfirmViewModel : ViewModelBase
             }
             else
             {
-                ApiResponse? errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                ErrorMessage = errorResponse?.Message ?? "Błąd podczas resetowania hasła.";
+                ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
+                     ?? "Błąd podczas resetowania hasła";
             }
         }
         catch (Exception ex)
