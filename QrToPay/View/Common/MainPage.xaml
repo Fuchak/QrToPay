@@ -103,7 +103,8 @@
                 <Label Text="{Binding ErrorMessage}"
                        FontSize="Small"
                        TextColor="Red"
-                       HorizontalOptions="Center"/>
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"/>
             </StackLayout>
 
             <Button Text="Skaner QR"

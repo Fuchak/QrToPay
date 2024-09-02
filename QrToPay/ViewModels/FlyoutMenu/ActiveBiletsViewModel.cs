@@ -46,9 +46,6 @@ public partial class ActiveBiletsViewModel : ViewModelBase
     [ObservableProperty]
     private bool hasActiveTickets = true;
 
-    [ObservableProperty]
-    private string? errorMessage;
-
     [RelayCommand]
     public async Task LoadActiveTicketsAsync()
     {

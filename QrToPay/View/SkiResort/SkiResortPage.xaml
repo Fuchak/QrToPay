@@ -65,6 +65,11 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+            <Label Text="{Binding ErrorMessage}"
+                   FontSize="Small"
+                   TextColor="Red"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"/>
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

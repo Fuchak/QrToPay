@@ -17,9 +17,6 @@ public partial class TopUpAccountViewModel : ViewModelBase
     [ObservableProperty]
     private string? amount;
 
-    [ObservableProperty]
-    private string? errorMessage;
-
     [RelayCommand]
     private async Task NavigateToTopUp()
     {

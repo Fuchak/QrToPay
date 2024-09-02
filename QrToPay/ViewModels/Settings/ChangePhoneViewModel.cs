@@ -22,9 +22,6 @@ public partial class ChangePhoneViewModel : ViewModelBase
     [ObservableProperty]
     private string? password;
 
-    [ObservableProperty]
-    private string? errorMessage;
-
     [RelayCommand]
     private async Task RequestPhoneChange()
     {

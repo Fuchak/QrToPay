@@ -3,6 +3,9 @@
 public partial class ViewModelBase : ObservableObject
 {
     [ObservableProperty]
+    string? errorMessage;
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsNotBusy))]
     bool isBusy;
 
@@ -20,6 +23,7 @@ public partial class ViewModelBase : ObservableObject
         }
         finally
         {
+            ErrorMessage = null;
             await Task.Delay(100);
             IsBusy = false;
         }

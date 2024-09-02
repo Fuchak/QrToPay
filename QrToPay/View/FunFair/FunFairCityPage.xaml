@@ -66,9 +66,10 @@
             </CollectionView>
 
             <Label Text="{Binding ErrorMessage}"
-                       FontSize="Small"
-                       TextColor="Red"
-                       HorizontalOptions="Center"/>
+                   FontSize="Small"
+                   TextColor="Red"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"/>
 
         </VerticalStackLayout>
     </Grid>

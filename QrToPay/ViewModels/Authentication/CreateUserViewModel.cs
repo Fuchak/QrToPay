@@ -25,9 +25,6 @@ namespace QrToPay.ViewModels.Authentication
         [ObservableProperty]
         private string? emailPhone;
 
-        [ObservableProperty]
-        private string? errorMessage;
-
         [RelayCommand]
         private async Task Confirm()
         {

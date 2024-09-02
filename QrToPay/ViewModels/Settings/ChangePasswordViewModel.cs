@@ -20,9 +20,6 @@ public partial class ChangePasswordViewModel : ViewModelBase
     [ObservableProperty]
     private string? passwordConfirm;
 
-    [ObservableProperty]
-    private string? errorMessage;
-
     [RelayCommand]
     private async Task Confirm()
     {

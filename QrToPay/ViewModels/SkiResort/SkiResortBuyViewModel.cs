@@ -46,9 +46,6 @@ public partial class SkiResortBuyViewModel : ViewModelBase
     [ObservableProperty]
     private Guid serviceId;
 
-    [ObservableProperty]
-    private string? errorMessage;
-
     private int userId;
 
     public Task InitializeAsync()

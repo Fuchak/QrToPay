@@ -18,9 +18,6 @@ public partial class SkiViewModel : ViewModelBase
     [ObservableProperty]
     private ObservableCollection<SkiResortData> skiResorts = [];
 
-    [ObservableProperty]
-    string? errorMessage;
-
     [RelayCommand]
     public async Task LoadSkiResortsAsync()
     {

@@ -28,9 +28,6 @@ public partial class MainViewModel : ViewModelBase
     private string? phoneNumber;
 
     [ObservableProperty]
-    private string? errorMessage;
-
-    [ObservableProperty]
     private bool isBalanceLoading;
 
     [RelayCommand]
@@ -51,6 +48,7 @@ public partial class MainViewModel : ViewModelBase
             }
             else
             {
+                AccountBalance = 0;
                 ErrorMessage = error;
             }
         }

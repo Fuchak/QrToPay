@@ -19,9 +19,6 @@ public partial class SkiResortCityViewModel : ViewModelBase
     [ObservableProperty]
     private ObservableCollection<City> cities = [];
 
-    [ObservableProperty]
-    string? errorMessage;
-
     [RelayCommand]
     public async Task LoadCitiesAsync(int serviceType)
     {

@@ -20,9 +20,6 @@ public partial class ResetPasswordViewModel : ViewModelBase
     [ObservableProperty]
     private string? emailPhone;
 
-    [ObservableProperty]
-    private string? errorMessage;
-
     [RelayCommand]
     private async Task Confirm()
     {

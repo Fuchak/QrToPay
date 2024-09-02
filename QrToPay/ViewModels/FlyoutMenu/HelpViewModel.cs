@@ -38,9 +38,6 @@ public partial class HelpViewModel : ViewModelBase
     [ObservableProperty]
     private string? selectedSubject;
 
-    [ObservableProperty]
-    private string? errorMessage;
-
     //TODO można to dać do bazy i z bazy to czytać i tam updatować nie w kodzie
     public ObservableCollection<string> Subjects { get; } =
         [

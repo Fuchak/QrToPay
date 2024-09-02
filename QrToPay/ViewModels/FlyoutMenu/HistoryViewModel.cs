@@ -23,9 +23,6 @@ public partial class HistoryViewModel : ViewModelBase
     private bool hasHistory = true;
 
     [ObservableProperty]
-    private string? errorMessage;
-
-    [ObservableProperty]
     private bool isBusy;
 
     public async Task LoadHistoryAsync()

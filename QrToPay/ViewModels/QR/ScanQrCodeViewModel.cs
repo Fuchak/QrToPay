@@ -26,12 +26,6 @@ public partial class ScanQrCodeViewModel : ViewModelBase
     [ObservableProperty]
     private bool pauseScanning = false;
 
-    [ObservableProperty]
-    private bool isBusy = false;
-
-    [ObservableProperty]
-    private string? errorMessage;
-
     private const int PauseDuration = 4000; // Pauza w milisekundach (4 sekundy) by nie zawalać api zbyt dużą ilością zapytań
 
     [RelayCommand]
@@ -99,6 +93,7 @@ public partial class ScanQrCodeViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanPurchase))]
     private async Task Purchase()
     {
+        if (IsBusy) return;
         try
         {
             IsBusy = true;

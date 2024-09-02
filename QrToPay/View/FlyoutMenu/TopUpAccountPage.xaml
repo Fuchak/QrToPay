@@ -55,10 +55,10 @@
             <Button Text="Doładuj" 
                     Command="{Binding NavigateToTopUpCommand}" 
                     IsEnabled="{Binding IsNotBusy}" />
-            <Label
-                    Text="{Binding ErrorMessage}"
-                    TextColor="Red" 
-                    HorizontalOptions="Center"/>
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="Red" 
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"/>
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

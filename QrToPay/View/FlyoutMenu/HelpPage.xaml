@@ -85,7 +85,8 @@
                 <Label
                     Text="{Binding ErrorMessage}"
                     TextColor="Red" 
-                    HorizontalOptions="Center"/>
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"/>
             </VerticalStackLayout>
         </ScrollView>
         

@@ -24,9 +24,6 @@ public partial class SkiResortViewModel : ViewModelBase
     [ObservableProperty]
     private string? cityName;
 
-    [ObservableProperty]
-    private string? errorMessage;
-
     public async Task InitializeAsync()
     {
         if (IsBusy) return;
