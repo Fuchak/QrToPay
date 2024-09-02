@@ -33,10 +33,7 @@
             Text="{Binding Password, Mode=TwoWay}"
             IsPassword="True"/>
         </Frame>
-        <Label Text="{Binding ErrorMessage}"
-                       FontSize="Small"
-                       TextColor="Red"
-                       HorizontalOptions="Center"/>
+        
         <Button
             Text="ZALOGUJ SIĘ" 
             SemanticProperties.Hint="Login in button"
@@ -54,6 +51,18 @@
             SemanticProperties.Hint="Forgot password button"
             Command="{Binding ForgotPasswordCommand}"
             IsEnabled="{Binding IsNotBusy}"/>
+
+        <Label Text="{Binding ErrorMessage}"
+                       FontSize="Small"
+                       TextColor="Red"
+                       HorizontalOptions="Center"/>
+
+        <ActivityIndicator 
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            IsRunning="{Binding IsBusy}" 
+            IsVisible="{Binding IsBusy}" 
+            Color="{StaticResource Orange}"/>
 
     </VerticalStackLayout>
 </ContentPage>

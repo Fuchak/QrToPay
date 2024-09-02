@@ -28,13 +28,10 @@ public partial class MainViewModel : ViewModelBase
     private string? phoneNumber;
 
     [ObservableProperty]
-    private bool isLoading;
-
-    [ObservableProperty]
     private string? errorMessage;
 
     [ObservableProperty]
-    private bool isBalanceLoaded;
+    private bool isBalanceLoading;
 
     [RelayCommand]
     public async Task LoadUserDataAsync()
@@ -44,13 +41,12 @@ public partial class MainViewModel : ViewModelBase
         try
         {
             IsBusy = true;
-            IsLoading = true;
+            IsBalanceLoading = true;
 
             (decimal? balance, string? error) = await _balanceService.LoadUserDataAsync();
             if (balance.HasValue)
             {
                 AccountBalance = balance.Value;
-                IsBalanceLoaded = true;
                 ErrorMessage = null;
             }
             else
@@ -60,8 +56,8 @@ public partial class MainViewModel : ViewModelBase
         }
         finally
         {
-            IsLoading = false;
             IsBusy = false;
+            IsBalanceLoading = false;
         }
     }
 

@@ -34,13 +34,9 @@ public class BalanceService
                 return (null, "Błąd: Nie udało się pobrać salda.");
             }
         }
-        catch (HttpRequestException httpEx)
+        catch (Exception ex)
         {
-            return (null, HttpError.HandleHttpError(httpEx));
-        }
-        catch (Exception)
-        {
-            return (null, HttpError.HandleGeneralError());
+            return (null, HttpError.HandleError(ex));
         }
     }
 }

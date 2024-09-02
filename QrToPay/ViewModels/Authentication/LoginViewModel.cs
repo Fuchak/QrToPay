@@ -25,8 +25,11 @@ public partial class LoginViewModel : ViewModelBase
     private async Task Login()
     {
         if(IsBusy) return;
+
         try
         {
+            IsBusy = true;
+            ErrorMessage = null;
             if (string.IsNullOrWhiteSpace(EmailPhone))
             {
                 ErrorMessage = "Email lub numer telefonu nie może być pusty.";
@@ -43,19 +46,15 @@ public partial class LoginViewModel : ViewModelBase
 
             if (loginResult.Success)
             {
+                await Shell.Current.GoToAsync("///MainPage");
                 EmailPhone = null;
                 Password = null;
                 ErrorMessage = null;
-                await Shell.Current.GoToAsync("///MainPage");
             }
             else
             {
                 ErrorMessage = loginResult.Message;
             }
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = HttpError.HandleError(ex);
         }
         finally
         {

@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using QrToPay.Models.Responses;
 using QrToPay.Models.Requests;
 using QrToPay.Models.Common;
+using System.Diagnostics;
 
 namespace QrToPay.Services.Api
 {
@@ -53,7 +54,7 @@ namespace QrToPay.Services.Api
                         Preferences.Set(UserEmailKey, userResponse.Email ?? "Brak");
                         Preferences.Set(UserPhoneKey, userResponse.PhoneNumber ?? "Brak");
 
-                        return ApiResponse.SuccessResponse("Login successful.");
+                        return ApiResponse.SuccessResponse("Logowanie udane.");
                     }
                     else
                     {
@@ -62,8 +63,10 @@ namespace QrToPay.Services.Api
                 }
                 else
                 {
-                    // Bez względu na szczegóły błędu, zwróć prosty komunikat
-                    return ApiResponse.ErrorResponse("Błąd serwera: Spróbuj ponownie później.");
+                    // Użycie JsonErrorExtractor do wyciągnięcia wiadomości błędu
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    var errorMessage = JsonErrorExtractor.ExtractErrorMessage(errorContent);
+                    return ApiResponse.ErrorResponse(errorMessage);
                 }
             }
             catch (Exception ex)

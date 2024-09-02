@@ -76,16 +76,16 @@
                            Text="{Binding AccountBalance, StringFormat='{0} zł'}"
                            IsVisible="False">
                         <Label.Triggers>
-                            <DataTrigger TargetType="Label" Binding="{Binding IsBalanceLoaded}" Value="true">
+                            <DataTrigger TargetType="Label" Binding="{Binding IsBalanceLoading, Converter={StaticResource FalseToTrueConverter}}" Value="true">
                                 <Setter Property="IsVisible" Value="True" />
                             </DataTrigger>
-                            <DataTrigger TargetType="Label" Binding="{Binding IsLoading}" Value="true">
+                            <DataTrigger TargetType="Label" Binding="{Binding IsBalanceLoading}" Value="true">
                                 <Setter Property="IsVisible" Value="False" />
                             </DataTrigger>
                         </Label.Triggers>
                     </Label>
-                    <ActivityIndicator Grid.Column="0" IsRunning="{Binding IsLoading}"
-                                       IsVisible="{Binding IsLoading}"
+                    <ActivityIndicator Grid.Column="0" IsRunning="{Binding IsBalanceLoading}"
+                                       IsVisible="{Binding IsBalanceLoading}"
                                        HorizontalOptions="Center"
                                        VerticalOptions="Center"
                                        Color="{StaticResource Orange}"

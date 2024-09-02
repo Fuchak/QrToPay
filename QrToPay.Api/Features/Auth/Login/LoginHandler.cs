@@ -25,17 +25,17 @@ public class LoginHandler : IRequestHandler<LoginRequestModel, Result<LoginDto>>
 
             if (user is null || !BCrypt.Net.BCrypt.Verify(request.PasswordHash, user.PasswordHash))
             {
-                return Result<LoginDto>.Failure("Nieprawidłowy email, numer telefonu lub hasło.");
+                return Result<LoginDto>.Failure("Nieprawidłowe dane logowania.");
             }
 
             if (!user.IsVerified)
             {
-                return Result<LoginDto>.Failure("Konto nie zostało aktywowane.");
+                return Result<LoginDto>.Failure("Konto nie aktywowane.");
             }
 
             if (user.IsDeleted)
             {
-                return Result<LoginDto>.Failure("Konto zostało zablokowane.");
+                return Result<LoginDto>.Failure("Konto zablokowane.");
             }
 
             LoginDto response = new()
