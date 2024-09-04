@@ -15,7 +15,7 @@ public partial class ResetPasswordViewModel : ViewModelBase
         _httpClientFactory = httpClientFactory;
     }
 
-    public static string? SharedEmailOrPhone { get; private set; }
+    public static string? SharedEmailOrPhone { get; set; }
 
     [ObservableProperty]
     private string? emailPhone;
@@ -79,7 +79,7 @@ public partial class ResetPasswordViewModel : ViewModelBase
                     await LocalNotificationCenter.Current.Show(notificationRequest);
 
                     SharedEmailOrPhone = EmailPhone;
-                    await Shell.Current.GoToAsync("ResetPasswordConfirmPage");
+                    await Shell.Current.GoToAsync("ResetPasswordConfirmPage");  //TODO coś tu z busy musielibysmy przestawić żeby iść dalej
                 }
                 else
                 {

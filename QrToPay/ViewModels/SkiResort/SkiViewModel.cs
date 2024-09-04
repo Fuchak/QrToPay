@@ -65,6 +65,6 @@ public partial class SkiViewModel : ViewModelBase
         _appState.UpdateAttractionId(skiresort.SkiResortId);
         _appState.UpdateResortName(skiresort.ResortName);
 
-        await Shell.Current.GoToAsync($"{nameof(SkiResortPage)}");
+        await NavigateAsync(nameof(SkiResortPage));
     }
 }

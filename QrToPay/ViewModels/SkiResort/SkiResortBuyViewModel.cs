@@ -121,7 +121,7 @@ public partial class SkiResortBuyViewModel : ViewModelBase
 
             await Shell.Current.DisplayAlert("Potwierdzenie", "Bilet został zakupiony, kod QR wygenerowany", "OK");
 
-            await Shell.Current.GoToAsync($"//MainPage/ActiveBiletsPage");
+            await Shell.Current.GoToAsync("//MainPage/ActiveBiletsPage"); //TODO coś tu z busy musielibysmy przestawić żeby iść dalej
         }
         catch (Exception ex)
         {

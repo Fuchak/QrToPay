@@ -71,6 +71,6 @@ public partial class SkiResortViewModel : ViewModelBase
         _appState.UpdatePoints(ticket.Points);
         _appState.UpdatePrice(ticket.Price);
 
-        await Shell.Current.GoToAsync($"{nameof(SkiResortBuyPage)}");
+        await NavigateAsync(nameof(SkiResortBuyPage));
     }
 }

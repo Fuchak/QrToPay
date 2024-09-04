@@ -19,7 +19,7 @@ public partial class ViewModelBase : ObservableObject
         IsBusy = true;
         try
         {
-            await Shell.Current.GoToAsync(route);
+            await Shell.Current.GoToAsync(route, false);
         }
         finally
         {

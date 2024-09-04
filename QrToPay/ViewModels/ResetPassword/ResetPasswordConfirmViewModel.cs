@@ -65,7 +65,7 @@ public partial class ResetPasswordConfirmViewModel : ViewModelBase
             if (response.IsSuccessStatusCode)
             {
                 await Shell.Current.DisplayAlert("Sukces", "Hasło zostało zaktualizowane.", "OK");
-                await Shell.Current.GoToAsync("//LoginPage");
+                await Shell.Current.GoToAsync("//LoginPage");  //TODO coś tu z busy musielibysmy przestawić żeby iść dalej
             }
             else
             {

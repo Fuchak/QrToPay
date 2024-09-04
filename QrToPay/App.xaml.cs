@@ -8,26 +8,26 @@
 
             MainPage = new AppShell();
 
-            Routing.RegisterRoute("LoadingPage", typeof(LoadingPage));
-            Routing.RegisterRoute("CreateUserPage", typeof(CreateUserPage));
-            Routing.RegisterRoute("ResetPasswordPage", typeof(ResetPasswordPage));
-            Routing.RegisterRoute("ResetPasswordConfirmPage", typeof(ResetPasswordConfirmPage));
-            Routing.RegisterRoute("SkiPage", typeof(SkiPage));
-            Routing.RegisterRoute("FunFairPage", typeof(FunFairPage));
-            Routing.RegisterRoute("AccountPage", typeof(AccountPage));
-            Routing.RegisterRoute("HelpPage", typeof(HelpPage));
-            Routing.RegisterRoute("TopUpAccountPage", typeof(TopUpAccountPage));
-            Routing.RegisterRoute("SettingsPage", typeof(SettingsPage));
-            Routing.RegisterRoute("ChangePasswordPage", typeof(ChangePasswordPage));
-            Routing.RegisterRoute("ChangePhonePage", typeof(ChangePhonePage));
-            Routing.RegisterRoute("ChangeEmailPage", typeof(ChangeEmailPage));
-            Routing.RegisterRoute("HistoryPage", typeof(HistoryPage));
-            Routing.RegisterRoute("ScanQrCodePage", typeof(ScanQrCodePage));
-            Routing.RegisterRoute("SkiResortPage", typeof(SkiResortPage));
-            Routing.RegisterRoute("SkiResortBuyPage", typeof(SkiResortBuyPage));
-            Routing.RegisterRoute("ActiveBiletsPage", typeof(ActiveBiletsPage));
-            Routing.RegisterRoute("SkiResortCityPage", typeof(SkiResortCityPage));
-            Routing.RegisterRoute("FunFairCityPage", typeof(FunFairCityPage));
+            Routing.RegisterRoute(nameof(LoadingPage), typeof(LoadingPage));
+            Routing.RegisterRoute(nameof(CreateUserPage), typeof(CreateUserPage));
+            Routing.RegisterRoute(nameof(ResetPasswordPage), typeof(ResetPasswordPage));
+            Routing.RegisterRoute(nameof(ResetPasswordConfirmPage), typeof(ResetPasswordConfirmPage));
+            Routing.RegisterRoute(nameof(SkiPage), typeof(SkiPage));
+            Routing.RegisterRoute(nameof(FunFairPage), typeof(FunFairPage));
+            Routing.RegisterRoute(nameof(AccountPage), typeof(AccountPage));
+            Routing.RegisterRoute(nameof(HelpPage), typeof(HelpPage));
+            Routing.RegisterRoute(nameof(TopUpAccountPage), typeof(TopUpAccountPage));
+            Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
+            Routing.RegisterRoute(nameof(ChangePasswordPage), typeof(ChangePasswordPage));
+            Routing.RegisterRoute(nameof(ChangePhonePage), typeof(ChangePhonePage));
+            Routing.RegisterRoute(nameof(ChangeEmailPage), typeof(ChangeEmailPage));
+            Routing.RegisterRoute(nameof(HistoryPage), typeof(HistoryPage));
+            Routing.RegisterRoute(nameof(ScanQrCodePage), typeof(ScanQrCodePage));
+            Routing.RegisterRoute(nameof(SkiResortPage), typeof(SkiResortPage));
+            Routing.RegisterRoute(nameof(SkiResortBuyPage), typeof(SkiResortBuyPage));
+            Routing.RegisterRoute(nameof(ActiveBiletsPage), typeof(ActiveBiletsPage));
+            Routing.RegisterRoute(nameof(SkiResortCityPage), typeof(SkiResortCityPage));
+            Routing.RegisterRoute(nameof(FunFairCityPage), typeof(FunFairCityPage));
         }
     }
 }

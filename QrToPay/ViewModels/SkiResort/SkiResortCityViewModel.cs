@@ -61,6 +61,6 @@ public partial class SkiResortCityViewModel : ViewModelBase
         _appState.UpdateServiceId(city.ServiceId);
         _appState.UpdateCityName(city.CityName);
 
-        await Shell.Current.GoToAsync(nameof(SkiPage));
+        await NavigateAsync(nameof(SkiPage));
     }
 }

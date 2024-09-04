@@ -43,14 +43,19 @@ public partial class LoginViewModel : ViewModelBase
 
             if (loginResult.IsSuccess)
             {
-                await Shell.Current.GoToAsync("///MainPage");
-                EmailPhone = null;
-                Password = null;
+                await Shell.Current.GoToAsync("///MainPage");   //TODO coś tu z busy musielibysmy przestawić żeby iść dalej
+                //await NavigateAsync("///MainPage");
+                EmailPhone = string.Empty; ;
+                Password = string.Empty; ;
             }
             else
             {
                 ErrorMessage = loginResult.ErrorMessage;
             }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = HttpError.HandleError(ex);
         }
         finally
         {
@@ -61,12 +66,12 @@ public partial class LoginViewModel : ViewModelBase
     [RelayCommand]
     private async Task Register()
     {
-        await NavigateAsync("/CreateUserPage");
+        await NavigateAsync(nameof(CreateUserPage));
     }
 
     [RelayCommand]
     private async Task ForgotPassword()
     {
-        await NavigateAsync("/ResetPasswordPage");
+        await NavigateAsync(nameof(ResetPasswordPage));
     }
 }

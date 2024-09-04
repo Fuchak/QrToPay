@@ -6,7 +6,7 @@ public class ServiceResult<T>
     public string? ErrorMessage { get; set; }
     public bool IsSuccess => ErrorMessage == null;
 
-    public static ServiceResult<T> Success(T data) => new() { Data = data };
+    public static ServiceResult<T> Success(T? data = default) => new() { Data = data };
 
     public static ServiceResult<T> Failure(string errorMessage) => new() { ErrorMessage = errorMessage };
 }

@@ -60,6 +60,6 @@ public partial class FunFairCityViewModel : ViewModelBase
         _appState.UpdateServiceId(city.ServiceId);
         _appState.UpdateCityName(city.CityName);
 
-        await Shell.Current.GoToAsync(nameof(FunFairPage));
+        await NavigateAsync(nameof(FunFairPage));
     }
 }
