@@ -65,6 +65,7 @@ public static class MauiProgram
         builder.Services.AddTransientPopup<QrCodePopup, QrCodePopupViewModel>();
         builder.Services.AddSingleton<QrCodeService>();
         builder.Services.AddSingleton<BalanceService>();
+        builder.Services.AddSingleton<UserService>();
 
         //usługa lokalnego magazynu by nie przekazywać po ekranach wszystkich danych
         builder.Services.AddSingleton<AppState>();
