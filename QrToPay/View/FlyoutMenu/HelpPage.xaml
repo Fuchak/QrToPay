@@ -59,9 +59,9 @@
                 <Frame>
                     <Picker
                         x:Name="SubjectPicker"
+                        Title="Wybierz temat" 
                         ItemsSource="{Binding Subjects}"
-                        SelectedItem="{Binding SelectedSubject}"
-                        Title="Wybierz temat problemu" />
+                        SelectedItem="{Binding SelectedSubject}"/>
                 </Frame>
 
                 <Label

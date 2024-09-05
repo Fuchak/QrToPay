@@ -11,13 +11,13 @@ namespace QrToPay.ViewModels.FlyoutMenu;
 
 public partial class ActiveBiletsViewModel : ViewModelBase
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly TicketService _ticketService;
     private readonly QrCodeStorageService _qrCodeStorageService;
     private readonly QrCodeService _qrCodeService;
 
-    public ActiveBiletsViewModel(IHttpClientFactory httpClientFactory, QrCodeStorageService qrCodeStorageService, QrCodeService qrCodeService)
+    public ActiveBiletsViewModel(TicketService ticketService, QrCodeStorageService qrCodeStorageService, QrCodeService qrCodeService)
     {
-        _httpClientFactory = httpClientFactory;
+        _ticketService = ticketService;
         _qrCodeStorageService = qrCodeStorageService;
         _qrCodeService = qrCodeService;
     }
@@ -55,17 +55,14 @@ public partial class ActiveBiletsViewModel : ViewModelBase
             IsBusy = true;
             ErrorMessage = null;
 
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
             int userId = Preferences.Get("UserId", 0);
-            HttpResponseMessage response = await client.GetAsync($"/api/Tickets/active?userId={userId}");
-            response.EnsureSuccessStatusCode();
+            var result = await _ticketService.GetActiveTicketsAsync(userId);
 
-            List<Ticket>? tickets = await response.Content.ReadFromJsonAsync<List<Ticket>>();
             ActiveTickets.Clear();
 
-            if (tickets != null && tickets.Count > 0)
+            if (result.IsSuccess && result.Data != null)
             {
-                foreach (var ticket in tickets)
+                foreach (var ticket in result.Data)
                 {
                     ActiveTickets.Add(ticket);
                 }

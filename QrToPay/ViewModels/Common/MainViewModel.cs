@@ -32,7 +32,7 @@ public partial class MainViewModel : ViewModelBase
 
     [RelayCommand]
     public async Task LoadUserDataAsync()
-    {
+    {//TODO usunąć isbusy? zrobic testy czy działa git (nie blokować ui gdy ładuje balance)
         if(IsBusy) return;
 
         try

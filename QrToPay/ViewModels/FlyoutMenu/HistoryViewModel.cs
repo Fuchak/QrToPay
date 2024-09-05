@@ -4,16 +4,17 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net.Http.Json;
 using System.Text.Json;
+using QrToPay.Services.Api;
 
 namespace QrToPay.ViewModels.FlyoutMenu;
 
 public partial class HistoryViewModel : ViewModelBase
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly TicketService _ticketService;
 
-    public HistoryViewModel(IHttpClientFactory httpClientFactory)
+    public HistoryViewModel(TicketService ticketService)
     {
-        _httpClientFactory = httpClientFactory;
+        _ticketService = ticketService;
     }
 
     [ObservableProperty]
@@ -21,9 +22,6 @@ public partial class HistoryViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool hasHistory = true;
-
-    [ObservableProperty]
-    private bool isBusy;
 
     public async Task LoadHistoryAsync()
     {
@@ -34,12 +32,11 @@ public partial class HistoryViewModel : ViewModelBase
             ErrorMessage = null;
 
             int userId = Preferences.Get("UserId", 0);
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            List<HistoryItemResponse>? response = await client.GetFromJsonAsync<List<HistoryItemResponse>>($"/api/Tickets/getHistory?userId={userId}");
+            var result = await _ticketService.GetHistoryAsync(userId);
 
-            if (response != null && response.Count > 0)
+            if (result.IsSuccess && result.Data != null)
             {
-                foreach (var item in response)
+                foreach (var item in result.Data)
                 {
                     HistoryItems.Add(new HistoryItemRequest
                     {
@@ -53,7 +50,7 @@ public partial class HistoryViewModel : ViewModelBase
             }
             else
             {
-                ErrorMessage = "Błąd: Nie udało się pobrać historii biletów.";
+                ErrorMessage = result.ErrorMessage;
                 HasHistory = false;
             }
         }

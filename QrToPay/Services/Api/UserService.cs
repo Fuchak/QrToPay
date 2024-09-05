@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using QrToPay.Models.Requests;
 using QrToPay.Models.Responses;
 using QrToPay.Helpers;
+using System.Diagnostics;
 
 namespace QrToPay.Services.Api;
 

@@ -10,6 +10,8 @@ using QrToPay.ViewModels.Authentication;
 using QrToPay.ViewModels.QR;
 using QrToPay.Services.Api;
 using QrToPay.Services.Local;
+using Android.Graphics.Drawables;
+using Microsoft.Maui.Controls.Platform;
 
 namespace QrToPay;
 
@@ -35,7 +37,7 @@ public static class MauiProgram
 		    builder.Logging.AddDebug();
         #endif
 
-#if ANDROID
+        #if ANDROID
         Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoUnderline", (h, _) =>
         {
             h.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToPlatform());
@@ -53,7 +55,7 @@ public static class MauiProgram
         // Rejestrujesz IHttpClientFactory i konfigurujesz klienta HTTP
         builder.Services.AddHttpClient("ApiHttpClient", client =>
         {
-            client.BaseAddress = new Uri("https://pet-optimum-goshawk.ngrok-free.app/");
+            client.BaseAddress = new Uri("https://t1q91ccd-7041.euw.devtunnels.ms/");
         });
 
         builder.Services.AddTransient<AuthService>();
@@ -64,8 +66,11 @@ public static class MauiProgram
         builder.Services.AddTransientPopup<VerificationCodePopup, VerificationCodePopupViewModel>();
         builder.Services.AddTransientPopup<QrCodePopup, QrCodePopupViewModel>();
         builder.Services.AddSingleton<QrCodeService>();
-        builder.Services.AddSingleton<BalanceService>();
-        builder.Services.AddSingleton<UserService>();
+
+        builder.Services.AddScoped<BalanceService>();
+        builder.Services.AddScoped<UserService>();
+        builder.Services.AddScoped<TicketService>();
+        builder.Services.AddScoped<HelpService>();
 
         //usługa lokalnego magazynu by nie przekazywać po ekranach wszystkich danych
         builder.Services.AddSingleton<AppState>();

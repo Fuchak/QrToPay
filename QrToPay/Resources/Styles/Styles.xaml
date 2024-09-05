@@ -101,7 +101,7 @@
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
         <Setter Property="FontSize" Value="14" />
-        <Setter Property="PlaceholderColor" Value="Black" />
+        <Setter Property="PlaceholderColor" Value="Gray" />
         <Setter Property="MinimumHeightRequest" Value="44"/>
         <Setter Property="MinimumWidthRequest" Value="44"/>
         <Setter Property="VisualStateManager.VisualStateGroups">
@@ -216,7 +216,7 @@
 
     <Style TargetType="Picker">
         <Setter Property="TextColor" Value="Black" />
-        <Setter Property="TitleColor" Value="{StaticResource White}" />
+        <Setter Property="TitleColor" Value="Gray" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
         <Setter Property="FontSize" Value="14"/>
@@ -225,13 +225,14 @@
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup x:Name="CommonStates">
-                    <VisualState x:Name="Normal" />
-                    <VisualState x:Name="Disabled">
+                    <VisualState x:Name="Normal">
                         <VisualState.Setters>
                             <Setter Property="TextColor" Value="Black" />
-                            <Setter Property="TitleColor" Value="Black" />
+                            <Setter Property="TitleColor" Value="Gray" />
                         </VisualState.Setters>
                     </VisualState>
+                    <VisualState x:Name="Disabled"/>
+                    <VisualState x:Name="Focused"/>
                 </VisualStateGroup>
             </VisualStateGroupList>
         </Setter>

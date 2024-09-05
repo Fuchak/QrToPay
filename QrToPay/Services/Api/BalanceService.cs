@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Json;
+using QrToPay.Models.Requests;
+using System.Text.Json;
 using QrToPay.Models.Responses;
 
 namespace QrToPay.Services.Api;
@@ -21,16 +23,53 @@ public class BalanceService
         {
             int userId = Preferences.Get("UserId", 0);
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            BalanceResponse? response = await client.GetFromJsonAsync<BalanceResponse>($"/api/UserBalance/{userId}/balance");
+            HttpResponseMessage response = await client.GetAsync($"/api/UserBalance/{userId}/balance");
 
-            if (response != null)
+            if (response.IsSuccessStatusCode)
             {
-                BalanceUpdated?.Invoke(this, response.AccountBalance ?? 0);
-                return ServiceResult<decimal>.Success(response.AccountBalance ?? 0);
+                BalanceResponse? balanceResponse = await response.Content.ReadFromJsonAsync<BalanceResponse>();
+                if (balanceResponse != null)
+                {
+                    decimal balance = balanceResponse.AccountBalance;
+                    BalanceUpdated?.Invoke(this, balance);
+                    return ServiceResult<decimal>.Success(balance);
+                }
+                return ServiceResult<decimal>.Failure("Błąd podczas odczytywania salda konta.");
             }
             else
             {
-                return ServiceResult<decimal>.Failure("Błąd: Nie udało się pobrać salda.");
+                string errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response);
+                return ServiceResult<decimal>.Failure(errorMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            return ServiceResult<decimal>.Failure(HttpError.HandleError(ex));
+        }
+    }
+
+    public async Task<ServiceResult<decimal>> TopUpAccountAsync(TopUpRequest topUpRequest)
+    {
+        try
+        {
+            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+            HttpResponseMessage response = await client.PostAsJsonAsync("/api/UserBalance/topUp", topUpRequest);
+
+            if (response.IsSuccessStatusCode)
+            {
+                BalanceResponse? balanceResponse = await response.Content.ReadFromJsonAsync<BalanceResponse>();
+                if (balanceResponse != null)
+                {
+                    decimal accountBalance = balanceResponse.AccountBalance;
+                    BalanceUpdated?.Invoke(this, accountBalance);
+                    return ServiceResult<decimal>.Success(accountBalance);
+                }
+                return ServiceResult<decimal>.Failure("Nie udało się pobrać nowego salda konta.");
+            }
+            else
+            {
+                string errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response);
+                return ServiceResult<decimal>.Failure(errorMessage);
             }
         }
         catch (Exception ex)

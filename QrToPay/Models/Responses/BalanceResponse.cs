@@ -2,5 +2,5 @@
 
 public sealed class BalanceResponse
 {
-    public decimal? AccountBalance { get; init; }
+    public required decimal AccountBalance { get; init; }
 }

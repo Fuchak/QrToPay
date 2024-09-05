@@ -1,4 +1,6 @@
-﻿namespace QrToPay.Models.Responses;
+﻿using System.Text.Json.Serialization;
+
+namespace QrToPay.Models.Responses;
 
 public sealed class CreateUserResponse
 {

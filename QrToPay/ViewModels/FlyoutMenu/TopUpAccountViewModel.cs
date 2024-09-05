@@ -3,15 +3,16 @@ using System.Text.Json;
 using System.Net.Http.Json;
 using System.Globalization;
 using QrToPay.Models.Requests;
+using QrToPay.Services.Api;
 
 namespace QrToPay.ViewModels.FlyoutMenu;
 public partial class TopUpAccountViewModel : ViewModelBase
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly BalanceService _balanceService;
 
-    public TopUpAccountViewModel(IHttpClientFactory httpClientFactory)
+    public TopUpAccountViewModel(BalanceService balanceService)
     {
-        _httpClientFactory = httpClientFactory;
+        _balanceService = balanceService;
     }
 
     [ObservableProperty]
@@ -37,32 +38,19 @@ public partial class TopUpAccountViewModel : ViewModelBase
 
             try
             {
-                HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+                IsBusy = true;
+                var result = await _balanceService.TopUpAccountAsync(topUpRequest);
 
-                HttpResponseMessage response = await client.PostAsJsonAsync("/api/UserBalance/topUp", topUpRequest);
-
-                if (response.IsSuccessStatusCode)
+                if (result.IsSuccess)
                 {
-                    string responseData = await response.Content.ReadAsStringAsync();
-
-                    using JsonDocument doc = JsonDocument.Parse(responseData);
-                    if (doc.RootElement.TryGetProperty("accountBalance", out JsonElement accountBalanceElement))
-                    {
-                        decimal accountBalance = accountBalanceElement.GetDecimal();
-                        await Shell.Current.DisplayAlert("Potwierdzenie", $"Konto zostało doładowane. Nowe saldo: {accountBalance:C}", "OK");
-
-                        Amount = string.Empty;
-                        ErrorMessage = null;
-                    }
-                    else
-                    {
-                        ErrorMessage = "Nie udało się pobrać salda konta z odpowiedzi.";
-                    }
+                    await Shell.Current.DisplayAlert("Potwierdzenie", $"Konto zostało doładowane. Nowe saldo: {result.Data:C}", "OK");
+                    Amount = string.Empty;
+                    ErrorMessage = null;
                 }
-/*                else
+                else
                 {
-                    ErrorMessage = HttpError.HandleHttpError(new HttpRequestException(response.ReasonPhrase, null, response.StatusCode));
-                }*/
+                    ErrorMessage = result.ErrorMessage;
+                }
             }
             catch (Exception ex)
             {

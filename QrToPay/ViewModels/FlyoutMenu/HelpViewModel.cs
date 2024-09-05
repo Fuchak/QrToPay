@@ -3,25 +3,20 @@ using System.Diagnostics;
 using System.Net.Http.Json;
 using QrToPay.Models.Responses;
 using QrToPay.Models.Requests;
+using QrToPay.Services.Api;
 
 namespace QrToPay.ViewModels.FlyoutMenu;
 public partial class HelpViewModel : ViewModelBase
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly HelpService _helpService;
 
-    public HelpViewModel(IHttpClientFactory httpClientFactory)
+    public HelpViewModel(HelpService helpService)
     {
-        _httpClientFactory = httpClientFactory;
+        _helpService = helpService;
     }
 
     [ObservableProperty]
     private string? email;
-
-    [ObservableProperty]
-    private string? name;
-
-    [ObservableProperty]
-    private string? problem;
 
     [ObservableProperty]
     private string? subject;
@@ -55,6 +50,7 @@ public partial class HelpViewModel : ViewModelBase
         try
         {
             IsBusy = true;
+            ErrorMessage = null;
             if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(UserEmail) || string.IsNullOrWhiteSpace(Description) || string.IsNullOrWhiteSpace(SelectedSubject))
             {
                 ErrorMessage = "Wszystkie pola są wymagane.";
@@ -67,8 +63,6 @@ public partial class HelpViewModel : ViewModelBase
                 return;
             }
 
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
             HelpFormRequest request = new()
             {
                 UserName = UserName,
@@ -78,9 +72,9 @@ public partial class HelpViewModel : ViewModelBase
                 Status = "Nowe"
             };
 
-            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Support", request);
+            var result = await _helpService.SubmitHelpFormAsync(request);
 
-            if (response.IsSuccessStatusCode)
+            if (result.IsSuccess)
             {
                 await Shell.Current.DisplayAlert("Sukces", "Twoje zgłoszenie zostało wysłane.", "OK");
                 // Czyszczenie formularza
@@ -92,8 +86,7 @@ public partial class HelpViewModel : ViewModelBase
             }
             else
             {
-                ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
-                    ?? "Wysłanie zgłoszenia nie powiodło się. Spróbuj ponownie.";
+                ErrorMessage = result.ErrorMessage;
             }
         }
         //Może wydzielimy serwis pod iconnectivity z maui i to sprawdza czy jest internet będzie to działać lepiej?
