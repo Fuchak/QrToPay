@@ -3,6 +3,7 @@ using Plugin.LocalNotification;
 using System.Diagnostics;
 using QrToPay.Models.Responses;
 using QrToPay.Models.Enums;
+using QrToPay.View;
 
 namespace QrToPay.ViewModels.ResetPassword;
 //TODO to z tym kodem widziałem gdzieś już
@@ -23,11 +24,8 @@ public partial class ResetPasswordViewModel : ViewModelBase
     [RelayCommand]
     private async Task Confirm()
     {
-        if(IsBusy) return;
-
         try
         {
-            IsBusy = true;
             if (string.IsNullOrWhiteSpace(EmailPhone))
             {
                 ErrorMessage = "Podaj email lub numer telefonu.";
@@ -79,7 +77,7 @@ public partial class ResetPasswordViewModel : ViewModelBase
                     await LocalNotificationCenter.Current.Show(notificationRequest);
 
                     SharedEmailOrPhone = EmailPhone;
-                    await Shell.Current.GoToAsync("ResetPasswordConfirmPage");  //TODO coś tu z busy musielibysmy przestawić żeby iść dalej
+                    await NavigateAsync(nameof(ResetPasswordConfirmPage));
                 }
                 else
                 {
@@ -95,11 +93,6 @@ public partial class ResetPasswordViewModel : ViewModelBase
         catch (Exception ex)
         {
             ErrorMessage = HttpError.HandleError(ex);
-        }
-        finally
-        {
-            IsBusy = false;
-            EmailPhone = string.Empty;
         }
     }
 }

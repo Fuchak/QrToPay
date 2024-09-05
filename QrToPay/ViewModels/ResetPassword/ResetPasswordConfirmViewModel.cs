@@ -27,12 +27,8 @@ public partial class ResetPasswordConfirmViewModel : ViewModelBase
     [RelayCommand]
     private async Task Confirm()
     {
-        if (IsBusy) return;
-
         try
         {
-            IsBusy = true;
-
             if (string.IsNullOrWhiteSpace(Code) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(PasswordConfirm))
             {
                 ErrorMessage = "Wszystkie pola są wymagane.";
@@ -65,7 +61,7 @@ public partial class ResetPasswordConfirmViewModel : ViewModelBase
             if (response.IsSuccessStatusCode)
             {
                 await Shell.Current.DisplayAlert("Sukces", "Hasło zostało zaktualizowane.", "OK");
-                await Shell.Current.GoToAsync("//LoginPage");  //TODO coś tu z busy musielibysmy przestawić żeby iść dalej
+                await NavigateAsync($"//{nameof(LoginPage)}");
             }
             else
             {
@@ -76,10 +72,6 @@ public partial class ResetPasswordConfirmViewModel : ViewModelBase
         catch (Exception ex)
         {
             ErrorMessage = HttpError.HandleError(ex);
-        }
-        finally
-        {
-            IsBusy = false;
         }
     }
 }

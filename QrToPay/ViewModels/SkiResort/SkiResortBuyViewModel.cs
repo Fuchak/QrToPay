@@ -6,6 +6,7 @@ using QrToPay.Models.Common;
 using QrToPay.Models.Requests;
 using QrToPay.Services.Api;
 using QrToPay.Services.Local;
+using QrToPay.View;
 
 namespace QrToPay.ViewModels.SkiResort;
 
@@ -63,10 +64,10 @@ public partial class SkiResortBuyViewModel : ViewModelBase
     [RelayCommand]
     private async Task GenerateQrCodeAsync()
     {
-        if (IsBusy) return; // Zapobiega wielokrotnemu kliknięciu
+        //if (IsBusy) return; // Zapobiega wielokrotnemu kliknięciu
         try
         {
-            IsBusy = true;
+            //IsBusy = true;
 
             if (string.IsNullOrEmpty(ResortName) || string.IsNullOrEmpty(CityName))
             {
@@ -118,23 +119,14 @@ public partial class SkiResortBuyViewModel : ViewModelBase
             Tickets.Add(newTicket);
 
             await _qrCodeStorageService.GenerateAndSaveQrCodeImageAsync(userId, token);
-
+            //isbusy false lub inna zmienna, lepiej inna bo ta sie gryzie z nawigacyjną
             await Shell.Current.DisplayAlert("Potwierdzenie", "Bilet został zakupiony, kod QR wygenerowany", "OK");
 
-            await Shell.Current.GoToAsync("//MainPage/ActiveBiletsPage"); //TODO coś tu z busy musielibysmy przestawić żeby iść dalej
+            await NavigateAsync($"//{nameof(MainPage)}/{nameof(ActiveBiletsPage)}");
         }
         catch (Exception ex)
         {
             ErrorMessage = HttpError.HandleError(ex);
-        }
-/*        catch (Exception)
-        {
-            await Shell.Current.DisplayAlert("Błąd", "Wystąpił błąd podczas zakupu biletu", "OK");
-            //ErrorMessage = HttpError.HandleGeneralError();
-        }*/
-        finally
-        {
-            IsBusy = false;
         }
     }
 }

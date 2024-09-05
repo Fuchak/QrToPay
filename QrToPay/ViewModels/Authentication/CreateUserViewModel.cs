@@ -29,10 +29,8 @@ public partial class CreateUserViewModel : ViewModelBase
     [RelayCommand]
     private async Task Confirm()
     {
-        if (IsBusy) return;
         try
         {
-            IsBusy = true;
             ErrorMessage = null;
             if (string.IsNullOrWhiteSpace(EmailPhone) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(PasswordConfirm))
             {
@@ -106,7 +104,7 @@ public partial class CreateUserViewModel : ViewModelBase
             if (verifyResult.IsSuccess)
             {
                 await Shell.Current.DisplayAlert("Sukces", "Kod weryfikacyjny jest poprawny.", "OK");
-                await Shell.Current.GoToAsync("//LoginPage");  //TODO coś tu z busy musielibysmy przestawić żeby iść dalej
+                await NavigateAsync($"//{nameof(LoginPage)}");
                 Password = string.Empty;
                 PasswordConfirm = string.Empty;
             }
@@ -119,10 +117,6 @@ public partial class CreateUserViewModel : ViewModelBase
         catch (Exception ex)
         {
             ErrorMessage = HttpError.HandleError(ex);
-        }
-        finally
-        {
-            IsBusy = false;
         }
     }
 }

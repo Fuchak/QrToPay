@@ -13,6 +13,6 @@ public partial class ShellViewModel : ViewModelBase
             Preferences.Remove("AuthState");
         }
         Shell.Current.FlyoutIsPresented = false;
-        await Shell.Current.GoToAsync("///LoginPage");  //TODO może użyjmy viewmodelbase też?
+        await NavigateAsync($"///{nameof(LoginPage)}");
     }
 }
