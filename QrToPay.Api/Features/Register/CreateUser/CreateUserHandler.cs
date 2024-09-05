@@ -57,7 +57,10 @@ public class CreateUserHandler : IRequestHandler<CreateUserRequestModel, Result<
             await _context.SaveChangesAsync(cancellationToken);
 
             User? user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == request.Email || u.PhoneNumber == request.PhoneNumber, cancellationToken);
+                .FirstOrDefaultAsync(u =>
+                (request.Email != null && u.Email == request.Email) ||
+                (request.PhoneNumber != null && u.PhoneNumber == request.PhoneNumber),
+                cancellationToken);
 
             if (user is null)
             {
