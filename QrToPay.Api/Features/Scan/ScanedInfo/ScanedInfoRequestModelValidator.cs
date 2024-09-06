@@ -8,7 +8,7 @@ namespace QrToPay.Api.Features.Scan.ScanedInfo
         {
             RuleFor(x => x.QrCode)
                 .NotEmpty().WithMessage("Kod QR jest wymagany.")
-                .MinimumLength(5).WithMessage("Kod QR musi mieć co najmniej 5 znaków.");
+                .MinimumLength(11).WithMessage("Kod QR musi mieć co najmniej 11 znaków.");
         }
     }
 }

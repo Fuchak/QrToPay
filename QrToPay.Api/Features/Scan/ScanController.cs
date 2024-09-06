@@ -24,7 +24,7 @@ public class ScanController : ControllerBase
         var result = await _mediator.Send(request);
 
         return !result.IsSuccess 
-            ? StatusCode(500, new { Message = result.Error }) 
+            ? BadRequest( new { Message = result.Error }) 
             : Ok(result.Value);
     }
     #pragma warning restore ASP0018
@@ -34,7 +34,7 @@ public class ScanController : ControllerBase
     {
         var result = await _mediator.Send(request);
         return !result.IsSuccess 
-            ? StatusCode(500, new { Message = result.Error }) 
+            ? BadRequest( new { Message = result.Error }) 
             : Ok(new { Message = result.Value });
     }
 }

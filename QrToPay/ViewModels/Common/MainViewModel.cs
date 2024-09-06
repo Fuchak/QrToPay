@@ -48,7 +48,7 @@ public partial class MainViewModel : ViewModelBase
             }
             else
             {
-                AccountBalance = 0;
+                AccountBalance = 0.00m;
                 ErrorMessage = result.ErrorMessage;
             }
         }

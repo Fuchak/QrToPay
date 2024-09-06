@@ -101,7 +101,6 @@
                                  WidthRequest="30"/>
                 </Grid>
                 <Label Text="{Binding ErrorMessage}"
-                       FontSize="Small"
                        TextColor="Red"
                        HorizontalOptions="Center"
                        HorizontalTextAlignment="Center"/>

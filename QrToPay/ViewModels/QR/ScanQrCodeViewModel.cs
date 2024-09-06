@@ -4,15 +4,16 @@ using QrToPay.Models.Requests;
 using System.Diagnostics;
 using System.Net.Http.Json;
 using QrToPay.Models.Common;
+using QrToPay.Services.Api;
 
 namespace QrToPay.ViewModels.QR;
 public partial class ScanQrCodeViewModel : ViewModelBase
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ScanService _scanService;
 
-    public ScanQrCodeViewModel(IHttpClientFactory httpClientFactory)
+    public ScanQrCodeViewModel(ScanService scanService)
     {
-        _httpClientFactory = httpClientFactory;
+        _scanService = scanService;
     }
 
     [ObservableProperty]
@@ -26,7 +27,7 @@ public partial class ScanQrCodeViewModel : ViewModelBase
     [ObservableProperty]
     private bool pauseScanning = false;
 
-    private const int PauseDuration = 4000; // Pauza w milisekundach (4 sekundy) by nie zawalać api zbyt dużą ilością zapytań
+    private const int PauseDuration = 2000; // Pauza w milisekundach (2 sekundy) by nie zawalać api zbyt dużą ilością zapytań
 
     [RelayCommand]
     private async Task OnDetectionFinished(BarcodeResult[] results)
@@ -55,22 +56,18 @@ public partial class ScanQrCodeViewModel : ViewModelBase
         if (IsBusy) return;
         try
         {
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            HttpResponseMessage response = await client.GetAsync($"/api/Scan/{qrCode}");
+            IsBusy = true;
+            var result = await _scanService.FetchAttractionDataAsync(qrCode);
 
-            if (response.IsSuccessStatusCode)
+            if (result.IsSuccess && result.Data != null)
             {
-                Purchase? attraction = await response.Content.ReadFromJsonAsync<Purchase>();
-                if (attraction != null)
-                {
-                    CurrentAttraction = attraction;
-                    PurchaseCommand.NotifyCanExecuteChanged();
-                }
+                CurrentAttraction = result.Data;
+                PurchaseCommand.NotifyCanExecuteChanged();
+                ErrorMessage = null;
             }
             else
             {
-                ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
-                    ?? "Błąd pobierania danych";
+                ErrorMessage = result.ErrorMessage;
             }
         }
         catch (Exception ex)
@@ -83,13 +80,6 @@ public partial class ScanQrCodeViewModel : ViewModelBase
         }
     }
 
-    public bool IsAttractionValid =>
-            !string.IsNullOrEmpty(CurrentAttraction?.ServiceName) &&
-            CurrentAttraction?.ServiceId != null &&
-            !string.IsNullOrEmpty(CurrentAttraction?.AttractionName) &&
-            CurrentAttraction?.Price != null;
-
-
     [RelayCommand(CanExecute = nameof(CanPurchase))]
     private async Task Purchase()
     {
@@ -98,7 +88,6 @@ public partial class ScanQrCodeViewModel : ViewModelBase
         {
             IsBusy = true;
 
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
             int userId = Preferences.Get("UserId", 0);
 
             if (CurrentAttraction != null)
@@ -115,9 +104,9 @@ public partial class ScanQrCodeViewModel : ViewModelBase
                     }
                 };
 
-                HttpResponseMessage response = await client.PostAsJsonAsync("/api/Scan/purchase", purchaseRequest);
+                var result = await _scanService.MakePurchaseAsync(purchaseRequest);
 
-                if (response.IsSuccessStatusCode)
+                if (result.IsSuccess)
                 {
                     await Shell.Current.DisplayAlert("Zakup", "Zakup zakończony pomyślnie!", "OK");
 
@@ -129,8 +118,7 @@ public partial class ScanQrCodeViewModel : ViewModelBase
                 }
                 else
                 {
-                    ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
-                        ?? "Błąd płatności";
+                    ErrorMessage = result.ErrorMessage;
                 }
             }
         }
@@ -155,6 +143,12 @@ public partial class ScanQrCodeViewModel : ViewModelBase
         // Zaktualizowanie stanu komendy
         PurchaseCommand.NotifyCanExecuteChanged();
     }
+
+    public bool IsAttractionValid =>
+        !string.IsNullOrEmpty(CurrentAttraction?.ServiceName) &&
+        CurrentAttraction?.ServiceId != null &&
+        !string.IsNullOrEmpty(CurrentAttraction?.AttractionName) &&
+        CurrentAttraction?.Price != null;
 
     private bool CanPurchase()
     {

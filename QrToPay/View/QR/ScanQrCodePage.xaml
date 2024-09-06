@@ -61,6 +61,10 @@
                         IsVisible="{Binding IsAttractionValid}" 
                         HorizontalOptions="Center" VerticalOptions="Center" />
             </HorizontalStackLayout>
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="Red" 
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"/>
         </VerticalStackLayout>
     </Grid>
 </ContentPage>
