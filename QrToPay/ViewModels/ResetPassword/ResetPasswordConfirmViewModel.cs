@@ -1,15 +1,17 @@
 ﻿using System.Diagnostics;
 using System.Net.Http.Json;
+using QrToPay.Models.Requests;
 using QrToPay.Models.Responses;
+using QrToPay.Services.Api;
 
 namespace QrToPay.ViewModels.ResetPassword;
 public partial class ResetPasswordConfirmViewModel : ViewModelBase
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly UserService _userService;
 
-    public ResetPasswordConfirmViewModel(IHttpClientFactory httpClientFactory)
+    public ResetPasswordConfirmViewModel(UserService userService)
     {
-        _httpClientFactory = httpClientFactory;
+        _userService = userService;
     }
 
     [ObservableProperty]
@@ -47,26 +49,23 @@ public partial class ResetPasswordConfirmViewModel : ViewModelBase
                 return;
             }
 
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            //TODO wtf co to jest czemu tu nie ma żadnego modelu pod to może to jest git?
-            var requestData = new
+            ResetPasswordConfirmRequest request = new()
             {
-                EmailOrPhone = EmailPhone,
+                EmailOrPhone = EmailPhone!,
                 VerificationCode = Code,
                 NewPassword = Password
             };
 
-            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Auth/resetPassword", requestData);
+            var result = await _userService.ResetPasswordAsync(request);
 
-            if (response.IsSuccessStatusCode)
+            if (result.IsSuccess)
             {
                 await Shell.Current.DisplayAlert("Sukces", "Hasło zostało zaktualizowane.", "OK");
                 await NavigateAsync($"//{nameof(LoginPage)}");
             }
             else
             {
-                ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
-                     ?? "Błąd podczas resetowania hasła";
+                ErrorMessage = result.ErrorMessage;
             }
         }
         catch (Exception ex)

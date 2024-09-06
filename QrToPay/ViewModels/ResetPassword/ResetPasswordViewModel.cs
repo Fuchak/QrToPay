@@ -4,16 +4,19 @@ using System.Diagnostics;
 using QrToPay.Models.Responses;
 using QrToPay.Models.Enums;
 using QrToPay.View;
+using QrToPay.Services.Api;
+using Org.Apache.Http.Protocol;
+using QrToPay.Models.Requests;
 
 namespace QrToPay.ViewModels.ResetPassword;
-//TODO to z tym kodem widziałem gdzieś już
+
 public partial class ResetPasswordViewModel : ViewModelBase
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly UserService _userService;
 
-    public ResetPasswordViewModel(IHttpClientFactory httpClientFactory)
+    public ResetPasswordViewModel(UserService userService)
     {
-        _httpClientFactory = httpClientFactory;
+        _userService = userService;
     }
 
     public static string? SharedEmailOrPhone { get; set; }
@@ -32,32 +35,32 @@ public partial class ResetPasswordViewModel : ViewModelBase
                 return;
             }
 
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
             ChangeType changeType;
-            object requestData;
 
             if (ValidationHelper.IsEmail(EmailPhone))
             {
                 changeType = ChangeType.Email;
-                requestData = new { Contact = EmailPhone, ChangeType = changeType };
             }
             else if (ValidationHelper.IsPhoneNumber(EmailPhone))
             {
                 changeType = ChangeType.Phone;
-                requestData = new { Contact = EmailPhone, ChangeType = changeType };
             }
             else
             {
                 ErrorMessage = "Podaj poprawny email lub numer telefonu.";
-                IsBusy = false;
                 return;
             }
 
-            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Auth/checkAccount", requestData);
-            if (response.IsSuccessStatusCode)
+            ResetPasswordRequest request = new ()
             {
-                ChangeResponse? changeResponse = await response.Content.ReadFromJsonAsync<ChangeResponse>();
+                Contact = EmailPhone,
+                ChangeType = changeType
+            };
+
+            var result = await _userService.CheckAccountAsync(request);
+            if (result.IsSuccess)
+            {
+                var changeResponse = result.Data;
 
                 if (changeResponse != null)
                 {
@@ -86,8 +89,7 @@ public partial class ResetPasswordViewModel : ViewModelBase
             }
             else
             {
-                ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response) 
-                    ?? "Błąd podczas resetowania hasła. Spróbuj ponownie.";
+                ErrorMessage = result.ErrorMessage;
             }
         }
         catch (Exception ex)

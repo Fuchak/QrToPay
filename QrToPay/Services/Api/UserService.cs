@@ -45,12 +45,12 @@ public class UserService
         }
     }
 
-    public async Task<ServiceResult<object>> VerifyUserAsync(VerifyCreateUserRequest verifyRequest)
+    public async Task<ServiceResult<object>> VerifyUserAsync(VerifyCreateUserRequest request)
     {
         try
         {
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Register/verify", verifyRequest);
+            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Register/verify", request);
 
             if (response.IsSuccessStatusCode)
             {
@@ -65,6 +65,62 @@ public class UserService
         catch (Exception ex)
         {
             return ServiceResult<object>.Failure(HttpError.HandleError(ex));
+        }
+    }
+
+    public async Task<ServiceResult<object>> ResetPasswordAsync(ResetPasswordConfirmRequest request)
+    {
+        try
+        {
+            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+
+            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Auth/resetPassword", request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return ServiceResult<object>.Success();
+            }
+            else
+            {
+                string errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response);
+                return ServiceResult<object>.Failure(errorMessage ?? "Błąd podczas resetowania hasła");
+            }
+        }
+        catch (Exception ex)
+        {
+            return ServiceResult<object>.Failure(HttpError.HandleError(ex));
+        }
+    }
+
+    public async Task<ServiceResult<ChangeResponse>> CheckAccountAsync(ResetPasswordRequest request)
+    {
+        HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+
+        try
+        {
+            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Auth/checkAccount", request);
+            if (response.IsSuccessStatusCode)
+            {
+                ChangeResponse? changeResponse = await response.Content.ReadFromJsonAsync<ChangeResponse>();
+                if (changeResponse != null)
+                {
+                    return ServiceResult<ChangeResponse>.Success(changeResponse);
+                }
+                else
+                {
+                    return ServiceResult<ChangeResponse>.Failure("Błąd podczas odczytywania kodu weryfikacyjnego.");
+                }
+            }
+            else
+            {
+                string errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
+                    ?? "Błąd podczas resetowania hasła. Spróbuj ponownie.";
+                return ServiceResult<ChangeResponse>.Failure(errorMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            return ServiceResult<ChangeResponse>.Failure(HttpError.HandleError(ex));
         }
     }
 }
