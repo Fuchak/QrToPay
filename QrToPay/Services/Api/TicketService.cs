@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using QrToPay.Models.Common;
+using QrToPay.Models.Requests;
 using QrToPay.Models.Responses;
 
 namespace QrToPay.Services.Api;
@@ -11,6 +12,21 @@ public class TicketService
     public TicketService(IHttpClientFactory httpClientFactory)
     {
         _httpClientFactory = httpClientFactory;
+    }
+
+    public async Task<string> GenerateAndUpdateTicketAsync(UpdateTicketRequest updateRequest)
+    {
+        HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+
+        HttpResponseMessage response = await client.PostAsJsonAsync("/api/Tickets/generateAndUpdate", updateRequest);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return string.Empty;
+        }
+
+        UpdateTicketResponse? result = await response.Content.ReadFromJsonAsync<UpdateTicketResponse>();
+        return result?.QrCode ?? string.Empty;
     }
 
     public async Task<ServiceResult<List<Ticket>>> GetActiveTicketsAsync(int userId)
@@ -41,12 +57,12 @@ public class TicketService
         }
     }
 
-    public async Task<ServiceResult<List<HistoryItemResponse>>> GetHistoryAsync(int userId)
+    public async Task<ServiceResult<List<HistoryItemResponse>>> GetHistoryAsync(HistoryRequest request)
     {
         try
         {
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            HttpResponseMessage response = await client.GetAsync($"/api/Tickets/getHistory?userId={userId}");
+            HttpResponseMessage response = await client.GetAsync($"/api/Tickets/history?userId={request.UserId}&pageNumber={request.PageNumber}&pageSize={request.PageSize}");
 
             if (response.IsSuccessStatusCode)
             {

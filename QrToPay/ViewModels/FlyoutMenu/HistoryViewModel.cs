@@ -11,6 +11,8 @@ namespace QrToPay.ViewModels.FlyoutMenu;
 public partial class HistoryViewModel : ViewModelBase
 {
     private readonly TicketService _ticketService;
+    private int pageNumber = 1;
+    private const int pageSize = 5;
 
     public HistoryViewModel(TicketService ticketService)
     {
@@ -25,16 +27,25 @@ public partial class HistoryViewModel : ViewModelBase
 
     public async Task LoadHistoryAsync()
     {
-        if (IsBusy) return;
+        if (IsBusy) return; // Jeśli jest w trakcie ładowania lub nie ma więcej danych, zakończ
+
         try
         {
             IsBusy = true;
             ErrorMessage = null;
 
+            // Tworzenie zapytania z danymi paginacji
             int userId = Preferences.Get("UserId", 0);
-            var result = await _ticketService.GetHistoryAsync(userId);
+            HistoryRequest request = new()
+            {
+                UserId = userId,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+            };
 
-            if (result.IsSuccess && result.Data != null)
+            var result = await _ticketService.GetHistoryAsync(request);
+
+            if (result.IsSuccess && result.Data != null && result.Data.Count > 0)
             {
                 foreach (var item in result.Data)
                 {
@@ -45,6 +56,15 @@ public partial class HistoryViewModel : ViewModelBase
                         Name = item.Name,
                         TotalPrice = item.TotalPrice
                     });
+                }
+
+                if (result.Data.Count < pageSize)
+                {
+                    HasHistory = HistoryItems.Count > 0;
+                }
+                else
+                {
+                    pageNumber++; // Inkrementacja numeru strony tylko, gdy są dane
                 }
                 HasHistory = true;
             }
@@ -62,6 +82,15 @@ public partial class HistoryViewModel : ViewModelBase
         finally
         {
             IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task LoadMoreAsync()
+    {
+        if (!IsBusy)
+        {
+            await LoadHistoryAsync();
         }
     }
 }

@@ -28,6 +28,7 @@ public class GetSkiResortPricesHandler : IRequestHandler<GetSkiResortPricesReque
                                 Tokens = p.Tokens,
                                 Price = p.Price
                             })
+                            .OrderBy(p => p.Price)
                             .ToListAsync(cancellationToken);
 
             if (response.Count == 0)

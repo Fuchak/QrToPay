@@ -1,3 +1,4 @@
+using AndroidX.Lifecycle;
 using QrToPay.ViewModels.FlyoutMenu;
 
 namespace QrToPay.View;

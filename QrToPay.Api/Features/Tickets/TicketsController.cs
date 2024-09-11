@@ -39,7 +39,7 @@ public class TicketsController : ControllerBase
             : Ok(new { qrCode = result.Value });
     }
 
-    [HttpGet("getHistory")]
+    [HttpGet("history")]
     public async Task<IActionResult> GetTicketHistory([FromQuery] GetTicketHistoryRequestModel request)
     {
         var result = await _mediator.Send(request);

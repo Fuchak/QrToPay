@@ -6,7 +6,7 @@
              x:Class="QrToPay.View.HistoryPage"
              Style="{StaticResource BasePageStyle}"
              x:DataType="vm:HistoryViewModel">
-    
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style TargetType="Label" x:Key="AccountLabelStyle">
@@ -31,7 +31,6 @@
                 <ColumnDefinition Width="3*" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-            <!-- Wycentrowany tytuł -->
             <Label 
                    FontFamily="Arial"
                    Text="Historia" 
@@ -42,67 +41,63 @@
                    VerticalOptions="Center"/>
         </Grid>
     </Shell.TitleView>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ActivityIndicator 
-            IsRunning="{Binding IsBusy}" 
-            IsVisible="{Binding IsBusy}"
-            Color="{StaticResource Orange}"
-            HorizontalOptions="Center"
-            VerticalOptions="Center"/>
-        
-        <Label  Text="{Binding ErrorMessage}"
-                TextColor="Red" 
-                HorizontalOptions="Center"
-                HorizontalTextAlignment="Center"
-                IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"/>
-        
-        <ScrollView Grid.Row="1" VerticalOptions="FillAndExpand">
-            <VerticalStackLayout Padding="10" Margin="0,10,0,0">
-                <CollectionView ItemsSource="{Binding HistoryItems}">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="models:HistoryItemResponse">
-                            <StackLayout>
-                                <Label Text="{Binding Date}" Style="{StaticResource AccountLabelStyle}" />
-                                <Label Text="{Binding Type}" Style="{StaticResource AccountLabelStyle}" />
-                                <Label Text="{Binding Name}" Style="{StaticResource AccountLabelStyle}" />
-                                <HorizontalStackLayout>
-                                    <Label Text="{Binding TotalPrice}" Style="{StaticResource AccountLabelStyle}" />
-                                    <Label Text=" zł" Style="{StaticResource AccountLabelStyle}"/>
-                                </HorizontalStackLayout>
-                                <BoxView Style="{StaticResource AccountBoxViewStyle}" />
-                            </StackLayout>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-                
-                <Label Text="Brak historii biletów" 
-                       FontSize="18" 
-                       HorizontalOptions="Center" 
-                       VerticalOptions="Center"
-                       IsVisible="{Binding HasHistory, Converter={StaticResource FalseToTrueConverter}}">
-                    <Label.Triggers>
-                        <DataTrigger TargetType="Label" Binding="{Binding HasHistory}" Value="True">
-                            <Setter Property="IsVisible" Value="False" />
-                        </DataTrigger>
-                    </Label.Triggers>
-                </Label>
-                
-            </VerticalStackLayout>
-        </ScrollView>
+        <Label Text="{Binding ErrorMessage}"
+               TextColor="Red" 
+               HorizontalOptions="Center"
+               HorizontalTextAlignment="Center"
+               IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"/>
+
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding HistoryItems}"
+                        RemainingItemsThreshold="1"
+                        RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
+            <CollectionView.Footer>
+                <ActivityIndicator IsRunning="True" IsVisible="{Binding IsBusy}" Color="{StaticResource Orange}"/>
+            </CollectionView.Footer>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:HistoryItemResponse">
+                    <StackLayout>
+                        <Label Text="{Binding Date}" Style="{StaticResource AccountLabelStyle}" />
+                        <Label Text="{Binding Type}" Style="{StaticResource AccountLabelStyle}" />
+                        <Label Text="{Binding Name}" Style="{StaticResource AccountLabelStyle}" />
+                        <HorizontalStackLayout>
+                            <Label Text="{Binding TotalPrice}" Style="{StaticResource AccountLabelStyle}" />
+                            <Label Text=" zł" Style="{StaticResource AccountLabelStyle}"/>
+                        </HorizontalStackLayout>
+                        <BoxView Style="{StaticResource AccountBoxViewStyle}" />
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Label Text="Brak historii biletów" 
+               FontSize="18" 
+               HorizontalOptions="Center" 
+               VerticalOptions="Center"
+               IsVisible="{Binding HasHistory, Converter={StaticResource FalseToTrueConverter}}">
+            <Label.Triggers>
+                <DataTrigger TargetType="Label" Binding="{Binding HasHistory}" Value="True">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+            </Label.Triggers>
+        </Label>
+
         <Border Grid.Row="0" 
-        HorizontalOptions="FillAndExpand"
-        VerticalOptions="Start">
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="Start">
             <Border.Shadow>
                 <Shadow Brush="Black"
-                    Offset="0,5"
-                    Radius="7"
-                    Opacity="0.8"/>
+                        Offset="0,5"
+                        Radius="7"
+                        Opacity="0.8"/>
             </Border.Shadow>
         </Border>
     </Grid>

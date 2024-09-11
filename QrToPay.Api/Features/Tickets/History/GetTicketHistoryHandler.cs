@@ -19,17 +19,20 @@ public class GetTicketHistoryHandler : IRequestHandler<GetTicketHistoryRequestMo
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
+            var skip = (request.PageNumber - 1) * request.PageSize;
             List<TicketHistoryDto> response = await _context.TicketHistories
-                            .Where(th => th.UserId == request.UserId)
-                            .OrderByDescending(th => th.PurchaseDate)
-                            .Select(th => new TicketHistoryDto
-                            {
-                                Date = th.PurchaseDate.ToString("yyyy-MM-dd"),
-                                Type = (ServiceType)th.Service.ServiceType,
-                                Name = th.Service.ServiceName,
-                                TotalPrice = th.TotalPrice
-                            })
-                            .ToListAsync(cancellationToken);
+                .Where(th => th.UserId == request.UserId)
+                .OrderByDescending(th => th.PurchaseDate)
+                .Skip(skip) // Ominięcie rekordów dla paginacji
+                .Take(request.PageSize) // Pobranie określonej ilości rekordów
+                .Select(th => new TicketHistoryDto
+                {
+                    Date = th.PurchaseDate.ToString("yyyy-MM-dd"),
+                    Type = (ServiceType)th.Service.ServiceType,
+                    Name = th.Service.ServiceName,
+                    TotalPrice = th.TotalPrice
+                })
+                .ToListAsync(cancellationToken);
 
             return Result<List<TicketHistoryDto>>.Success(response);
         });

@@ -15,21 +15,6 @@ public class QrCodeService
         _httpClientFactory = httpClientFactory;
     }
 
-    public async Task<string> GenerateAndUpdateTicketAsync(UpdateTicketRequest updateRequest)
-    {
-        HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
-        HttpResponseMessage response = await client.PostAsJsonAsync("/api/Tickets/generateAndUpdate", updateRequest);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            return string.Empty;
-        }
-
-        UpdateTicketResponse? result = await response.Content.ReadFromJsonAsync<UpdateTicketResponse>();
-        return result?.QrCode ?? string.Empty;
-    }
-
     public async Task ActivateQrCodeAsync(string token, int userId)
     {
 

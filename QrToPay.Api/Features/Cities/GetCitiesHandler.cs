@@ -26,6 +26,7 @@ public class GetCitiesHandler : IRequestHandler<GetCitiesRequestModel, Result<IE
                                 ServiceId = e.ServiceId
                             })
                             .Distinct()
+                            .OrderBy(c => c.CityName)
                             .ToListAsync(cancellationToken);
 
             if (response.Count == 0)

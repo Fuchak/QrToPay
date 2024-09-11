@@ -55,7 +55,7 @@ public static class MauiProgram
         // Rejestrujesz IHttpClientFactory i konfigurujesz klienta HTTP
         builder.Services.AddHttpClient("ApiHttpClient", client =>
         {
-            client.BaseAddress = new Uri("https://9hln2f5n-7041.euw.devtunnels.ms/");
+            client.BaseAddress = new Uri("https://ms6glt5d-7041.euw.devtunnels.ms/");
         });
 
         builder.Services.AddTransient<AuthService>();
@@ -73,6 +73,7 @@ public static class MauiProgram
         builder.Services.AddScoped<HelpService>();
         builder.Services.AddScoped<CityService>();
         builder.Services.AddScoped<ScanService>();
+        builder.Services.AddScoped<SkiResortService>();
 
         //usługa lokalnego magazynu by nie przekazywać po ekranach wszystkich danych
         builder.Services.AddSingleton<AppState>();

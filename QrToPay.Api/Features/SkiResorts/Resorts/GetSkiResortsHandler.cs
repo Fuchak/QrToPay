@@ -31,6 +31,7 @@ public class GetSkiResortsHandler : IRequestHandler<GetSkiResortsRequestModel, R
                         .FirstOrDefault()!,
                     CityName = request.CityName
                 })
+                .OrderBy(s => s.ResortName)
                 .ToListAsync(cancellationToken);
 
             if (response.Count == 0)

@@ -13,14 +13,14 @@ namespace QrToPay.ViewModels.SkiResort;
 public partial class SkiResortBuyViewModel : ViewModelBase
 {
 
-    private readonly QrCodeService _qrCodeService;
+    private readonly TicketService _ticketService;
     private readonly QrCodeStorageService _qrCodeStorageService;
     private readonly AppState _appState;
     private readonly BalanceService _balanceService;
 
-    public SkiResortBuyViewModel(QrCodeService qrCodeService, QrCodeStorageService qrCodeStorageService, AppState appState, BalanceService balanceService)
+    public SkiResortBuyViewModel(TicketService ticketService, QrCodeStorageService qrCodeStorageService, AppState appState, BalanceService balanceService)
     {
-        _qrCodeService = qrCodeService;
+        _ticketService = ticketService;
         _qrCodeStorageService = qrCodeStorageService;
         _appState = appState;
         _balanceService = balanceService;
@@ -101,7 +101,7 @@ public partial class SkiResortBuyViewModel : ViewModelBase
                 TotalPrice = formattedPrice
             };
 
-            var token = await _qrCodeService.GenerateAndUpdateTicketAsync(updateRequest);
+            var token = await _ticketService.GenerateAndUpdateTicketAsync(updateRequest);
             if (string.IsNullOrEmpty(token))
             {
                 ErrorMessage = "Nie udało się przetworzyć płatności";
