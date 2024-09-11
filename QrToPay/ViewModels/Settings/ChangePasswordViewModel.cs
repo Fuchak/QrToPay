@@ -2,15 +2,18 @@
 using System.Diagnostics;
 using QrToPay.Models.Responses;
 using QrToPay.Models.Requests;
+using QrToPay.Services.Api;
 
 namespace QrToPay.ViewModels.Settings;
 public partial class ChangePasswordViewModel : ViewModelBase
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-    public ChangePasswordViewModel(IHttpClientFactory httpClientFactory)
+    private readonly UserService _userService;
+
+    public ChangePasswordViewModel(UserService userService)
     {
-        _httpClientFactory = httpClientFactory;
+        _userService = userService;
     }
+
     [ObservableProperty]
     private string? oldPassword;
 
@@ -53,7 +56,6 @@ public partial class ChangePasswordViewModel : ViewModelBase
                 return;
             }
 
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
             ChangePasswordRequest changePasswordRequest = new()
             {
                 UserId = userId,
@@ -62,16 +64,16 @@ public partial class ChangePasswordViewModel : ViewModelBase
                 ConfirmNewPassword = PasswordConfirm
             };
 
-            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Settings/changePassword", changePasswordRequest);
+            var result = await _userService.ChangePasswordAsync(changePasswordRequest);
 
-            if (response.IsSuccessStatusCode)
+            if (result.IsSuccess)
             {
                 await Shell.Current.DisplayAlert("Sukces", "Hasło zostało zmienione.", "OK");
+                ErrorMessage = null;
             }
             else
             {
-                ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
-                    ?? "Zmiana hasła nie powiodła się.";
+                ErrorMessage = result.ErrorMessage;
             }
         }
         catch (Exception ex)

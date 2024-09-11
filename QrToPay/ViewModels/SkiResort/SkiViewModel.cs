@@ -2,19 +2,19 @@
 using System.Diagnostics;
 using System.Net.Http.Json;
 using QrToPay.Models.Common;
+using QrToPay.Services.Api;
 
 namespace QrToPay.ViewModels.SkiResort;
 public partial class SkiViewModel : ViewModelBase
 {
-    private readonly IHttpClientFactory _httpClientFactory;
     private readonly AppState _appState;
-    
-    public SkiViewModel(IHttpClientFactory httpClientFactory, AppState appState)
-    {
-        _httpClientFactory = httpClientFactory;
-        _appState = appState;
-    }
+    private readonly SkiResortService _skiResortService;
 
+    public SkiViewModel(AppState appState, SkiResortService skiResortService)
+    {
+        _appState = appState;
+        _skiResortService = skiResortService;
+    }
     [ObservableProperty]
     private ObservableCollection<SkiResortData> skiResorts = [];
 
@@ -25,16 +25,13 @@ public partial class SkiViewModel : ViewModelBase
         try
         {
             IsBusy = true;
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            HttpResponseMessage response = await client.GetAsync($"/api/SkiResorts/resorts?cityName={_appState.CityName}");
-            response.EnsureSuccessStatusCode();
 
-            List<SkiResortData>? skiResortsData = await response.Content.ReadFromJsonAsync<List<SkiResortData>>();
+            var result = await _skiResortService.GetSkiResortsAsync(_appState.CityName!);
 
-            if (skiResortsData != null)
+            if (result.IsSuccess && result.Data != null)
             {
                 SkiResorts.Clear();
-                foreach (var skiResort in skiResortsData)
+                foreach (var skiResort in result.Data)
                 {
                     SkiResorts.Add(new SkiResortData
                     {
@@ -43,10 +40,11 @@ public partial class SkiViewModel : ViewModelBase
                         ImageSource = "stok.png"
                     });
                 }
+                ErrorMessage = null;
             }
             else
             {
-                ErrorMessage = "Nie udało się pobrać danych ze stoku narciarskiego.";
+                ErrorMessage = result.ErrorMessage;
             }
         }
         catch (Exception ex)
@@ -63,7 +61,7 @@ public partial class SkiViewModel : ViewModelBase
     private async Task GotoSkiResortAsync(SkiResortData skiresort)
     {
         _appState.UpdateAttractionId(skiresort.SkiResortId);
-        _appState.UpdateResortName(skiresort.ResortName);
+        _appState.UpdateResortName(skiresort.ResortName!);
 
         await NavigateAsync(nameof(SkiResortPage));
     }

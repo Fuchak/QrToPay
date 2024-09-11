@@ -5,15 +5,16 @@ using CommunityToolkit.Maui.Views;
 using Plugin.LocalNotification;
 using QrToPay.Models.Requests;
 using QrToPay.Models.Enums;
+using QrToPay.Services.Api;
 
 namespace QrToPay.ViewModels.Settings;
 public partial class ChangeEmailViewModel: ViewModelBase
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly UserService _userService;
 
-    public ChangeEmailViewModel(IHttpClientFactory httpClientFactory)
+    public ChangeEmailViewModel(UserService userService)
     {
-        _httpClientFactory = httpClientFactory;
+        _userService = userService;
     }
 
     [ObservableProperty]
@@ -48,7 +49,6 @@ public partial class ChangeEmailViewModel: ViewModelBase
                 return;
             }
 
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
             ChangeRequest changeRequest = new()
             {
                 UserId = userId,
@@ -57,60 +57,49 @@ public partial class ChangeEmailViewModel: ViewModelBase
                 ChangeType = ChangeType.Email
             };
 
-            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Settings/requestChange", changeRequest);
+            var result = await _userService.RequestChangeAsync(changeRequest);
 
-            if (response.IsSuccessStatusCode)
+            if (result.IsSuccess && result.Data != null)
             {
-                ChangeResponse? changeEmailResponse = await response.Content.ReadFromJsonAsync<ChangeResponse>();
-
-                if (changeEmailResponse != null)
+                NotificationRequest notificationRequest = new()
                 {
-                    NotificationRequest notificationRequest = new()
+                    Title = "Kod weryfikacyjny",
+                    Description = $"Twój kod weryfikacyjny to: {result.Data.VerificationCode}",
+                    ReturningData = "VerificationCode",
+                    NotificationId = 1337
+                };
+                await LocalNotificationCenter.Current.Show(notificationRequest);
+
+                bool verificationResult = await VerificationCodeHelper.VerifyCodeAsync(result.Data.VerificationCode);
+
+                if (verificationResult)
+                {
+                    VerifyChangeRequest verifyRequest = new()
                     {
-                        Title = "Kod weryfikacyjny",
-                        Description = $"Twój kod weryfikacyjny to: {changeEmailResponse.VerificationCode}",
-                        ReturningData = "VerificationCode",
-                        NotificationId = 1337
+                        UserId = userId,
+                        VerificationCode = result.Data.VerificationCode,
+                        ChangeType = ChangeType.Email
                     };
-                    await LocalNotificationCenter.Current.Show(notificationRequest);
 
-                    bool verificationResult = await VerificationCodeHelper.VerifyCodeAsync(changeEmailResponse.VerificationCode);
-
-                    if (verificationResult)
+                    var verifyResult = await _userService.VerifyChangeAsync(verifyRequest);
+                    if (verifyResult.IsSuccess)
                     {
-                        VerifyChangeRequest VerifyRequest = new()
-                        {
-                            UserId = userId,
-                            VerificationCode = changeEmailResponse.VerificationCode,
-                            ChangeType = ChangeType.Email
-                        };
-
-                        HttpResponseMessage verifyResponse = await client.PostAsJsonAsync("/api/Settings/verifyChange", VerifyRequest);
-                        if (verifyResponse.IsSuccessStatusCode)
-                        {
-                            Preferences.Set("UserEmail", NewEmail);
-                            await Shell.Current.DisplayAlert("Sukces", "Adres e-mail został zmieniony.", "OK");
-                        }
-                        else
-                        {
-                            ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
-                                ?? "Błąd podczas weryfikacji adresu e-mail. Spróbuj ponownie.";
-                        }
+                        Preferences.Set("UserEmail", NewEmail);
+                        await Shell.Current.DisplayAlert("Sukces", "Adres e-mail został zmieniony.", "OK");
                     }
                     else
                     {
-                        ErrorMessage = "Nieprawidłowy kod weryfikacyjny.";
+                        ErrorMessage = verifyResult.ErrorMessage;
                     }
                 }
                 else
                 {
-                    ErrorMessage = "Błąd podczas odczytywania kodu weryfikacyjnego.";
+                    ErrorMessage = "Nieprawidłowy kod weryfikacyjny.";
                 }
             }
             else
             {
-                ErrorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
-                    ?? "Żądanie zmiany adresu e-mail nie powiodło się. Spróbuj ponownie.";
+                ErrorMessage = result.ErrorMessage;
             }
         }
         catch (Exception ex)

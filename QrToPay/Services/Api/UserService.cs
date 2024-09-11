@@ -123,4 +123,81 @@ public class UserService
             return ServiceResult<ChangeResponse>.Failure(HttpError.HandleError(ex));
         }
     }
+
+    public async Task<ServiceResult<ChangeResponse>> RequestChangeAsync(ChangeRequest request)
+    {
+        try
+        {
+            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Settings/requestChange", request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                ChangeResponse? changeResponse = await response.Content.ReadFromJsonAsync<ChangeResponse>();
+                if (changeResponse != null)
+                {
+                    return ServiceResult<ChangeResponse>.Success(changeResponse);
+                }
+                return ServiceResult<ChangeResponse>.Failure("Błąd podczas odczytywania odpowiedzi serwera.");
+            }
+            else
+            {
+                string errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
+                    ?? "Żądanie zmiany danych kontaktowych nie powiodło się.";
+                return ServiceResult<ChangeResponse>.Failure(errorMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            return ServiceResult<ChangeResponse>.Failure(HttpError.HandleError(ex));
+        }
+    }
+
+    public async Task<ServiceResult<object>> VerifyChangeAsync(VerifyChangeRequest request)
+    {
+        try
+        {
+            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Settings/verifyChange", request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return ServiceResult<object>.Success();
+            }
+            else
+            {
+                string errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
+                    ?? "Błąd podczas weryfikacji zmiany danych kontaktowych.";
+                return ServiceResult<object>.Failure(errorMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            return ServiceResult<object>.Failure(HttpError.HandleError(ex));
+        }
+    }
+
+    public async Task<ServiceResult<object>> ChangePasswordAsync(ChangePasswordRequest request)
+    {
+        try
+        {
+            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Settings/changePassword", request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return ServiceResult<object>.Success();
+            }
+            else
+            {
+                string errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
+                    ?? "Zmiana hasła nie powiodła się.";
+                return ServiceResult<object>.Failure(errorMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            return ServiceResult<object>.Failure(HttpError.HandleError(ex));
+        }
+    }
 }

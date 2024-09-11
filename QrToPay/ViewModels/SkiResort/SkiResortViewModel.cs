@@ -2,19 +2,21 @@
 using System.Net.Http.Json;
 using QrToPay.Models.Common;
 using QrToPay.Models.Responses;
+using QrToPay.Services.Api;
 
 namespace QrToPay.ViewModels.SkiResort;
 
 public partial class SkiResortViewModel : ViewModelBase
 {
     private readonly AppState _appState;
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly SkiResortService _skiResortService;
 
-    public SkiResortViewModel(AppState appState, IHttpClientFactory httpClientFactory)
+    public SkiResortViewModel(AppState appState, SkiResortService skiResortService)
     {
         _appState = appState;
-        _httpClientFactory = httpClientFactory;
+        _skiResortService = skiResortService;
     }
+
     [ObservableProperty]
     private ObservableCollection<Ticket> tickets = [];
 
@@ -32,16 +34,12 @@ public partial class SkiResortViewModel : ViewModelBase
             ResortName = _appState.ResortName;
             CityName = _appState.CityName;
 
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            HttpResponseMessage response = await client.GetAsync($"/api/SkiResorts/prices?skiResortId={_appState.AttractionId}");
-            response.EnsureSuccessStatusCode();
+            var result = await _skiResortService.GetSkiResortPricesAsync(_appState.AttractionId);
 
-            List<SkiResortPriceResponse>? skiResortPrices = await response.Content.ReadFromJsonAsync<List<SkiResortPriceResponse>>();
-
-            if (skiResortPrices != null)
+            if (result.IsSuccess && result.Data != null)
             {
                 Tickets.Clear();
-                foreach (var price in skiResortPrices)
+                foreach (var price in result.Data)
                 {
                     Tickets.Add(new Ticket
                     {
@@ -49,9 +47,13 @@ public partial class SkiResortViewModel : ViewModelBase
                         Price = price.Price
                     });
                 }
+                ErrorMessage = null;
             }
-
-            OnPropertyChanged(nameof(Tickets));
+            else
+            {
+                ErrorMessage = result.ErrorMessage;
+            }
+            //OnPropertyChanged(nameof(Tickets));
         }
         catch (Exception ex)
         {
@@ -59,11 +61,9 @@ public partial class SkiResortViewModel : ViewModelBase
         }
         finally
         {
-            IsBusy = false; // Resetowanie stanu po zakończeniu operacji
+            IsBusy = false;
         }
     }
-
-    //TODO gdzie tu jest jakiś try catch nic nie ma? xd
 
     [RelayCommand]
     public async Task GotoSkiResortBuyAsync(Ticket ticket)

@@ -34,7 +34,9 @@ public class CityService
             }
             else
             {
-                string errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response);
+                string errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
+                    ?? "Nie udało się pobrać listy miast.";
+
                 return ServiceResult<List<City>>.Failure(errorMessage);
             }
         }

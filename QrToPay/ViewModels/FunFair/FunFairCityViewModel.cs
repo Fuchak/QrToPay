@@ -40,7 +40,7 @@ public partial class FunFairCityViewModel : ViewModelBase
             }
             else
             {
-                ErrorMessage = result.ErrorMessage ?? "Nie udało się pobrać listy miast.";
+                ErrorMessage = result.ErrorMessage;
             }
         }
         catch (Exception ex)

@@ -3,16 +3,17 @@ using System.Diagnostics;
 using System.Net.Http.Json;
 using QrToPay.Models.Common;
 using QrToPay.Models.Enums;
+using QrToPay.Services.Api;
 
 namespace QrToPay.ViewModels.SkiResort;
 public partial class SkiResortCityViewModel : ViewModelBase
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly CityService _cityService;
     private readonly AppState _appState;
 
-    public SkiResortCityViewModel(IHttpClientFactory httpClientFactory, AppState appState)
+    public SkiResortCityViewModel(CityService cityService, AppState appState)
     {
-        _httpClientFactory = httpClientFactory;
+        _cityService = cityService;
         _appState = appState;
     }
 
@@ -22,27 +23,24 @@ public partial class SkiResortCityViewModel : ViewModelBase
     [RelayCommand]
     public async Task LoadCitiesAsync(int serviceType)
     {
-        if(IsBusy) return;
+        if (IsBusy) return;
         try
         {
             IsBusy = true;
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            HttpResponseMessage response = await client.GetAsync($"/api/Cities?serviceType={serviceType}");
-            response.EnsureSuccessStatusCode();
+            var result = await _cityService.GetCitiesAsync(serviceType);
 
-            List<City>? cities = await response.Content.ReadFromJsonAsync<List<City>>();
-
-            if (cities != null)
+            if (result.IsSuccess && result.Data != null)
             {
                 Cities.Clear();
-                foreach (var city in cities)
+                foreach (var city in result.Data)
                 {
                     Cities.Add(city);
                 }
+                ErrorMessage = null;
             }
             else
             {
-                ErrorMessage = "Nie udało się pobrać listy miast.";
+                ErrorMessage = result.ErrorMessage;
             }
         }
         catch (Exception ex)

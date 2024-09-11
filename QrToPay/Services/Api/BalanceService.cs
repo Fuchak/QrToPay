@@ -17,11 +17,10 @@ public class BalanceService
 
     public event EventHandler<decimal>? BalanceUpdated;
 
-    public async Task<ServiceResult<decimal>> LoadUserDataAsync()
+    public async Task<ServiceResult<decimal>> LoadUserDataAsync(int userId)
     {
         try
         {
-            int userId = Preferences.Get("UserId", 0);
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
             HttpResponseMessage response = await client.GetAsync($"/api/UserBalance/{userId}/balance");
 

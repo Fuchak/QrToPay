@@ -76,7 +76,9 @@ public partial class SkiResortBuyViewModel : ViewModelBase
             }
             string formattedPrice = Price.ToString(CultureInfo.InvariantCulture);
 
-            var balanceResult = await _balanceService.LoadUserDataAsync();
+            int userId = Preferences.Get("UserId", 0);
+
+            var balanceResult = await _balanceService.LoadUserDataAsync(userId);
             if (!balanceResult.IsSuccess)
             {
                 ErrorMessage = balanceResult.ErrorMessage;

@@ -40,7 +40,9 @@ public partial class MainViewModel : ViewModelBase
             IsBusy = true;
             IsBalanceLoading = true;
 
-            var result = await _balanceService.LoadUserDataAsync();
+            int userId = Preferences.Get("UserId", 0);
+
+            var result = await _balanceService.LoadUserDataAsync(userId);
             if (result.IsSuccess)
             {
                 AccountBalance = result.Data;
