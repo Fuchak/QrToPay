@@ -12,7 +12,7 @@ public partial class HistoryViewModel : ViewModelBase
 {
     private readonly TicketService _ticketService;
     private int pageNumber = 1;
-    private const int pageSize = 5;
+    private const int pageSize = 10;
 
     public HistoryViewModel(TicketService ticketService)
     {
@@ -25,16 +25,17 @@ public partial class HistoryViewModel : ViewModelBase
     [ObservableProperty]
     private bool hasHistory = true;
 
+    private bool hasMoreItems = true;
+
     public async Task LoadHistoryAsync()
     {
-        if (IsBusy) return; // Jeśli jest w trakcie ładowania lub nie ma więcej danych, zakończ
+        if (IsBusy || !hasMoreItems) return;
 
         try
         {
             IsBusy = true;
             ErrorMessage = null;
 
-            // Tworzenie zapytania z danymi paginacji
             int userId = Preferences.Get("UserId", 0);
             HistoryRequest request = new()
             {
@@ -57,27 +58,31 @@ public partial class HistoryViewModel : ViewModelBase
                         TotalPrice = item.TotalPrice
                     });
                 }
+                HasHistory = true;
 
                 if (result.Data.Count < pageSize)
                 {
-                    HasHistory = HistoryItems.Count > 0;
+                    hasMoreItems = false;
                 }
                 else
                 {
-                    pageNumber++; // Inkrementacja numeru strony tylko, gdy są dane
+                    pageNumber++;
                 }
                 HasHistory = true;
             }
             else
             {
-                ErrorMessage = result.ErrorMessage;
-                HasHistory = false;
+                if (HistoryItems.Count == 0)
+                {
+                    ErrorMessage = result.ErrorMessage;
+                    HasHistory = false;
+                }
+                hasMoreItems = false;
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = HttpError.HandleError(ex);
-            HasHistory = false;
         }
         finally
         {

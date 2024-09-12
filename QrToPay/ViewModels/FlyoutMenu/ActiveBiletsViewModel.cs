@@ -67,12 +67,11 @@ public partial class ActiveBiletsViewModel : ViewModelBase
                     ActiveTickets.Add(ticket);
                 }
                 HasActiveTickets = true;
-                ErrorMessage = null;
             }
             else
             {
                 HasActiveTickets = false;
-                ErrorMessage = null;
+                ErrorMessage = result.ErrorMessage;
             }
         }
         catch (Exception ex)
