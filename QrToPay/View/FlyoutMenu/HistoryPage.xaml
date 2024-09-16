@@ -48,7 +48,21 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Label Text="{Binding ErrorMessage}"
+        <Label Margin="0,0,0,0"
+               Text="Brak historii biletów" 
+               FontSize="18" 
+               HorizontalOptions="Center" 
+               VerticalOptions="Center"
+               IsVisible="{Binding HasHistory, Converter={StaticResource FalseToTrueConverter}}">
+            <Label.Triggers>
+                <DataTrigger TargetType="Label" Binding="{Binding HasHistory}" Value="True">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+            </Label.Triggers>
+        </Label>
+
+        <Label Margin="0,100,0,0"
+               Text="{Binding ErrorMessage}"
                TextColor="Red" 
                HorizontalOptions="Center"
                HorizontalTextAlignment="Center"
@@ -76,18 +90,6 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
-        <Label Text="Brak historii biletów" 
-               FontSize="18" 
-               HorizontalOptions="Center" 
-               VerticalOptions="Center"
-               IsVisible="{Binding HasHistory, Converter={StaticResource FalseToTrueConverter}}">
-            <Label.Triggers>
-                <DataTrigger TargetType="Label" Binding="{Binding HasHistory}" Value="True">
-                    <Setter Property="IsVisible" Value="False" />
-                </DataTrigger>
-            </Label.Triggers>
-        </Label>
 
         <Border Grid.Row="0" 
                 HorizontalOptions="FillAndExpand"

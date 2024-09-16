@@ -15,13 +15,13 @@
             </Grid.ColumnDefinitions>
             <!-- Wycentrowany tytuł -->
             <Label 
-           FontFamily="Arial"
-           Text="Aktywne bilety" 
-           FontSize="20"
-           FontAttributes="Bold"
-           HorizontalOptions="Center" 
-           HorizontalTextAlignment="Center" 
-           VerticalOptions="Center"/>
+               FontFamily="Arial"
+               Text="Aktywne bilety" 
+               FontSize="20"
+               FontAttributes="Bold"
+               HorizontalOptions="Center" 
+               HorizontalTextAlignment="Center" 
+               VerticalOptions="Center"/>
         </Grid>
     </Shell.TitleView>
 
@@ -30,24 +30,35 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
-        <ActivityIndicator 
-            IsRunning="{Binding IsBusy}" 
-            IsVisible="{Binding IsBusy}"
-            Color="{StaticResource Orange}"
-            HorizontalOptions="Center"
-            VerticalOptions="Center"/>
-        
-        <Label  Text="{Binding ErrorMessage}"
-                TextColor="Red" 
-                HorizontalOptions="Center"
-                HorizontalTextAlignment="Center"
-                IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"/>
-        
-        <CollectionView ItemsSource="{Binding ActiveTickets}">
+
+        <Label Margin="0,0,0,0"
+               Text="Brak aktywnych biletów" 
+               FontSize="18" 
+               HorizontalOptions="Center" 
+               VerticalOptions="Center"
+               IsVisible="{Binding HasActiveTickets, Converter={StaticResource FalseToTrueConverter}}">
+            <Label.Triggers>
+                <DataTrigger TargetType="Label" Binding="{Binding HasActiveTickets}" Value="True">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+            </Label.Triggers>
+        </Label>
+
+        <Label Margin="0,100,0,0"
+               Text="{Binding ErrorMessage}"
+               TextColor="Red" 
+               HorizontalOptions="Center"
+               HorizontalTextAlignment="Center"
+               IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"/>
+
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding ActiveTickets}">
+            <CollectionView.Footer>
+                <ActivityIndicator IsRunning="True" IsVisible="{Binding IsBusy}" Color="{StaticResource Orange}"/>
+            </CollectionView.Footer>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Ticket">
-                    <Frame BackgroundColor="LightGray" Padding="10" Margin="0,0,0,10">
+                    <Frame BackgroundColor="LightGray" Padding="10" Margin="10,10,10,0">
                         <StackLayout>
                             <Label Text="Dane biletu" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" />
                             <Label Text="{Binding EntityName}" FontSize="18" HorizontalOptions="Center" />
@@ -62,18 +73,6 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
-        <Label Text="Brak aktywnych biletów" 
-                       FontSize="18" 
-                       HorizontalOptions="Center" 
-                       VerticalOptions="Center"
-                       IsVisible="{Binding HasActiveTickets, Converter={StaticResource FalseToTrueConverter}}">
-            <Label.Triggers>
-                <DataTrigger TargetType="Label" Binding="{Binding HasActiveTickets}" Value="True">
-                    <Setter Property="IsVisible" Value="False" />
-                </DataTrigger>
-            </Label.Triggers>
-        </Label>
 
         <Border Grid.Row="0" 
                 HorizontalOptions="FillAndExpand"
