@@ -15,13 +15,13 @@ public partial class ChangePasswordViewModel : ViewModelBase
     }
 
     [ObservableProperty]
-    private string? oldPassword;
+    private string? oldPassword = string.Empty;
 
     [ObservableProperty]
-    private string? password;
+    private string? password = string.Empty;
 
     [ObservableProperty]
-    private string? passwordConfirm;
+    private string? passwordConfirm = string.Empty;
 
     [RelayCommand]
     private async Task Confirm()
@@ -70,6 +70,9 @@ public partial class ChangePasswordViewModel : ViewModelBase
             {
                 await Shell.Current.DisplayAlert("Sukces", "Hasło zostało zmienione.", "OK");
                 ErrorMessage = null;
+                OldPassword = string.Empty;
+                Password = string.Empty;
+                PasswordConfirm = string.Empty;
             }
             else
             {
@@ -83,9 +86,6 @@ public partial class ChangePasswordViewModel : ViewModelBase
         finally
         {
             IsBusy = false;
-            OldPassword = string.Empty;
-            Password = string.Empty;
-            PasswordConfirm = string.Empty;
         }
     }
 }
