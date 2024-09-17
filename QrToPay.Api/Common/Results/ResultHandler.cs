@@ -15,7 +15,7 @@ public static class ResultHandler
                 ? "Wewnętrzny błąd serwera" 
                 : ex.Message;
 
-            return Result<T>.Failure(errorMessage);
+            return Result<T>.Failure(errorMessage, ErrorType.Other);
         }
     }
 }

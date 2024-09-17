@@ -4,7 +4,7 @@ using QrToPay.Api.Models;
 using QrToPay.Api.Common.Results;
 namespace QrToPay.Api.Features.Tickets.Activate;
 
-public class ActivateQrCodeHandler : IRequestHandler<ActivateQrCodeRequestModel, Result<bool>>
+public class ActivateQrCodeHandler : IRequestHandler<ActivateQrCodeRequestModel, Result<SuccesMessageDto>>
 {
     private readonly QrToPayDbContext _context;
 
@@ -13,7 +13,7 @@ public class ActivateQrCodeHandler : IRequestHandler<ActivateQrCodeRequestModel,
         _context = context;
     }
 
-    public async Task<Result<bool>> Handle(ActivateQrCodeRequestModel request, CancellationToken cancellationToken)
+    public async Task<Result<SuccesMessageDto>> Handle(ActivateQrCodeRequestModel request, CancellationToken cancellationToken)
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
@@ -23,7 +23,7 @@ public class ActivateQrCodeHandler : IRequestHandler<ActivateQrCodeRequestModel,
 
             if (response is null)
             {
-                return Result<bool>.Failure("Nie znaleziono biletu.");
+                return Result<SuccesMessageDto>.Failure("Nie znaleziono biletu.", ErrorType.NotFound);
             }
 
             response.QrCodeIsActive = true;
@@ -31,7 +31,7 @@ public class ActivateQrCodeHandler : IRequestHandler<ActivateQrCodeRequestModel,
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<bool>.Success(true);
+            return Result<SuccesMessageDto>.Success(new() { IsSuccessful = true });
         });
     }
 }

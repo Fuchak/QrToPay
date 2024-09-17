@@ -3,7 +3,7 @@ using QrToPay.Api.Common.Results;
 
 namespace QrToPay.Api.Features.Scan.Purchase;
 
-public sealed class ScanPurchaseRequestModel : IRequest<Result<string>>
+public sealed class ScanPurchaseRequestModel : IRequest<Result<SuccesMessageDto>>
 {
     public required int UserId { get; init; }
     public required string ServiceName { get; init; }

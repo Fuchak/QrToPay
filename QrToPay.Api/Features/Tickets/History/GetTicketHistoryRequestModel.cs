@@ -4,7 +4,7 @@ using QrToPay.Api.Common.Results;
 
 namespace QrToPay.Api.Features.Tickets.History;
 
-public class GetTicketHistoryRequestModel : IRequest<Result<List<TicketHistoryDto>>>
+public class GetTicketHistoryRequestModel : IRequest<Result<IEnumerable<TicketHistoryDto>>>
 {
     public required int UserId { get; init; }
     public required int PageNumber { get; init; }

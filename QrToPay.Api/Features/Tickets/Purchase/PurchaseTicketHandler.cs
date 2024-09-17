@@ -6,7 +6,7 @@ using QrToPay.Api.Common.Results;
 
 namespace QrToPay.Api.Features.Tickets.Purchase;
 
-public class PurchaseTicketHandler : IRequestHandler<PurchaseTicketRequestModel, Result<string>>
+public class PurchaseTicketHandler : IRequestHandler<PurchaseTicketRequestModel, Result<SuccesMessageDto>>
 {
     private readonly QrToPayDbContext _context;
 
@@ -15,7 +15,7 @@ public class PurchaseTicketHandler : IRequestHandler<PurchaseTicketRequestModel,
         _context = context;
     }
 
-    public async Task<Result<string>> Handle(PurchaseTicketRequestModel request, CancellationToken cancellationToken)
+    public async Task<Result<SuccesMessageDto>> Handle(PurchaseTicketRequestModel request, CancellationToken cancellationToken)
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
@@ -46,7 +46,7 @@ public class PurchaseTicketHandler : IRequestHandler<PurchaseTicketRequestModel,
                 token = (Guid)response.Value;
             }
 
-            return Result<string>.Success(token.ToString());
+            return Result<SuccesMessageDto>.Success(new() { Message = token.ToString() });
         });
     }
 }

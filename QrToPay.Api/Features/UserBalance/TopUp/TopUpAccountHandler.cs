@@ -21,7 +21,7 @@ public class TopUpAccountHandler : IRequestHandler<TopUpRequestModel, Result<dec
                 .FindAsync([request.UserId], cancellationToken);
             if (user is null)
             {
-                return Result<decimal>.Failure("Użytkownik nieodnaleziony.");
+                return Result<decimal>.Failure("Użytkownik nieodnaleziony.", ErrorType.NotFound);
             }
 
             user.AccountBalance += request.Amount;

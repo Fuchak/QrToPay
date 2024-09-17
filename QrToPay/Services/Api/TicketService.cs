@@ -18,7 +18,7 @@ public class TicketService
     {
         HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
 
-        HttpResponseMessage response = await client.PostAsJsonAsync("/api/Tickets/generateAndUpdate", updateRequest);
+        HttpResponseMessage response = await client.PostAsJsonAsync("/api/Tickets/purchase", updateRequest);
 
         if (!response.IsSuccessStatusCode)
         {

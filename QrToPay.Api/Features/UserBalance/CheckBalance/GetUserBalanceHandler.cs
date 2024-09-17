@@ -25,7 +25,7 @@ public class GetUserBalanceHandler : IRequestHandler<GetUserBalanceRequestModel,
 
             if(response is null)
             {
-                return Result<UserBalanceDto>.Failure("Użytkownik nieodnaleziony.");
+                return Result<UserBalanceDto>.Failure("Użytkownik nieodnaleziony.",ErrorType.NotFound);
             }
 
             return Result<UserBalanceDto>.Success(response);

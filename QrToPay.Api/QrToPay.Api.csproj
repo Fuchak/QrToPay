@@ -5,7 +5,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>1c9e7910-4c1e-481e-b38f-b89289c45cf4</UserSecretsId>
-	<NoWarn>IDE0290</NoWarn> <!-- Ignore warning for IDE0290: Primary constructor-->
+	<!-- Ignore warning for IDE0290: Primary constructor AND Documentation for every single method-->
+	<NoWarn>IDE0290;CS1591</NoWarn>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<DocumentationFile>bin\Debug\net8.0\QrToPay.Api.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

@@ -30,7 +30,7 @@ public class CreateUserHandler : IRequestHandler<CreateUserRequestModel, Result<
             {
                 if (existingUser.IsVerified)
                 {
-                    return Result<CreateUserDto>.Failure("Użytkownik z podanym e-mailem lub numerem telefonu już istnieje.");
+                    return Result<CreateUserDto>.Failure("Użytkownik z podanym e-mailem lub numerem telefonu już istnieje.", ErrorType.BadRequest);
                 }
 
                 existingUser.PasswordHash = AuthenticationHelper.HashPassword(request.PasswordHash);
@@ -62,14 +62,9 @@ public class CreateUserHandler : IRequestHandler<CreateUserRequestModel, Result<
                 (request.PhoneNumber != null && u.PhoneNumber == request.PhoneNumber),
                 cancellationToken);
 
-            if (user is null)
-            {
-                return Result<CreateUserDto>.Failure("Błąd wewnętrzny serwera.");
-            }
-
             CreateUserDto result = new() 
             {
-                VerificationCode = user.VerificationCode!, 
+                VerificationCode = user!.VerificationCode!, 
                 EmailOrPhone = user.Email ?? user.PhoneNumber!
             };
 

@@ -2,6 +2,7 @@
 using MediatR;
 using System.ComponentModel.DataAnnotations;
 using QrToPay.Api.Features.Support.CreateHelpForm;
+using QrToPay.Api.Common.Results;
 
 namespace QrToPay.Api.Features.Support;
 
@@ -16,13 +17,15 @@ public class SupportController : ControllerBase
         _mediator = mediator;
     }
 
+    /// <summary> Sends helpform to database </summary>
+    /// <response code="404">Not Found </response>
+    /// <response code="400">Validation error </response>
+    /// <response code="200">Success </response>
     [HttpPost]
     public async Task<IActionResult> CreateHelpForm([FromBody, Required] CreateHelpFormRequestModel request)
     {
-        var result = await _mediator.Send(request);
+        Result<SuccesMessageDto> result = await _mediator.Send(request);
 
-        return !result.IsSuccess 
-            ? StatusCode(500, new { Message = result.Error }) 
-            : Ok(new { Message = result.Value });
+        return result.ToActionResult();
     }
 }

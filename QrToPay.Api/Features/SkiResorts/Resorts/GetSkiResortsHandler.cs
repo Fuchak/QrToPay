@@ -36,7 +36,7 @@ public class GetSkiResortsHandler : IRequestHandler<GetSkiResortsRequestModel, R
 
             if (response.Count == 0)
             {
-                return Result<IEnumerable<SkiResortsDto>>.Failure("Nie znaleziono stoków narciarskich w tym mieście.");
+                return Result<IEnumerable<SkiResortsDto>>.Failure("Nie znaleziono stoków narciarskich w tym mieście.", ErrorType.NotFound);
             }
 
             return Result<IEnumerable<SkiResortsDto>>.Success(response.AsEnumerable());

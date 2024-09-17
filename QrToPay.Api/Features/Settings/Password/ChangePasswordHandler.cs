@@ -6,7 +6,7 @@ using QrToPay.Api.Common.Helpers;
 
 namespace QrToPay.Api.Features.Settings.Password;
 
-public class ChangePasswordHandler : IRequestHandler<ChangePasswordRequestModel, Result<string>>
+public class ChangePasswordHandler : IRequestHandler<ChangePasswordRequestModel, Result<SuccesMessageDto>>
 {
     private readonly QrToPayDbContext _context;
 
@@ -15,7 +15,7 @@ public class ChangePasswordHandler : IRequestHandler<ChangePasswordRequestModel,
         _context = context;
     }
 
-    public async Task<Result<string>> Handle(ChangePasswordRequestModel request, CancellationToken cancellationToken)
+    public async Task<Result<SuccesMessageDto>> Handle(ChangePasswordRequestModel request, CancellationToken cancellationToken)
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
@@ -24,12 +24,12 @@ public class ChangePasswordHandler : IRequestHandler<ChangePasswordRequestModel,
 
             if (user is null)
             {
-                return Result<string>.Failure("Użytkownik z podanym identyfikatorem nie istnieje.");
+                return Result<SuccesMessageDto>.Failure("Użytkownik z podanym identyfikatorem nie istnieje.", ErrorType.NotFound);
             }
 
             if (!AuthenticationHelper.VerifyPassword(request.OldPassword, user.PasswordHash))
             {
-                return Result<string>.Failure("Nieprawidłowe stare hasło.");
+                return Result<SuccesMessageDto>.Failure("Nieprawidłowe stare hasło.", ErrorType.BadRequest);
             }
 
             user.PasswordHash = AuthenticationHelper.HashPassword(request.NewPassword);
@@ -37,7 +37,7 @@ public class ChangePasswordHandler : IRequestHandler<ChangePasswordRequestModel,
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<string>.Success("Hasło zostało zmienione.");
+            return Result<SuccesMessageDto>.Success(new() { Message = "Hasło zostało zmienione." });
         });
     }
 }

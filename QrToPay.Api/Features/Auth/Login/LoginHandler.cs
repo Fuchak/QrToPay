@@ -25,17 +25,17 @@ public class LoginHandler : IRequestHandler<LoginRequestModel, Result<LoginDto>>
 
             if (user is null || !BCrypt.Net.BCrypt.Verify(request.PasswordHash, user.PasswordHash))
             {
-                return Result<LoginDto>.Failure("Nieprawidłowe dane logowania.");
+                return Result<LoginDto>.Failure("Nieprawidłowe dane logowania.", ErrorType.BadRequest);
             }
 
             if (!user.IsVerified)
             {
-                return Result<LoginDto>.Failure("Konto nie aktywowane.");
+                return Result<LoginDto>.Failure("Konto nie aktywowane.", ErrorType.NotVerified);
             }
 
             if (user.IsDeleted)
             {
-                return Result<LoginDto>.Failure("Konto zablokowane.");
+                return Result<LoginDto>.Failure("Konto zablokowane.", ErrorType.Unauthorized);
             }
 
             LoginDto response = new()
@@ -43,9 +43,8 @@ public class LoginHandler : IRequestHandler<LoginRequestModel, Result<LoginDto>>
                 UserId = user.UserId,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
-                AccountBalance = user.AccountBalance,
-                IsActive = user.IsVerified,
-                IsBlocked = user.IsDeleted
+                AccountBalance = user.AccountBalance
+                //Podmianka email phone i balance na token jwt?
             };
 
             return Result<LoginDto>.Success(response);

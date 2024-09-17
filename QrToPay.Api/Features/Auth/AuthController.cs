@@ -18,33 +18,41 @@ public class AuthController : ControllerBase
         _mediator = mediator;
     }
 
+    /// <summary> Logins user into app </summary>
+    /// <response code="403">Account not verified </response>
+    /// <response code="401">Unauthorized </response>
+    /// <response code="400">Validation error </response>
+    /// <response code="200">Success </response>
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestModel request)
     {
         Result<LoginDto> result = await _mediator.Send(request);
 
-        return !result.IsSuccess 
-            ? Unauthorized(new { Message = result.Error }) 
-            : Ok(result.Value);
+        return result.ToActionResult();
     }
 
+    /// <summary> Check if user exist for login </summary>
+    /// <response code="404">Not Found </response>
+    /// <response code="403">Account not verified </response>
+    /// <response code="400">Validation error </response>
+    /// <response code="200">Success </response>
     [HttpPost("checkAccount")]
-    public async Task<IActionResult> UserExist([FromBody] CheckAccountRequestModel request)
+    public async Task<IActionResult> CheckAccountExist([FromBody] CheckAccountRequestModel request)
     {
-        var result = await _mediator.Send(request);
+        Result<CheckAccountDto> result = await _mediator.Send(request);
 
-        return !result.IsSuccess 
-            ? StatusCode(500, new { Message = result.Error }) 
-            : Ok(new { VerificationCode = result.Value });
+        return result.ToActionResult();
     }
 
+    /// <summary> Resets Password </summary>
+    /// <response code="404">Not Found </response>
+    /// <response code="400">Validation error </response>
+    /// <response code="200">Success </response>
     [HttpPost("resetPassword")]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestModel request)
     {
-        var result = await _mediator.Send(request);
+        Result<SuccesMessageDto> result = await _mediator.Send(request);
 
-        return !result.IsSuccess 
-            ? StatusCode(500, new { Message = result.Error }) 
-            : Ok(new { Message = result.Value });
+        return result.ToActionResult();
     }
 }

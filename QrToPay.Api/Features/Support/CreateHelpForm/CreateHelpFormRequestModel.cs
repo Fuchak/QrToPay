@@ -3,7 +3,7 @@ using QrToPay.Api.Common.Results;
 
 namespace QrToPay.Api.Features.Support.CreateHelpForm;
 
-public sealed class CreateHelpFormRequestModel : IRequest<Result<string>>
+public sealed class CreateHelpFormRequestModel : IRequest<Result<SuccesMessageDto>>
 {
     public required string UserName { get; init; }
     public required string UserEmail { get; init; }

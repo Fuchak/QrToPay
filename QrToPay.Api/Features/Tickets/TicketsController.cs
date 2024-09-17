@@ -5,6 +5,7 @@ using QrToPay.Api.Features.Tickets.History;
 using QrToPay.Api.Features.Tickets.Purchase;
 using QrToPay.Api.Features.Tickets.Activate;
 using QrToPay.Api.Features.Tickets.Deactivate;
+using QrToPay.Api.Common.Results;
 
 namespace QrToPay.Api.Features.Tickets;
 
@@ -19,53 +20,62 @@ public class TicketsController : ControllerBase
         _mediator = mediator;
     }
 
+    /// <summary> Get all active tickets </summary>
+    /// <response code="404">Not Found </response>
+    /// <response code="400">Validation error </response>
+    /// <response code="200">Success </response>
     [HttpGet("active")]
     public async Task<IActionResult> GetActiveTickets([FromQuery] GetActiveTicketsRequestModel request)
     {
-        var result = await _mediator.Send(request);
+        Result<IEnumerable<ActiveTicketDto>> result = await _mediator.Send(request);
 
-        return !result.IsSuccess 
-            ? StatusCode(500, new { Message = result.Error }) 
-            : Ok(result.Value);
+        return result.ToActionResult();
     }
 
-    [HttpPost("generateAndUpdate")]
-    public async Task<IActionResult> GenerateAndUpdateTicket([FromBody] PurchaseTicketRequestModel request)
+    /// <summary> Purchase ticket by clicking not by scanning </summary>
+    /// <response code="400">Validation error </response>
+    /// <response code="200">Success </response>
+    [HttpPost("purchase")]
+    public async Task<IActionResult> PurchaseTicket([FromBody] PurchaseTicketRequestModel request)
     {
-        var result = await _mediator.Send(request);
+        Result<SuccesMessageDto> result = await _mediator.Send(request);
 
-        return !result.IsSuccess 
-            ? StatusCode(500, new { Message = result.Error }) 
-            : Ok(new { qrCode = result.Value });
+        return result.ToActionResult(); ;
     }
 
+    /// <summary> Get history of bought tickets </summary>
+    /// <response code="404">Not Found </response>
+    /// <response code="400">Validation error </response>
+    /// <response code="200">Success </response>
     [HttpGet("history")]
     public async Task<IActionResult> GetTicketHistory([FromQuery] GetTicketHistoryRequestModel request)
     {
-        var result = await _mediator.Send(request);
+        Result<IEnumerable<TicketHistoryDto>> result = await _mediator.Send(request);
 
-        return !result.IsSuccess 
-            ? StatusCode(500, new { Message = result.Error }) 
-            : Ok(result.Value);
+        return result.ToActionResult();
     }
 
+    /// <summary> activate ticket </summary>
+    /// <response code="404">Not Found </response>
+    /// <response code="400">Validation error </response>
+    /// <response code="200">Success </response>
     [HttpPost("activate")]
     public async Task<IActionResult> ActivateQrCode([FromBody] ActivateQrCodeRequestModel request)
     {
-        var result = await _mediator.Send(request);
+        Result<SuccesMessageDto> result = await _mediator.Send(request);
 
-        return !result.IsSuccess
-            ? StatusCode(500, new { Message = result.Error })
-            : Ok(result.Value);
+        return result.ToActionResult();
     }
 
+    /// <summary> deactivate ticket </summary>
+    /// <response code="404">Not Found </response>
+    /// <response code="400">Validation error </response>
+    /// <response code="200">Success </response>
     [HttpPost("deactivate")]
     public async Task<IActionResult> DeactivateQrCode([FromBody] DeactivateQrCodeRequestModel request)
     {
-        var result = await _mediator.Send(request);
+        Result<SuccesMessageDto> result = await _mediator.Send(request);
 
-        return !result.IsSuccess
-            ? StatusCode(500, new { Message = result.Error })
-            : Ok();
+        return result.ToActionResult();
     }
 }

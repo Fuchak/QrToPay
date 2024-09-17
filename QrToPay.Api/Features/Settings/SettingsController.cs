@@ -3,6 +3,7 @@ using MediatR;
 using QrToPay.Api.Features.Settings.Password;
 using QrToPay.Api.Features.Settings.Verify;
 using QrToPay.Api.Features.Settings.EmailPhone;
+using QrToPay.Api.Common.Results;
 
 namespace QrToPay.Api.Features.Settings
 {
@@ -17,35 +18,40 @@ namespace QrToPay.Api.Features.Settings
             _mediator = mediator;
         }
 
+        /// <summary> Change phone or email </summary>
+        /// <response code="404">Not Found </response>
+        /// <response code="400">Validation error </response>
+        /// <response code="200">Success </response>
         [HttpPost("requestChange")]
         public async Task<IActionResult> RequestChange([FromBody] ChangeEmailPhoneRequestModel request)
         {
-            var result = await _mediator.Send(request);
+            Result<SuccesMessageDto> result = await _mediator.Send(request);
 
-            return !result.IsSuccess 
-                ? StatusCode(500, new { Message = result.Error }) 
-                : Ok(new { VerificationCode = result.Value });
+            return result.ToActionResult();
         }
 
+        /// <summary> Change Password </summary>
+        /// <response code="404">Not Found </response>
+        /// <response code="400">Validation error </response>
+        /// <response code="200">Success </response>
         [HttpPost("changePassword")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestModel request)
         {
-            var result = await _mediator.Send(request);
+            Result<SuccesMessageDto> result = await _mediator.Send(request);
 
-            return !result.IsSuccess 
-                ? StatusCode(500, new { Message = result.Error }) 
-                : Ok(new { Message = result.Value });
+            return result.ToActionResult();
         }
 
-
+        /// <summary> Verify change of password, phone or email</summary>
+        /// <response code="404">Not Found </response>
+        /// <response code="400">Validation error </response>
+        /// <response code="200">Success </response>
         [HttpPost("verifyChange")]
         public async Task<IActionResult> VerifyChange([FromBody] VerifyRequestModel request)
         {
-            var result = await _mediator.Send(request);
+            Result<SuccesMessageDto> result = await _mediator.Send(request);
 
-            return !result.IsSuccess 
-                ? StatusCode(500, new { Message = result.Error }) 
-                : Ok(new { Message = result.Value });
+            return result.ToActionResult();
         }
     }
 }

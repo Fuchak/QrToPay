@@ -1,12 +1,11 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.Common.Results;
-using QrToPay.Api.Features.Register.CreateUser;
 using QrToPay.Api.Models;
 
 namespace QrToPay.Api.Features.Register.VerifyCreateUser;
 
-public class VerifyCreateUserHandler : IRequestHandler<VerifyCreateUserRequestModel, Result<string>>
+public class VerifyCreateUserHandler : IRequestHandler<VerifyCreateUserRequestModel, Result<SuccesMessageDto>>
 {
     private readonly QrToPayDbContext _context;
 
@@ -15,7 +14,7 @@ public class VerifyCreateUserHandler : IRequestHandler<VerifyCreateUserRequestMo
         _context = context;
     }
 
-    public async Task<Result<string>> Handle(VerifyCreateUserRequestModel request, CancellationToken cancellationToken)
+    public async Task<Result<SuccesMessageDto>> Handle(VerifyCreateUserRequestModel request, CancellationToken cancellationToken)
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
@@ -24,14 +23,14 @@ public class VerifyCreateUserHandler : IRequestHandler<VerifyCreateUserRequestMo
 
             if (response is null)
             {
-                return Result<string>.Failure("Nieprawidłowy kod weryfikacyjny.");
+                return Result<SuccesMessageDto>.Failure("Nieprawidłowy kod weryfikacyjny.", ErrorType.BadRequest);
             }
 
             response.IsVerified = true;
             response.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<string>.Success("Użytkownik został zweryfikowany.");
+            return Result<SuccesMessageDto>.Success(new() { Message = "Użytkownik został zweryfikowany." });
         });
     }
 }

@@ -2,6 +2,7 @@
 using QrToPay.Api.Features.UserBalance.TopUp;
 using QrToPay.Api.Features.UserBalance.CheckBalance;
 using MediatR;
+using QrToPay.Api.Common.Results;
 
 namespace QrToPay.Api.Features.UserBalance;
 
@@ -16,26 +17,30 @@ public class UserBalanceController : ControllerBase
         _mediator = mediator;
     }
 
-    //[GitHub issue `#54212`](https://github.com/dotnet/aspnetcore/issues/54212).
+    /// <summary> Get account balance </summary>
+    /// <response code="404">Not Found </response>
+    /// <response code="400">Validation error </response>
+    /// <response code="200">Success </response>
     #pragma warning disable ASP0018
+    //[GitHub issue `#54212`](https://github.com/dotnet/aspnetcore/issues/54212).
     [HttpGet("{userId:int}/balance")]
     public async Task<IActionResult> GetUserBalance([FromRoute] GetUserBalanceRequestModel request)
     {
-        var result = await _mediator.Send(request);
+        Result<UserBalanceDto> result = await _mediator.Send(request);
 
-        return !result.IsSuccess 
-            ? NotFound(new { Message = result.Error }) 
-            : Ok(result.Value);
+        return result.ToActionResult();
     }
     #pragma warning restore ASP0018
 
+    /// <summary> Topup account with money </summary>
+    /// <response code="404">Not Found </response>
+    /// <response code="400">Validation error </response>
+    /// <response code="200">Success </response>
     [HttpPost("topup")]
     public async Task<IActionResult> TopUpAccount([FromBody] TopUpRequestModel request)
     {
-        var result = await _mediator.Send(request);
+        Result<decimal> result = await _mediator.Send(request);
 
-        return !result.IsSuccess 
-            ? StatusCode(500, new { Message = result.Error }) 
-            : Ok(new { accountBalance = result.Value });
+        return result.ToActionResult();
     }
 }

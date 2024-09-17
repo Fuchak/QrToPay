@@ -2,6 +2,7 @@
 using MediatR;
 using QrToPay.Api.Features.Scan.Purchase;
 using QrToPay.Api.Features.Scan.ScanedInfo;
+using QrToPay.Api.Common.Results;
 
 namespace QrToPay.Api.Features.Scan;
 
@@ -16,25 +17,30 @@ public class ScanController : ControllerBase
         _mediator = mediator;
     }
 
-    //[GitHub issue `#54212`](https://github.com/dotnet/aspnetcore/issues/54212).
-    #pragma warning disable ASP0018
-    [HttpGet("{qrCode}")]
-    public async Task<IActionResult> GetAttractionByQrCode([FromRoute] ScanedInfoRequestModel request)
-    {
-        var result = await _mediator.Send(request);
-
-        return !result.IsSuccess 
-            ? BadRequest( new { Message = result.Error }) 
-            : Ok(result.Value);
-    }
-    #pragma warning restore ASP0018
-
+    /// <summary> Purchase ticket by scanning qr code </summary>
+    /// <response code="404">Not Found </response>
+    /// <response code="400">Validation error </response>
+    /// <response code="200">Success </response>
     [HttpPost("purchase")]
     public async Task<IActionResult> PurchaseTicket([FromBody] ScanPurchaseRequestModel request)
     {
-        var result = await _mediator.Send(request);
-        return !result.IsSuccess 
-            ? BadRequest( new { Message = result.Error }) 
-            : Ok(new { Message = result.Value });
+        Result<SuccesMessageDto> result = await _mediator.Send(request);
+
+        return result.ToActionResult();
     }
+
+    /// <summary> Purchase ticket by scanning qr code </summary>
+    /// <response code="404">Not Found </response>
+    /// <response code="400">Validation error </response>
+    /// <response code="200">Success </response>
+    #pragma warning disable ASP0018
+    //[GitHub issue `#54212`](https://github.com/dotnet/aspnetcore/issues/54212).
+    [HttpGet("{qrCode}")]
+    public async Task<IActionResult> GetAttractionByQrCode([FromRoute] ScanedInfoRequestModel request)
+    {
+        Result<ScanedInfoDto> result = await _mediator.Send(request);
+
+        return result.ToActionResult();
+    }
+    #pragma warning restore ASP0018
 }

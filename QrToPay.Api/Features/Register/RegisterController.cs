@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using QrToPay.Api.Common.Results;
 using QrToPay.Api.Features.Register.CreateUser;
 using QrToPay.Api.Features.Register.VerifyCreateUser;
 
@@ -16,23 +17,25 @@ public class RegisterController : ControllerBase
         _mediator = mediator;
     }
 
+    /// <summary> Register new user </summary>
+    /// <response code="400">Validation error </response>
+    /// <response code="200">Success </response>
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] CreateUserRequestModel request)
     {
-        var result = await _mediator.Send(request);
+        Result<CreateUserDto> result = await _mediator.Send(request);
 
-        return !result.IsSuccess 
-            ? StatusCode(500, new { Message = result.Error }) 
-            : Ok(result.Value);
+        return result.ToActionResult();
     }
 
+    /// <summary> Verify Registration </summary>
+    /// <response code="400">Validation error </response>
+    /// <response code="200">Success </response>
     [HttpPost("verify")]
     public async Task<IActionResult> Verify([FromBody] VerifyCreateUserRequestModel request)
     {
-        var result = await _mediator.Send(request);
+        Result<SuccesMessageDto> result = await _mediator.Send(request);
 
-        return !result.IsSuccess 
-            ? StatusCode(500, new { Message = result.Error }) 
-            : Ok(new { Message = result.Value });
+        return result.ToActionResult();
     }
 }

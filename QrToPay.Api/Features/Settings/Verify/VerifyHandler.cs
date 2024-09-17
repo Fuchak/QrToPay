@@ -7,7 +7,7 @@ using QrToPay.Api.Common.Enums;
 
 namespace QrToPay.Api.Features.Settings.Verify;
 
-public class VerifyHandler : IRequestHandler<VerifyRequestModel, Result<string>>
+public class VerifyHandler : IRequestHandler<VerifyRequestModel, Result<SuccesMessageDto>>
 {
     private readonly QrToPayDbContext _context;
     private readonly VerificationStorageService _verificationStorageService;
@@ -18,7 +18,7 @@ public class VerifyHandler : IRequestHandler<VerifyRequestModel, Result<string>>
         _verificationStorageService = verificationStorageService;
     }
 
-    public async Task<Result<string>> Handle(VerifyRequestModel request, CancellationToken cancellationToken)
+    public async Task<Result<SuccesMessageDto>> Handle(VerifyRequestModel request, CancellationToken cancellationToken)
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
@@ -27,19 +27,19 @@ public class VerifyHandler : IRequestHandler<VerifyRequestModel, Result<string>>
 
             if (response is null)
             {
-                   return Result<string>.Failure("Użytkownik z podanym identyfikatorem nie istnieje lub nie został zweryfikowany.");
+                   return Result<SuccesMessageDto>.Failure("Użytkownik z podanym identyfikatorem nie istnieje.", ErrorType.NotFound);
             }
 
             if (response.VerificationCode != request.VerificationCode)
             {
-                return Result<string>.Failure("Nieprawidłowy kod weryfikacyjny.");
+                return Result<SuccesMessageDto>.Failure("Nieprawidłowy kod weryfikacyjny.", ErrorType.BadRequest);
             }
 
             if (request.ChangeType == ChangeType.Email)
             {
                 if (!_verificationStorageService.TryGetEmailVerification(request.UserId, out var newEmail))
                 {
-                    return Result<string>.Failure("Kod weryfikacyjny wygasł lub jest nieprawidłowy.");
+                    return Result<SuccesMessageDto>.Failure("Kod weryfikacyjny wygasł lub jest nieprawidłowy.", ErrorType.BadRequest);
                 }
 
                 response.Email = newEmail;
@@ -49,7 +49,7 @@ public class VerifyHandler : IRequestHandler<VerifyRequestModel, Result<string>>
             {
                 if (!_verificationStorageService.TryGetPhoneVerification(request.UserId, out var newPhone))
                 {
-                    return Result<string>.Failure("Kod weryfikacyjny wygasł lub jest nieprawidłowy.");
+                    return Result<SuccesMessageDto>.Failure("Kod weryfikacyjny wygasł lub jest nieprawidłowy.", ErrorType.BadRequest);
                 }
 
                 response.PhoneNumber = newPhone;
@@ -61,7 +61,7 @@ public class VerifyHandler : IRequestHandler<VerifyRequestModel, Result<string>>
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<string>.Success("Zmiana została zweryfikowana.");
+            return Result<SuccesMessageDto>.Success(new() { Message = "Zmiana została zweryfikowana." });
         });
     }
 }

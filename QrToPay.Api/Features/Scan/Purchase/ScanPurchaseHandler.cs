@@ -5,7 +5,7 @@ using QrToPay.Api.Models;
 
 namespace QrToPay.Api.Features.Scan.Purchase;
 
-public class ScanPurchaseHandler : IRequestHandler<ScanPurchaseRequestModel, Result<string>>
+public class ScanPurchaseHandler : IRequestHandler<ScanPurchaseRequestModel, Result<SuccesMessageDto>>
 {
     private readonly QrToPayDbContext _context;
 
@@ -14,7 +14,7 @@ public class ScanPurchaseHandler : IRequestHandler<ScanPurchaseRequestModel, Res
         _context = context;
     }
 
-    public async Task<Result<string>> Handle(ScanPurchaseRequestModel request, CancellationToken cancellationToken)
+    public async Task<Result<SuccesMessageDto>> Handle(ScanPurchaseRequestModel request, CancellationToken cancellationToken)
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
@@ -24,12 +24,12 @@ public class ScanPurchaseHandler : IRequestHandler<ScanPurchaseRequestModel, Res
 
             if (response is null)
             {
-                return Result<string>.Failure("Użytkownik nie został znaleziony.");
+                return Result<SuccesMessageDto>.Failure("Użytkownik nie został znaleziony.", ErrorType.NotFound);
             }
 
             if (response.AccountBalance < request.Price)
             {
-                return Result<string>.Failure("Niewystarczające środki na koncie.");
+                return Result<SuccesMessageDto>.Failure("Niewystarczające środki na koncie.", ErrorType.BadRequest);
             }
 
             response.AccountBalance -= request.Price;
@@ -48,7 +48,7 @@ public class ScanPurchaseHandler : IRequestHandler<ScanPurchaseRequestModel, Res
             _context.TicketHistories.Add(ticketHistoryRequest);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<string>.Success("Zakup został dodany do historii.");
+            return Result<SuccesMessageDto>.Success(new() { Message = "Zakup został dodany do historii." });
         });
     }
 

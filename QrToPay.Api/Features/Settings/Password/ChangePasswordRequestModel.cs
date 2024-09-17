@@ -3,7 +3,7 @@ using QrToPay.Api.Common.Results;
 
 namespace QrToPay.Api.Features.Settings.Password;
 
-public sealed class ChangePasswordRequestModel : IRequest<Result<string>>
+public sealed class ChangePasswordRequestModel : IRequest<Result<SuccesMessageDto>>
 {
     public required int UserId { get; init; }
     public required string OldPassword { get; init; }

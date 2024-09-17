@@ -6,6 +6,5 @@ public sealed class LoginDto
     public string? Email { get; init; }
     public string? PhoneNumber { get; init; }
     public decimal? AccountBalance { get; init; }
-    public bool? IsActive { get; init; }
-    public bool? IsBlocked { get; init; }
+    //Podmianka email phone i balance na token jwt?
 }

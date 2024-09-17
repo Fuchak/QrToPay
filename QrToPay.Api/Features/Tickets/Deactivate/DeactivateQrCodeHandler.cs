@@ -4,7 +4,7 @@ using QrToPay.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace QrToPay.Api.Features.Tickets.Deactivate;
-public class DeactivateQrCodeHandler : IRequestHandler<DeactivateQrCodeRequestModel, Result<bool>>
+public class DeactivateQrCodeHandler : IRequestHandler<DeactivateQrCodeRequestModel, Result<SuccesMessageDto>>
 {
     private readonly QrToPayDbContext _context;
 
@@ -13,7 +13,7 @@ public class DeactivateQrCodeHandler : IRequestHandler<DeactivateQrCodeRequestMo
         _context = context;
     }
 
-    public async Task<Result<bool>> Handle(DeactivateQrCodeRequestModel request, CancellationToken cancellationToken)
+    public async Task<Result<SuccesMessageDto>> Handle(DeactivateQrCodeRequestModel request, CancellationToken cancellationToken)
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
@@ -23,13 +23,13 @@ public class DeactivateQrCodeHandler : IRequestHandler<DeactivateQrCodeRequestMo
 
             if(response is null)
             {
-                return Result<bool>.Failure("Nie znaleziono biletu.");
+                return Result<SuccesMessageDto>.Failure("Nie znaleziono biletu.", ErrorType.NotFound);
             }
 
             response.QrCodeIsActive = false; // Deaktywacja kodu
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<bool>.Success(true);
+            return Result<SuccesMessageDto>.Success(new() { IsSuccessful = true });
         });
     }
 }

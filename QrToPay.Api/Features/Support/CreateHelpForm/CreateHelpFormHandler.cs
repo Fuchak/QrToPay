@@ -1,11 +1,10 @@
 ﻿using MediatR;
 using QrToPay.Api.Models;
 using QrToPay.Api.Common.Results;
-using QrToPay.Api.Features.SkiResorts.Resorts;
 
 namespace QrToPay.Api.Features.Support.CreateHelpForm;
 
-public class CreateHelpFormHandler : IRequestHandler<CreateHelpFormRequestModel, Result<string>>
+public class CreateHelpFormHandler : IRequestHandler<CreateHelpFormRequestModel, Result<SuccesMessageDto>>
 {
     private readonly QrToPayDbContext _context;
 
@@ -14,7 +13,7 @@ public class CreateHelpFormHandler : IRequestHandler<CreateHelpFormRequestModel,
         _context = context;
     }
 
-    public async Task<Result<string>> Handle(CreateHelpFormRequestModel request, CancellationToken cancellationToken)
+    public async Task<Result<SuccesMessageDto>> Handle(CreateHelpFormRequestModel request, CancellationToken cancellationToken)
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
@@ -33,7 +32,7 @@ public class CreateHelpFormHandler : IRequestHandler<CreateHelpFormRequestModel,
             _context.HelpForms.Add(helpForm);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<string>.Success("Zgłoszenie zostało utworzone.");
+            return Result<SuccesMessageDto>.Success(new() { Message = "Zgłoszenie zostało utworzone." });
         });
     }
 }

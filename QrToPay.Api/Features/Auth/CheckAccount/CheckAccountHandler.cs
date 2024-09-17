@@ -7,7 +7,7 @@ using QrToPay.Api.Models;
 
 namespace QrToPay.Api.Features.Auth.CheckAccount;
 
-public class CheckAccountHandler : IRequestHandler<CheckAccountRequestModel, Result<string>>
+public class CheckAccountHandler : IRequestHandler<CheckAccountRequestModel, Result<CheckAccountDto>>
 {
     private readonly QrToPayDbContext _context;
 
@@ -16,7 +16,7 @@ public class CheckAccountHandler : IRequestHandler<CheckAccountRequestModel, Res
         _context = context;
     }
 
-    public async Task<Result<string>> Handle(CheckAccountRequestModel request, CancellationToken cancellationToken)
+    public async Task<Result<CheckAccountDto>> Handle(CheckAccountRequestModel request, CancellationToken cancellationToken)
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
@@ -27,21 +27,21 @@ public class CheckAccountHandler : IRequestHandler<CheckAccountRequestModel, Res
 
             if (user is null)
             {
-                return Result<string>.Failure($"Użytkownik z podanym {(request.ChangeType == ChangeType.Email ? "e-mailem" : "numerem telefonu")} nie istnieje.");
+                return Result<CheckAccountDto>.Failure($"Użytkownik z podanym {(request.ChangeType == ChangeType.Email ? "e-mailem" : "numerem telefonu")} nie istnieje.", ErrorType.NotFound);
             }
 
             if (!user.IsVerified)
             {
-                return Result<string>.Failure("Konto użytkownika nie zostało potwierdzone.");
+                return Result<CheckAccountDto>.Failure("Konto użytkownika nie zostało potwierdzone.", ErrorType.NotVerified);
             }
 
-            string response = AuthenticationHelper.GenerateVerificationCode();
-            user.VerificationCode = response;
+            string verificationCode = AuthenticationHelper.GenerateVerificationCode();
+            user.VerificationCode = verificationCode;
             user.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<string>.Success(response);
+            return Result<CheckAccountDto>.Success(new() { VerificationCode = user.VerificationCode});
         });
     }
 }

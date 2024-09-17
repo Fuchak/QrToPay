@@ -20,7 +20,7 @@ public class ScanedInfoHandler : IRequestHandler<ScanedInfoRequestModel, Result<
         {
             if (string.IsNullOrWhiteSpace(request.QrCode) || request.QrCode.Length < 11)
             {
-                return Result<ScanedInfoDto>.Failure("Nieprawidłowy kod QR.");
+                return Result<ScanedInfoDto>.Failure("Nieprawidłowy kod QR.", ErrorType.BadRequest);
             }
 
             var prefix = request.QrCode.Substring(3, 2); // Użycie dwóch liter jako prefixu Chyba to tak powinno chodzić jak trzeba ZAK to 3 i używamy 2 jako te prefixy
@@ -36,7 +36,7 @@ public class ScanedInfoHandler : IRequestHandler<ScanedInfoRequestModel, Result<
                 return await handler();
             }
 
-            return Result<ScanedInfoDto>.Failure("Nieprawidłowy prefix kodu QR.");
+            return Result<ScanedInfoDto>.Failure("Nieprawidłowy prefix kodu QR.", ErrorType.BadRequest);
         });
     }
 
@@ -48,7 +48,7 @@ public class ScanedInfoHandler : IRequestHandler<ScanedInfoRequestModel, Result<
 
         if (funFairAttractionResponse is null)
         {
-            return Result<ScanedInfoDto>.Failure("Atrakcja nie została znaleziona.");
+            return Result<ScanedInfoDto>.Failure("Atrakcja nie została znaleziona.", ErrorType.NotFound);
         }
 
         ServiceCategory? serviceCategoryResponse = await _context.ServiceCategories
@@ -56,7 +56,7 @@ public class ScanedInfoHandler : IRequestHandler<ScanedInfoRequestModel, Result<
 
         if (serviceCategoryResponse is null)
         {
-            return Result<ScanedInfoDto>.Failure("Park nie został znaleziony.");
+            return Result<ScanedInfoDto>.Failure("Park nie został znaleziony.", ErrorType.NotFound);
         }
 
         return Result<ScanedInfoDto>.Success(new ScanedInfoDto
@@ -76,7 +76,7 @@ public class ScanedInfoHandler : IRequestHandler<ScanedInfoRequestModel, Result<
 
         if (skiLiftResponse is null)
         {
-            return Result<ScanedInfoDto>.Failure("Atrakcja nie została znaleziona.");
+            return Result<ScanedInfoDto>.Failure("Atrakcja nie została znaleziona.", ErrorType.NotFound);
         }
 
         ServiceCategory? serviceCategoryResponse = await _context.ServiceCategories
@@ -84,7 +84,7 @@ public class ScanedInfoHandler : IRequestHandler<ScanedInfoRequestModel, Result<
         
         if (serviceCategoryResponse is null)
         {
-            return Result<ScanedInfoDto>.Failure("Ośrodek narciarski nie został znaleziony.");
+            return Result<ScanedInfoDto>.Failure("Ośrodek narciarski nie został znaleziony.", ErrorType.NotFound);
         }
 
         return Result<ScanedInfoDto>.Success(new ScanedInfoDto

@@ -2,12 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.Common.Helpers;
 using QrToPay.Api.Common.Results;
-using QrToPay.Api.Features.Auth.Login;
 using QrToPay.Api.Models;
 
 namespace QrToPay.Api.Features.Auth.ResetPassword;
 
-public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequestModel, Result<string>>
+public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequestModel, Result<SuccesMessageDto>>
 {
     private readonly QrToPayDbContext _context;
 
@@ -16,7 +15,7 @@ public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequestModel, R
         _context = context;
     }
 
-    public async Task<Result<string>> Handle(ResetPasswordRequestModel request, CancellationToken cancellationToken)
+    public async Task<Result<SuccesMessageDto>> Handle(ResetPasswordRequestModel request, CancellationToken cancellationToken)
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
@@ -25,12 +24,12 @@ public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequestModel, R
 
             if (user is null)
             {
-                return Result<string>.Failure("Użytkownik z podanym e-mailem lub numerem telefonu nie istnieje.");
+                return Result<SuccesMessageDto>.Failure("Użytkownik z podanym e-mailem lub numerem telefonu nie istnieje.",ErrorType.NotFound);
             }
 
             if (user.VerificationCode != request.VerificationCode)
             {
-                return Result<string>.Failure("Nieprawidłowy kod weryfikacyjny.");
+                return Result<SuccesMessageDto>.Failure("Nieprawidłowy kod weryfikacyjny.",ErrorType.BadRequest);
             }
 
             user.PasswordHash = AuthenticationHelper.HashPassword(request.NewPassword);
@@ -39,7 +38,7 @@ public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequestModel, R
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<string>.Success("Hasło zostało pomyślnie zaktualizowane.");
+            return Result<SuccesMessageDto>.Success(new() { Message = "Hasło zostało pomyślnie zaktualizowane." });
         });
     }
 }

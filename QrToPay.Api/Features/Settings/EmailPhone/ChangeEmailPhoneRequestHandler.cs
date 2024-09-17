@@ -8,7 +8,7 @@ using QrToPay.Api.Common.Services;
 
 namespace QrToPay.Api.Features.Settings.EmailPhone;
 
-public class ChangeEmailPhoneRequestHandler : IRequestHandler<ChangeEmailPhoneRequestModel, Result<string>>
+public class ChangeEmailPhoneRequestHandler : IRequestHandler<ChangeEmailPhoneRequestModel, Result<SuccesMessageDto>>
 {
     private readonly QrToPayDbContext _context;
     private readonly VerificationStorageService _verificationStorageService;
@@ -19,7 +19,7 @@ public class ChangeEmailPhoneRequestHandler : IRequestHandler<ChangeEmailPhoneRe
         _verificationStorageService = verificationStorageService;
     }
 
-    public async Task<Result<string>> Handle(ChangeEmailPhoneRequestModel request, CancellationToken cancellationToken)
+    public async Task<Result<SuccesMessageDto>> Handle(ChangeEmailPhoneRequestModel request, CancellationToken cancellationToken)
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
@@ -28,12 +28,12 @@ public class ChangeEmailPhoneRequestHandler : IRequestHandler<ChangeEmailPhoneRe
 
             if(user is null)
             {
-                return Result<string>.Failure("Użytkownik z podanym identyfikatorem nie istnieje lub nie został zweryfikowany.");
+                return Result<SuccesMessageDto>.Failure("Użytkownik z podanym identyfikatorem nie istnieje.", ErrorType.NotFound);
             }
 
             if (!AuthenticationHelper.VerifyPassword(request.Password, user.PasswordHash))
             {
-                return Result<string>.Failure("Nieprawidłowe hasło.");
+                return Result<SuccesMessageDto>.Failure("Nieprawidłowe hasło.", ErrorType.BadRequest);
             }
 
             //User? existingUser = null;
@@ -45,7 +45,7 @@ public class ChangeEmailPhoneRequestHandler : IRequestHandler<ChangeEmailPhoneRe
 
                 if(existingUser != null)
                 {
-                    return Result<string>.Failure($"Użytkownik z takim adresem email już istnieje.");
+                    return Result<SuccesMessageDto>.Failure($"Użytkownik z takim adresem email już istnieje.", ErrorType.BadRequest);
                 }
 
                 _verificationStorageService.StoreEmailVerification(user.UserId, request.NewValue);
@@ -57,23 +57,23 @@ public class ChangeEmailPhoneRequestHandler : IRequestHandler<ChangeEmailPhoneRe
 
                 if (existingUser != null)
                 {
-                    return Result<string>.Failure($"Użytkownik z takim numerem telefonu już istnieje.");
+                    return Result<SuccesMessageDto>.Failure($"Użytkownik z takim numerem telefonu już istnieje.", ErrorType.BadRequest);
                 }
 
                 _verificationStorageService.StorePhoneVerification(user.UserId, request.NewValue);
             }
             else
             {
-                return Result<string>.Failure("Nieprawidłowy typ zmiany.");
+                return Result<SuccesMessageDto>.Failure("Nieprawidłowy typ zmiany.", ErrorType.BadRequest);
             }
 
-            string response = AuthenticationHelper.GenerateVerificationCode();
-            user.VerificationCode = response;
+            string verificationCode = AuthenticationHelper.GenerateVerificationCode();
+            user.VerificationCode = verificationCode;
             user.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<string>.Success(response);
+            return Result<SuccesMessageDto>.Success(new() { Message = verificationCode });
         });
     }
 

@@ -3,6 +3,7 @@ using FluentValidation;
 using QrToPay.Api.Models;
 using QrToPay.Api.Common.Filters;
 using QrToPay.Api.Common.Services;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,19 +13,22 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<ValidationFilter>();
 });
 
-
 builder.Services.AddDbContext<QrToPayDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+    {
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        c.IncludeXmlComments(xmlPath);
+    });
 
 // Get the current assembly
 var assembly = typeof(Program).Assembly;
 
 // Add FluentValidation
 builder.Services.AddValidatorsFromAssembly(assembly);
-//builder.Services.AddTransient<ValidationFilter>(); //Po co to tu jak jest na górze
 
 // Add MediatR
 builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(assembly));
