@@ -6,6 +6,15 @@ public partial class ViewModelBase : ObservableObject
     string? errorMessage;
 
     [ObservableProperty]
+    private bool isPassword = true;
+
+    [ObservableProperty]
+    private string passwordVisibilityIcon = "\ue8f4";
+
+    [ObservableProperty]
+    private bool isLoading;
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsNotBusy))]
     bool isBusy;
 
@@ -27,6 +36,16 @@ public partial class ViewModelBase : ObservableObject
             await Task.Delay(100);
             IsBusy = false;
         }
+    }
+
+    [RelayCommand]
+    private void TogglePasswordVisibility()
+    {
+        IsPassword = !IsPassword;
+
+        PasswordVisibilityIcon = IsPassword 
+            ? "\ue8f4" 
+            : "\ue8f5";
     }
 
     [RelayCommand]

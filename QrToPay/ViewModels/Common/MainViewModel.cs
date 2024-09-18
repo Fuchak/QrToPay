@@ -27,17 +27,14 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private string? phoneNumber;
 
-    [ObservableProperty]
-    private bool isBalanceLoading;
-
     [RelayCommand]
     public async Task LoadUserDataAsync()
-    {//TODO usunąć isbusy? zrobic testy czy działa git (nie blokować ui gdy ładuje balance)
-        if(IsBusy) return;
+    {
+        if(IsBusy || IsLoading) return;
 
         try
         {
-            IsBalanceLoading = true;
+            IsLoading = true;
 
             int userId = Preferences.Get("UserId", 0);
 
@@ -55,7 +52,7 @@ public partial class MainViewModel : ViewModelBase
         }
         finally
         {
-            IsBalanceLoading = false;
+            IsLoading = false;
         }
     }
 

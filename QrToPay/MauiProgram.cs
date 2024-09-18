@@ -31,6 +31,7 @@ public static class MauiProgram
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIcons");
             });
 
         #if DEBUG
@@ -55,7 +56,7 @@ public static class MauiProgram
         // Rejestrujesz IHttpClientFactory i konfigurujesz klienta HTTP
         builder.Services.AddHttpClient("ApiHttpClient", client =>
         {
-            client.BaseAddress = new Uri("https://4xgvh08q-7041.euw.devtunnels.ms/");
+            client.BaseAddress = new Uri("https://pwmrvnzg-7041.euw.devtunnels.ms/");
         });
 
         builder.Services.AddTransient<AuthService>();

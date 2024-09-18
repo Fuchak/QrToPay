@@ -21,11 +21,11 @@ public partial class LoginViewModel : ViewModelBase
     [RelayCommand]
     private async Task Login()
     {
-        if(IsBusy) return;
+        if(IsLoading) return;
 
         try
         {
-            IsBusy = true;
+            IsLoading = true;
             ErrorMessage = null;
 
             if (string.IsNullOrWhiteSpace(EmailPhone))
@@ -45,8 +45,8 @@ public partial class LoginViewModel : ViewModelBase
             if (loginResult.IsSuccess)
             {
                 await NavigateAsync($"///{nameof(MainPage)}");
-                EmailPhone = string.Empty; ;
-                Password = string.Empty; ;
+                EmailPhone = string.Empty;
+                Password = string.Empty;
             }
             else
             {
@@ -55,7 +55,7 @@ public partial class LoginViewModel : ViewModelBase
         }
         finally 
         {
-            IsBusy = false;
+            IsLoading = false;
         }
     }
 
