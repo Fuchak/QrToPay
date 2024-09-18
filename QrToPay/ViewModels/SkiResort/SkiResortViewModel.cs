@@ -34,6 +34,7 @@ public partial class SkiResortViewModel : ViewModelBase
             ResortName = _appState.ResortName;
             CityName = _appState.CityName;
 
+            IsBusy = true;
             var result = await _skiResortService.GetSkiResortPricesAsync(_appState.AttractionId);
 
             if (result.IsSuccess && result.Data != null)
@@ -53,11 +54,6 @@ public partial class SkiResortViewModel : ViewModelBase
             {
                 ErrorMessage = result.ErrorMessage;
             }
-            //OnPropertyChanged(nameof(Tickets));
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = HttpError.HandleError(ex);
         }
         finally
         {

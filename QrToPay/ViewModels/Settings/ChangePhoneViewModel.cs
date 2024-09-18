@@ -88,6 +88,9 @@ public partial class ChangePhoneViewModel : ViewModelBase
                     {
                         Preferences.Set("UserPhone", NewPhoneNumber);
                         await Shell.Current.DisplayAlert("Sukces", "Numer telefonu został zmieniony.", "OK");
+                        NewPhoneNumber = string.Empty;
+                        Password = string.Empty;
+                        ErrorMessage = string.Empty;
                     }
                     else
                     {
@@ -104,17 +107,9 @@ public partial class ChangePhoneViewModel : ViewModelBase
                 ErrorMessage = result.ErrorMessage;
             }
         }
-        catch (Exception ex)
-        {
-            ErrorMessage = HttpError.HandleError(ex);
-        }
         finally
         {
             IsBusy = false;
-            //TODO : Czy to musi czyścić tu czy w OnAppearing? chyba w OnAppearing żeby użytkownik po złym wpisaniu nie musiał wpisywać od nowa
-            //NewPhoneNumber = string.Empty;
-            //Password = string.Empty;
-            //ErrorMessage = string.Empty;
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Net.Http.Json;
 using QrToPay.Models.Common;
 using QrToPay.Services.Api;
+using System.Text.Json;
 
 namespace QrToPay.ViewModels.QR;
 public partial class ScanQrCodeViewModel : ViewModelBase
@@ -40,15 +41,15 @@ public partial class ScanQrCodeViewModel : ViewModelBase
             if (IsAttractionValid)
             {
                 PauseScanning = true;
+                Vibration.Vibrate(TimeSpan.FromSeconds(0.2));
             }
             else
-            { 
+            {
                 CurrentAttraction = null;
                 PauseScanning = true;
-                await Task.Delay(PauseDuration); // Zatrzymanie skanowania na kilka sekund
-                PauseScanning = false; // Wznowienie skanowania
+                await Task.Delay(PauseDuration);
+                PauseScanning = false;
             }
-            
         }
     }
     private async Task FetchAttractionData(string qrCode)
@@ -62,28 +63,25 @@ public partial class ScanQrCodeViewModel : ViewModelBase
             if (result.IsSuccess && result.Data != null)
             {
                 CurrentAttraction = result.Data;
-                PurchaseCommand.NotifyCanExecuteChanged();
                 ErrorMessage = null;
             }
             else
             {
                 ErrorMessage = result.ErrorMessage;
+                CurrentAttraction = null;
             }
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = HttpError.HandleError(ex);
         }
         finally
         {
             IsBusy = false;
+            PurchaseCommand.NotifyCanExecuteChanged();
         }
     }
 
     [RelayCommand(CanExecute = nameof(CanPurchase))]
     private async Task Purchase()
     {
-        if (IsBusy) return;
+        if (IsBusy || CurrentAttraction == null) return;
         try
         {
             IsBusy = true;
@@ -95,14 +93,13 @@ public partial class ScanQrCodeViewModel : ViewModelBase
                 PurchaseRequest purchaseRequest = new()
                 {
                     UserId = userId,
-                    Purchase = new Purchase
-                    {
-                        ServiceName = CurrentAttraction.ServiceName,
-                        ServiceId = CurrentAttraction.ServiceId,
-                        AttractionName = CurrentAttraction.AttractionName,
-                        Price = CurrentAttraction!.Price
-                    }
+                    ServiceName = CurrentAttraction.ServiceName,
+                    ServiceId = CurrentAttraction.ServiceId,
+                    AttractionName = CurrentAttraction.AttractionName,
+                    Price = CurrentAttraction.Price
                 };
+                string jsonToSend = JsonSerializer.Serialize(purchaseRequest);
+                Debug.WriteLine(jsonToSend);
 
                 var result = await _scanService.MakePurchaseAsync(purchaseRequest);
 
@@ -110,37 +107,28 @@ public partial class ScanQrCodeViewModel : ViewModelBase
                 {
                     await Shell.Current.DisplayAlert("Zakup", "Zakup zakończony pomyślnie!", "OK");
 
-                    DetectedCode = null;
-                    CurrentAttraction = null;
-                    PauseScanning = false;
-
-                    PurchaseCommand.NotifyCanExecuteChanged();
+                    Cancel();
                 }
                 else
                 {
-                    ErrorMessage = result.ErrorMessage;
+                    ErrorMessage = result.ErrorMessage 
+                        ?? "Zakup nie powiódł się.";
                 }
             }
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = HttpError.HandleError(ex);
         }
         finally
         {
             IsBusy = false;
+            PurchaseCommand.NotifyCanExecuteChanged();
         }
     }
 
     [RelayCommand]
     private void Cancel()
     {
-        // Resetowanie danych po anulowaniu
         DetectedCode = null;
         CurrentAttraction = null;
-        PauseScanning = false; // Ponownie włącz skanowanie po anulowaniu
-
-        // Zaktualizowanie stanu komendy
+        PauseScanning = false;
         PurchaseCommand.NotifyCanExecuteChanged();
     }
 
@@ -150,8 +138,5 @@ public partial class ScanQrCodeViewModel : ViewModelBase
         !string.IsNullOrEmpty(CurrentAttraction?.AttractionName) &&
         CurrentAttraction?.Price != null;
 
-    private bool CanPurchase()
-    {
-        return IsAttractionValid;
-    }
+    private bool CanPurchase() => IsAttractionValid;
 }

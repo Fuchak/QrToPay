@@ -27,42 +27,35 @@ public partial class QrCodePopupViewModel : ViewModelBase
         _userId = userId;
         _token = token;
 
-        if (remainingTime.HasValue)
-        {
-            IsActive = true;
-            RemainingTime = remainingTime.Value;
-        }
-        else
-        {
-            DateTime activationTime = Preferences.Get($"ActivationTime_{_token}", DateTime.MinValue);
-            if (activationTime != DateTime.MinValue)
-            {
-                SetRemainingTime(activationTime);
-            }
-            IsActive = false;
-        }
+        InitializeRemainingTime(remainingTime);
 
         UpdateRemainingTimeDisplay();
         StartTimer();
     }
 
-    [RelayCommand]
-    public async Task ClosePopupAsync(Popup popup)
+    private void InitializeRemainingTime(int? remainingTime)
     {
-        await popup.CloseAsync();
+        if (remainingTime.HasValue)
+        {
+            RemainingTime = remainingTime.Value;
+            IsActive = true;
+        }
+        else
+        {
+            DateTime activationTime = Preferences.Get($"ActivationTime_{_token}", DateTime.MinValue);
+            SetRemainingTimeFromActivation(activationTime);
+        }
     }
+
+    [RelayCommand]
+    public async Task ClosePopupAsync(Popup popup) => await popup.CloseAsync();
+
 
     [RelayCommand]
     public async Task ActivateQrCodeAsync()
     {
         await _qrCodeService.ActivateQrCodeAsync(_token, _userId);
-
-        RemainingTime = 5 * 60;
-        IsActive = true;
-        UpdateRemainingTimeDisplay();
-        StartTimer();
-
-        // Zapisz czas aktywacji w Preferencjach
+        SetActivationState(5 * 60, true);
         Preferences.Set($"ActivationTime_{_token}", DateTime.UtcNow);
     }
 
@@ -70,45 +63,55 @@ public partial class QrCodePopupViewModel : ViewModelBase
     public async Task DeactivateQrCodeAsync()
     {
         await _qrCodeService.DeactivateQrCodeAsync(_token, _userId);
-
-        RemainingTime = 0;
-        RemainingTimeDisplay = "Kod nie jest aktywny.";
-        IsActive = false;
-
+        SetActivationState(0, false);
         Preferences.Remove($"ActivationTime_{_token}");
+    }
+
+    private void SetActivationState(int time, bool isActive)
+    {
+        RemainingTime = time;
+        IsActive = isActive;
+        UpdateRemainingTimeDisplay();
+        if (isActive) StartTimer();
     }
 
     private void StartTimer()
     {
         Shell.Current.Dispatcher.StartTimer(TimeSpan.FromSeconds(1), () =>
         {
-            RemainingTime--;
-
-            UpdateRemainingTimeDisplay();
-
-            if (RemainingTime <= 0)
+            if (--RemainingTime <= 0)
             {
+                SetActivationState(0, false);
                 Preferences.Remove($"ActivationTime_{_token}");
                 return false;
             }
-            return true; 
+
+            UpdateRemainingTimeDisplay();
+            return true;
         });
     }
 
     private void UpdateRemainingTimeDisplay()
     {
-        if (RemainingTime > 0)
-        {
-            RemainingTimeDisplay = $"Pozostały czas: {RemainingTime / 60:D2}:{RemainingTime % 60:D2}";
-        }
+        RemainingTimeDisplay = IsActive
+            ? $"Pozostały czas: {RemainingTime / 60:D2}:{RemainingTime % 60:D2}"
+            : "Kod nie jest aktywny.";
     }
 
-    private void SetRemainingTime(DateTime activationTime)
+    private void SetRemainingTimeFromActivation(DateTime activationTime)
     {
+        if (activationTime == DateTime.MinValue)
+        {
+            IsActive = false;
+            RemainingTime = 0;
+            return;
+        }
+
         var elapsedTime = DateTime.UtcNow - activationTime;
         RemainingTime = Math.Max(0, (int)(5 * 60 - elapsedTime.TotalSeconds));
+        IsActive = RemainingTime > 0;
 
-        if (RemainingTime <= 0)
+        if (!IsActive)
         {
             Preferences.Remove($"ActivationTime_{_token}");
         }

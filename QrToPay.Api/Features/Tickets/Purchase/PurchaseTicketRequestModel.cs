@@ -3,7 +3,7 @@ using QrToPay.Api.Common.Results;
 
 namespace QrToPay.Api.Features.Tickets.Purchase;
 
-public class PurchaseTicketRequestModel : IRequest<Result<SuccesMessageDto>>
+public class PurchaseTicketRequestModel : IRequest<Result<PurchaseTicketDto>>
 {
     public required int UserId { get; init; }
     public required Guid ServiceId { get; init; }

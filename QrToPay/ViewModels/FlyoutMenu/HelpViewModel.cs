@@ -46,7 +46,7 @@ public partial class HelpViewModel : ViewModelBase
     private async Task Submit()
     {
         if (IsBusy) return;
-        //if (IsBusy) return; Może poprostu tak zamiast tego true false??? https://www.youtube.com/watch?v=ve0DFu-arD8 8:17 tak ma napisane może to git
+
         try
         {
             IsBusy = true;
@@ -77,7 +77,6 @@ public partial class HelpViewModel : ViewModelBase
             if (result.IsSuccess)
             {
                 await Shell.Current.DisplayAlert("Sukces", "Twoje zgłoszenie zostało wysłane.", "OK");
-                // Czyszczenie formularza
                 UserName = string.Empty;
                 UserEmail = string.Empty;
                 Description = string.Empty;
@@ -91,10 +90,6 @@ public partial class HelpViewModel : ViewModelBase
         }
         //Może wydzielimy serwis pod iconnectivity z maui i to sprawdza czy jest internet będzie to działać lepiej?
         //https://learn.microsoft.com/pl-pl/dotnet/maui/platform-integration/communication/networking?view=net-maui-8.0&tabs=android
-        catch (Exception ex)
-        {
-            ErrorMessage = HttpError.HandleError(ex);
-        }
         finally
         {
             IsBusy = false;

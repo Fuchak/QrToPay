@@ -29,8 +29,11 @@ public partial class ResetPasswordConfirmViewModel : ViewModelBase
     [RelayCommand]
     private async Task Confirm()
     {
+        if (IsBusy) return;
         try
         {
+            IsBusy = true;
+
             if (string.IsNullOrWhiteSpace(Code) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(PasswordConfirm))
             {
                 ErrorMessage = "Wszystkie pola są wymagane.";
@@ -68,9 +71,9 @@ public partial class ResetPasswordConfirmViewModel : ViewModelBase
                 ErrorMessage = result.ErrorMessage;
             }
         }
-        catch (Exception ex)
+        finally
         {
-            ErrorMessage = HttpError.HandleError(ex);
+            IsBusy = false;
         }
     }
 }

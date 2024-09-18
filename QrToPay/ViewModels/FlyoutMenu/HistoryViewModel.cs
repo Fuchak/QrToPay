@@ -80,10 +80,6 @@ public partial class HistoryViewModel : ViewModelBase
                 hasMoreItems = false;
             }
         }
-        catch (Exception ex)
-        {
-            ErrorMessage = HttpError.HandleError(ex);
-        }
         finally
         {
             IsBusy = false;

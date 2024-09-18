@@ -38,7 +38,7 @@ public class TicketsController : ControllerBase
     [HttpPost("purchase")]
     public async Task<IActionResult> PurchaseTicket([FromBody] PurchaseTicketRequestModel request)
     {
-        Result<SuccesMessageDto> result = await _mediator.Send(request);
+        Result<PurchaseTicketDto> result = await _mediator.Send(request);
 
         return result.ToActionResult(); ;
     }

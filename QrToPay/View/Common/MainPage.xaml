@@ -59,9 +59,6 @@
         </Border>
 
         <VerticalStackLayout Grid.Row="1" Spacing="25" Padding="30">
-
-        <!-- Górna sekcja z tytułem i stanem konta do przerobienia pod bazę danych -->
-
             <StackLayout>
                 <Label Text="STAN KONTA"
                        FontSize="Large"

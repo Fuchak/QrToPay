@@ -27,6 +27,7 @@ public partial class FunFairCityViewModel : ViewModelBase
         try
         {
             IsBusy = true;
+            ErrorMessage = null;
             var result = await _cityService.GetCitiesAsync(serviceType);
 
             if (result.IsSuccess && result.Data != null)
@@ -42,10 +43,6 @@ public partial class FunFairCityViewModel : ViewModelBase
             {
                 ErrorMessage = result.ErrorMessage;
             }
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = HttpError.HandleError(ex);
         }
         finally
         {

@@ -29,9 +29,13 @@ public partial class CreateUserViewModel : ViewModelBase
     [RelayCommand]
     private async Task Confirm()
     {
+        if(IsBusy) return;
+
         try
         {
+            IsBusy = true;
             ErrorMessage = null;
+
             if (string.IsNullOrWhiteSpace(EmailPhone) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(PasswordConfirm))
             {
                 ErrorMessage = "Wszystkie pola są wymagane.";
@@ -62,7 +66,6 @@ public partial class CreateUserViewModel : ViewModelBase
 
             var registerResult = await _userService.RegisterUserAsync(request);
 
-            // Obsługa błędów i sukcesów z serwisu
             if (!registerResult.IsSuccess)
             {
                 ErrorMessage = registerResult.ErrorMessage 
@@ -72,7 +75,6 @@ public partial class CreateUserViewModel : ViewModelBase
 
             var registerResponse = registerResult.Data;
 
-            // Powiadomienie o kodzie weryfikacyjnym
             NotificationRequest notification = new()
             {
                 Title = "Kod weryfikacyjny",
@@ -83,7 +85,6 @@ public partial class CreateUserViewModel : ViewModelBase
 
             await LocalNotificationCenter.Current.Show(notification);
 
-            // Weryfikacja kodu wprowadzonego przez użytkownika
             bool verificationResult = await VerificationCodeHelper.VerifyCodeAsync(registerResponse.VerificationCode);
 
             if (!verificationResult)
@@ -98,7 +99,6 @@ public partial class CreateUserViewModel : ViewModelBase
                 VerificationCode = registerResponse.VerificationCode
             };
 
-            // Wywołanie serwisu weryfikacji użytkownika
             var verifyResult = await _userService.VerifyUserAsync(verifyRequest);
 
             if (verifyResult.IsSuccess)
@@ -114,9 +114,9 @@ public partial class CreateUserViewModel : ViewModelBase
                     ?? "Błąd podczas weryfikacji użytkownika. Spróbuj ponownie.";
             }
         }
-        catch (Exception ex)
+        finally
         {
-            ErrorMessage = HttpError.HandleError(ex);
+            IsBusy = false;
         }
     }
 }

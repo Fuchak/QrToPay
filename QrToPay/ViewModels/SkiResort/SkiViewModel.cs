@@ -47,10 +47,6 @@ public partial class SkiViewModel : ViewModelBase
                 ErrorMessage = result.ErrorMessage;
             }
         }
-        catch (Exception ex)
-        {
-            ErrorMessage = HttpError.HandleError(ex);
-        }
         finally
         {
             IsBusy = false;

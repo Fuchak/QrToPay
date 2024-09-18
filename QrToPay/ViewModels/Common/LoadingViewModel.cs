@@ -23,12 +23,10 @@ public partial class LoadingViewModel : ViewModelBase
         if (isAuthenticated)
         {
             await NavigateAsync($"///{nameof(MainPage)}");
-            //await Shell.Current.GoToAsync("///MainPage");  //TODO coś tu z busy musielibysmy przestawić żeby iść dalej
         }
         else
         {
             await NavigateAsync($"///{nameof(LoginPage)}");
-            //await Shell.Current.GoToAsync("///LoginPage");  //TODO coś tu z busy musielibysmy przestawić żeby iść dalej
         }
     }
 

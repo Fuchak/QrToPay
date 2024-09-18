@@ -86,6 +86,9 @@ public partial class ChangeEmailViewModel: ViewModelBase
                     {
                         Preferences.Set("UserEmail", NewEmail);
                         await Shell.Current.DisplayAlert("Sukces", "Adres e-mail został zmieniony.", "OK");
+                        NewEmail = string.Empty;
+                        Password = string.Empty;
+                        ErrorMessage = string.Empty;
                     }
                     else
                     {
@@ -102,17 +105,9 @@ public partial class ChangeEmailViewModel: ViewModelBase
                 ErrorMessage = result.ErrorMessage;
             }
         }
-        catch (Exception ex)
-        {
-            ErrorMessage = HttpError.HandleError(ex);
-        }
         finally
         {
             IsBusy = false;
-            //TODO : Czy to musi czyścić tu czy w OnAppearing? chyba w OnAppearing żeby użytkownik po złym wpisaniu nie musiał wpisywać od nowa
-            //NewEmail = string.Empty;
-            //Password = string.Empty;
-            //ErrorMessage = string.Empty;
         }
     }
 }

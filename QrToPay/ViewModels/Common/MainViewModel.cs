@@ -37,7 +37,6 @@ public partial class MainViewModel : ViewModelBase
 
         try
         {
-            IsBusy = true;
             IsBalanceLoading = true;
 
             int userId = Preferences.Get("UserId", 0);
@@ -56,7 +55,6 @@ public partial class MainViewModel : ViewModelBase
         }
         finally
         {
-            IsBusy = false;
             IsBalanceLoading = false;
         }
     }

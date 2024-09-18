@@ -21,12 +21,17 @@ public partial class TopUpAccountViewModel : ViewModelBase
     [RelayCommand]
     private async Task NavigateToTopUp()
     {
-        string? amountWithDot = Amount?.Replace(',', '.');
-
         if (IsBusy) return;
 
-        if (decimal.TryParse(amountWithDot, NumberStyles.Number, CultureInfo.InvariantCulture, out var topUpAmount) && topUpAmount > 0)
+        try
         {
+            IsBusy = true;
+            ErrorMessage = null;
+
+            string? amountWithDot = Amount?.Replace(',', '.');
+
+            if (decimal.TryParse(amountWithDot, NumberStyles.Number, CultureInfo.InvariantCulture, out var topUpAmount) && topUpAmount > 0)
+            {
             string formattedAmount = topUpAmount.ToString("F2", CultureInfo.InvariantCulture);
 
             int userId = Preferences.Get("UserId", 0);
@@ -37,9 +42,6 @@ public partial class TopUpAccountViewModel : ViewModelBase
                 Amount = decimal.Parse(formattedAmount, CultureInfo.InvariantCulture)
             };
 
-            try
-            {
-                IsBusy = true;
                 var result = await _balanceService.TopUpAccountAsync(topUpRequest);
 
                 if (result.IsSuccess)
@@ -53,18 +55,14 @@ public partial class TopUpAccountViewModel : ViewModelBase
                     ErrorMessage = result.ErrorMessage;
                 }
             }
-            catch (Exception ex)
+            else
             {
-                ErrorMessage = HttpError.HandleError(ex);
-            }
-            finally
-            {
-                IsBusy = false;
+                ErrorMessage = "Wprowadź poprawną kwotę doładowania.";
             }
         }
-        else
+        finally
         {
-            ErrorMessage = "Wprowadź poprawną kwotę doładowania.";
+            IsBusy = false;
         }
     }
 }

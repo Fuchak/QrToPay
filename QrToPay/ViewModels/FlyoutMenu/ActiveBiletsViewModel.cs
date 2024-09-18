@@ -74,10 +74,6 @@ public partial class ActiveBiletsViewModel : ViewModelBase
                 ErrorMessage = result.ErrorMessage;
             }
         }
-        catch (Exception ex)
-        {
-            ErrorMessage = HttpError.HandleError(ex);
-        }
         finally
         {
             IsBusy = false;

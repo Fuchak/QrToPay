@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
+using Kotlin.Coroutines.Jvm.Internal;
 using QRCoder;
 using QrToPay.Models.Common;
 using QrToPay.Models.Requests;
@@ -47,6 +48,12 @@ public partial class SkiResortBuyViewModel : ViewModelBase
     [ObservableProperty]
     private Guid serviceId;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsNotBuying))]
+    bool isBuying;
+
+    public bool IsNotBuying => !IsBuying;
+
     private int userId;
 
     public Task InitializeAsync()
@@ -64,10 +71,10 @@ public partial class SkiResortBuyViewModel : ViewModelBase
     [RelayCommand]
     private async Task GenerateQrCodeAsync()
     {
-        //if (IsBusy) return; // Zapobiega wielokrotnemu kliknięciu
+        if (IsBuying) return;
         try
         {
-            //IsBusy = true;
+            IsBuying = true;
 
             if (string.IsNullOrEmpty(ResortName) || string.IsNullOrEmpty(CityName))
             {
@@ -121,14 +128,14 @@ public partial class SkiResortBuyViewModel : ViewModelBase
             Tickets.Add(newTicket);
 
             await _qrCodeStorageService.GenerateAndSaveQrCodeImageAsync(userId, token);
-            //isbusy false lub inna zmienna, lepiej inna bo ta sie gryzie z nawigacyjną
+            
             await Shell.Current.DisplayAlert("Potwierdzenie", "Bilet został zakupiony, kod QR wygenerowany", "OK");
 
             await NavigateAsync($"//{nameof(MainPage)}/{nameof(ActiveBiletsPage)}");
         }
-        catch (Exception ex)
+        finally
         {
-            ErrorMessage = HttpError.HandleError(ex);
+            IsBuying = false;
         }
     }
 }
