@@ -54,6 +54,29 @@
                         <Label Text="{Binding Points}" FontSize="18" />
                         <Label Text=" punkty" FontSize="18"/>
                     </HorizontalStackLayout>
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                        <!-- Minus button to decrease quantity -->
+                        <Button Text="-" 
+                                Pressed="OnDecreaseButtonPressed"
+                                Released="OnButtonReleased"
+                                Command="{Binding DecreaseQuantityCommand}" 
+                                HorizontalOptions="Center" 
+                                HeightRequest="40"
+                                WidthRequest="40" />
+                        <Label Text="{Binding Quantity}" 
+                               FontSize="16"
+                               HorizontalTextAlignment="Center" 
+                               VerticalTextAlignment="Center"
+                               WidthRequest="70" />
+                        <!-- Plus button to increase quantity -->
+                        <Button Text="+" 
+                                Pressed="OnIncreaseButtonPressed"
+                                Released="OnButtonReleased"
+                                Command="{Binding IncreaseQuantityCommand}" 
+                                HorizontalOptions="Center" 
+                                HeightRequest="40"
+                                WidthRequest="40" />
+                    </HorizontalStackLayout>
                     <ActivityIndicator IsRunning="{Binding IsBuying}" 
                                        IsVisible="{Binding IsBuying}"
                                        Color="{StaticResource Orange}"/>

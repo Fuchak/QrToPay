@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
+using Android.OS;
 using Kotlin.Coroutines.Jvm.Internal;
 using QRCoder;
 using QrToPay.Models.Common;
@@ -43,6 +44,9 @@ public partial class SkiResortBuyViewModel : ViewModelBase
     private decimal price;
 
     [ObservableProperty]
+    private int quantity = 1;
+
+    [ObservableProperty]
     private int points;
 
     [ObservableProperty]
@@ -55,6 +59,12 @@ public partial class SkiResortBuyViewModel : ViewModelBase
     public bool IsNotBuying => !IsBuying;
 
     private int userId;
+
+
+
+    private bool _isButtonPressed;
+    private readonly TimeSpan _interval = TimeSpan.FromMilliseconds(200);
+    private int _buttonDirection;
 
     public Task InitializeAsync()
     {
@@ -92,7 +102,6 @@ public partial class SkiResortBuyViewModel : ViewModelBase
                 return;
             }
 
-
             if (balanceResult.Data < Price)
             {
                 ErrorMessage = "Nie masz wystarczających środków na koncie.";
@@ -103,7 +112,7 @@ public partial class SkiResortBuyViewModel : ViewModelBase
             {
                 UserId = userId,
                 ServiceId = ServiceId,
-                Quantity = 1,
+                Quantity = Quantity,
                 Tokens = Points,
                 TotalPrice = formattedPrice
             };
@@ -137,5 +146,57 @@ public partial class SkiResortBuyViewModel : ViewModelBase
         {
             IsBuying = false;
         }
+    }
+
+    [RelayCommand]
+    private void IncreaseQuantity()
+    {
+        if (Quantity < 999999)
+        {
+            Quantity++;
+            UpdatePriceAndPoints();
+        }
+        else
+        {
+            ErrorMessage = "Osiągnięto maksymalna ilość biletów.";
+        }
+    }
+
+    [RelayCommand]
+    private void DecreaseQuantity()
+    {
+        if (Quantity > 1)
+        {
+            Quantity--;
+            UpdatePriceAndPoints();
+        }
+    }
+
+    private void UpdatePriceAndPoints()
+    {
+        Price = _appState.Price * Quantity;
+        Points = _appState.Points * Quantity;
+    }
+
+    public void StartRepeatingAction(int direction)
+    {
+        _buttonDirection = direction;
+        _isButtonPressed = true;
+
+        Shell.Current.Dispatcher.StartTimer(_interval, () =>
+        {
+            if (!_isButtonPressed) { return false; }
+
+            if (_buttonDirection == 1) { IncreaseQuantity(); }
+               
+            else if (_buttonDirection == -1) { DecreaseQuantity(); }
+                
+            return true;
+        });
+    }
+
+    public void StopRepeatingAction()
+    {
+        _isButtonPressed = false;
     }
 }
