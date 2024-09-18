@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:QrToPay.ViewModels.FlyoutMenu"
+             xmlns:custom="clr-namespace:QrToPay.View.CustomControls;assembly=QrToPay"
              x:Class="QrToPay.View.TopUpAccountPage"
              Style="{StaticResource BasePageStyle}"
              x:DataType="vm:TopUpAccountViewModel">
@@ -55,10 +56,11 @@
             <Button Text="Doładuj" 
                     Command="{Binding NavigateToTopUpCommand}" 
                     IsEnabled="{Binding IsNotBusy}" />
-            <Label Text="{Binding ErrorMessage}"
-                   TextColor="Red" 
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"/>
+            
+            <custom:ErrorMessageLabel 
+                    BindingContext="{Binding}">
+            </custom:ErrorMessageLabel>
+            
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

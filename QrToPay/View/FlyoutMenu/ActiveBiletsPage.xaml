@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:QrToPay.ViewModels.FlyoutMenu"
              xmlns:models="clr-namespace:QrToPay.Models.Common"
+             xmlns:custom="clr-namespace:QrToPay.View.CustomControls;assembly=QrToPay"
              Style="{StaticResource BasePageStyle}"
              x:Class="QrToPay.View.ActiveBiletsPage"
              x:DataType="vm:ActiveBiletsViewModel">
@@ -31,8 +32,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Label Margin="0,0,0,0"
-               Text="Brak aktywnych biletów" 
+        <Label Text="Brak aktywnych biletów" 
                FontSize="18" 
                HorizontalOptions="Center" 
                VerticalOptions="Center"
@@ -44,12 +44,10 @@
             </Label.Triggers>
         </Label>
 
-        <Label Margin="0,100,0,0"
-               Text="{Binding ErrorMessage}"
-               TextColor="Red" 
-               HorizontalOptions="Center"
-               HorizontalTextAlignment="Center"
-               IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"/>
+        <custom:ErrorMessageLabel 
+            Margin="0,100,0,0"
+            IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}">
+        </custom:ErrorMessageLabel>
 
         <CollectionView Grid.Row="1"
                         ItemsSource="{Binding ActiveTickets}">

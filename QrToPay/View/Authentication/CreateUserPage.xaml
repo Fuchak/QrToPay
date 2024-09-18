@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:QrToPay.ViewModels.Authentication"
-             xmlns:custom="clr-namespace:QrToPay.View.CustomControl;assembly=QrToPay"
+             xmlns:custom="clr-namespace:QrToPay.View.CustomControls;assembly=QrToPay"
              x:Class="QrToPay.View.CreateUserPage"
              Style="{StaticResource BasePageStyle}"
              x:DataType="vm:CreateUserViewModel">
@@ -74,13 +74,11 @@
             Text="ZAREJESTRUJ" 
             Command="{Binding ConfirmCommand}"
             IsEnabled="{Binding IsNotBusy}"/>
+
+            <custom:ErrorMessageLabel 
+                    BindingContext="{Binding}">
+            </custom:ErrorMessageLabel>
             
-            <!-- Wyświetl błąd -->
-            <Label Text="{Binding ErrorMessage}"
-                   FontSize="Small"
-                   TextColor="Red"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"/>
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

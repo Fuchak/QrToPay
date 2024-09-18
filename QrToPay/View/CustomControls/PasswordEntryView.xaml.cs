@@ -1,4 +1,4 @@
-namespace QrToPay.View.CustomControl;
+namespace QrToPay.View.CustomControls;
 
 public partial class PasswordEntryView : ContentView
 {

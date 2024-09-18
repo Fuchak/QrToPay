@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:QrToPay.ViewModels.QR"
+             xmlns:custom="clr-namespace:QrToPay.View.CustomControls;assembly=QrToPay"
              xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
              x:Class="QrToPay.View.ScanQrCodePage"
              Style="{StaticResource BasePageStyle}"
@@ -61,10 +62,11 @@
                         IsVisible="{Binding IsAttractionValid}" 
                         HorizontalOptions="Center" VerticalOptions="Center" />
             </HorizontalStackLayout>
-            <Label Text="{Binding ErrorMessage}"
-                   TextColor="Red" 
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"/>
+            
+            <custom:ErrorMessageLabel 
+                    BindingContext="{Binding}">
+            </custom:ErrorMessageLabel>
+            
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

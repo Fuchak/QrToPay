@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:QrToPay.ViewModels.SkiResort"
              xmlns:models="clr-namespace:QrToPay.Models.Common"
+             xmlns:custom="clr-namespace:QrToPay.View.CustomControls;assembly=QrToPay"
              x:Class="QrToPay.View.SkiResortPage"
              Style="{StaticResource BasePageStyle}"
              x:DataType="vm:SkiResortViewModel">
@@ -65,11 +66,11 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-            <Label Text="{Binding ErrorMessage}"
-                   FontSize="Small"
-                   TextColor="Red"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"/>
+            
+            <custom:ErrorMessageLabel 
+                    BindingContext="{Binding}">
+            </custom:ErrorMessageLabel>
+            
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

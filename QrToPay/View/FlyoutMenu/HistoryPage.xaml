@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:QrToPay.ViewModels.FlyoutMenu"
              xmlns:models="clr-namespace:QrToPay.Models.Responses"
+             xmlns:custom="clr-namespace:QrToPay.View.CustomControls;assembly=QrToPay"
              x:Class="QrToPay.View.HistoryPage"
              Style="{StaticResource BasePageStyle}"
              x:DataType="vm:HistoryViewModel">
@@ -48,8 +49,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Label Margin="0,0,0,0"
-               Text="Brak historii biletów" 
+        <Label Text="Brak historii biletów" 
                FontSize="18" 
                HorizontalOptions="Center" 
                VerticalOptions="Center"
@@ -61,12 +61,10 @@
             </Label.Triggers>
         </Label>
 
-        <Label Margin="0,100,0,0"
-               Text="{Binding ErrorMessage}"
-               TextColor="Red" 
-               HorizontalOptions="Center"
-               HorizontalTextAlignment="Center"
-               IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"/>
+        <custom:ErrorMessageLabel 
+            Margin="0,100,0,0"
+            IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}">
+        </custom:ErrorMessageLabel>
 
         <CollectionView Grid.Row="1"
                         ItemsSource="{Binding HistoryItems}"
