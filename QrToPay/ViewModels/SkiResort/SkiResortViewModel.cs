@@ -1,11 +1,10 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Net.Http.Json;
 using QrToPay.Models.Common;
-using QrToPay.Models.Responses;
 using QrToPay.Services.Api;
 
 namespace QrToPay.ViewModels.SkiResort;
-
 public partial class SkiResortViewModel : ViewModelBase
 {
     private readonly AppState _appState;
@@ -16,36 +15,29 @@ public partial class SkiResortViewModel : ViewModelBase
         _appState = appState;
         _skiResortService = skiResortService;
     }
-
     [ObservableProperty]
-    private ObservableCollection<Ticket> tickets = [];
+    private ObservableCollection<SkiResortData> skiResorts = [];
 
-    [ObservableProperty]
-    private string? resortName;
-
-    [ObservableProperty]
-    private string? cityName;
-
-    public async Task InitializeAsync()
+    [RelayCommand]
+    public async Task LoadSkiResortsAsync()
     {
-        if (IsBusy) return;
+        if(IsBusy) return;
         try
         {
-            ResortName = _appState.ResortName;
-            CityName = _appState.CityName;
-
             IsBusy = true;
-            var result = await _skiResortService.GetSkiResortPricesAsync(_appState.AttractionId);
+
+            var result = await _skiResortService.GetSkiResortsAsync(_appState.CityName!);
 
             if (result.IsSuccess && result.Data != null)
             {
-                Tickets.Clear();
-                foreach (var price in result.Data)
+                SkiResorts.Clear();
+                foreach (var skiResort in result.Data)
                 {
-                    Tickets.Add(new Ticket
+                    SkiResorts.Add(new SkiResortData
                     {
-                        Points = price.Tokens,
-                        Price = price.Price
+                        SkiResortId = skiResort.SkiResortId,
+                        ResortName = skiResort.ResortName,
+                        ImageSource = "stok.png"
                     });
                 }
                 ErrorMessage = null;
@@ -62,11 +54,11 @@ public partial class SkiResortViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public async Task GotoSkiResortBuyAsync(Ticket ticket)
+    private async Task GotoSkiResortAsync(SkiResortData skiresort)
     {
-        _appState.UpdatePoints(ticket.Points);
-        _appState.UpdatePrice(ticket.Price);
+        _appState.UpdateAttractionId(skiresort.SkiResortId);
+        _appState.UpdateResortName(skiresort.ResortName!);
 
-        await NavigateAsync(nameof(SkiResortBuyPage));
+        await NavigateAsync(nameof(SkiResortPricesPage));
     }
 }

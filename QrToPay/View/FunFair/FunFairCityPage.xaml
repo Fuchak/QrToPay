@@ -25,11 +25,11 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:City">
                         <Frame Padding="10"
-                       Margin="2"
-                       BackgroundColor="{StaticResource Orange}"
-                       HorizontalOptions="FillAndExpand"
-                       VerticalOptions="Start"
-                       CornerRadius="5">
+                               Margin="2"
+                               BackgroundColor="{StaticResource Orange}"
+                               HorizontalOptions="FillAndExpand"
+                               VerticalOptions="Start"
+                               CornerRadius="5">
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FunFairCityViewModel}}, Path=SelectCityCommand}" 
                                               CommandParameter="{Binding}"/>

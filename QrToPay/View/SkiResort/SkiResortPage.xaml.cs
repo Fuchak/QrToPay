@@ -6,12 +6,13 @@ public partial class SkiResortPage : ContentPage
     private readonly SkiResortViewModel _viewModel;
     public SkiResortPage(SkiResortViewModel vm)
 	{
-        InitializeComponent();
+		InitializeComponent();
         BindingContext = _viewModel = vm;
-        InitializeAsync();
     }
-    private async void InitializeAsync()
+
+    protected override async void OnAppearing()
     {
-        await _viewModel.InitializeAsync();
+        base.OnAppearing();
+        await _viewModel.LoadSkiResortsAsync();
     }
 }

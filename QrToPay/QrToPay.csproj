@@ -111,10 +111,16 @@
 	  <MauiXaml Update="View\FlyoutMenu\ActiveBiletsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="View\FunFair\FunFairBuyPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="View\FunFair\FunFairCityPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\CustomControls\PasswordEntryView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\FunFair\FunFairPricesPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\Settings\ChangeEmailPage.xaml">
@@ -162,13 +168,13 @@
 	  <MauiXaml Update="View\SkiResort\SkiResortCityPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\SkiResort\SkiPage.xaml">
+	  <MauiXaml Update="View\SkiResort\SkiResortPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\SkiResort\SkiResortBuyPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\SkiResort\SkiResortPage.xaml">
+	  <MauiXaml Update="View\SkiResort\SkiResortPricesPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\FlyoutMenu\TopUpAccountPage.xaml">
@@ -195,8 +201,14 @@
 	  <Compile Update="View\QR\ScanQrCodePage.xaml.cs">
 	    <DependentUpon>ScanQrCodePage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="View\SkiResort\SkiResortPage.xaml.cs">
+	    <DependentUpon>SkiResortPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="View\SkiResort\SkiResortCityPage.xaml.cs">
 	    <DependentUpon>SkiResortCityPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="View\SkiResort\SkiResortPricesPage.xaml.cs">
+	    <DependentUpon>SkiResortPricesPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 	

@@ -18,7 +18,7 @@ public class GetSkiResortPricesHandler : IRequestHandler<GetSkiResortPricesReque
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
-            List<SkiResortPriceDto> response = await _context.SkiResortPrices
+            IEnumerable<SkiResortPriceDto> response = await _context.SkiResortPrices
                             .Where(p => p.SkiResortId == request.SkiResortId && !p.IsDeleted)
                             .Select(p => new { p.Tokens, p.Price, p.SkiResortPriceId })
                             .Distinct()
@@ -31,7 +31,7 @@ public class GetSkiResortPricesHandler : IRequestHandler<GetSkiResortPricesReque
                             .OrderBy(p => p.Price)
                             .ToListAsync(cancellationToken);
 
-            if (response.Count == 0)
+            if (!response.Any())
             {
                 return Result<IEnumerable<SkiResortPriceDto>>.Failure("Nie znaleziono ofert zakupu biletów dla tego resortu.", ErrorType.NotFound);
             }

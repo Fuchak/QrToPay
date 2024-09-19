@@ -4,12 +4,12 @@
              xmlns:vm="clr-namespace:QrToPay.ViewModels.FunFair"
              xmlns:models="clr-namespace:QrToPay.Models.Common"
              xmlns:custom="clr-namespace:QrToPay.View.CustomControls;assembly=QrToPay"
-             x:Class="QrToPay.View.FunFairPage"
+             x:Class="QrToPay.View.FunFair.FunFairPricesPage"
              Style="{StaticResource BasePageStyle}"
-             x:DataType="vm:FunFairViewModel">
+             x:DataType="vm:FunFairPricesViewModel">
 
     <Shell.TitleView>
-        <custom:TitleTextView TitleText="Wesołe Miasteczka"/>
+        <custom:TitleTextView TitleText="{Binding ResortName}"/>
     </Shell.TitleView>
 
     <Grid>
@@ -20,10 +20,10 @@
 
         <custom:BorderShadowBrushView/>
 
-        <VerticalStackLayout Grid.Row="1" Padding="10,10,10,0" Spacing="10">
-            <CollectionView  ItemsSource="{Binding FunFairs}">
+        <VerticalStackLayout Grid.Row="1" Padding="10">
+            <CollectionView ItemsSource="{Binding Tickets}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:FunFairData">
+                    <DataTemplate x:DataType="models:Ticket">
                         <Frame Padding="10"
                                Margin="2"
                                BackgroundColor="{StaticResource Orange}"
@@ -31,12 +31,14 @@
                                VerticalOptions="Start"
                                CornerRadius="5">
                             <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FunFairViewModel}},  Path=GotoFunFairCommand}" 
-                                               CommandParameter="{Binding}"/>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FunFairPricesViewModel}},  Path=GotoFunFairBuyCommand}"
+                                                      CommandParameter="{Binding}"/>
                             </Frame.GestureRecognizers>
                             <StackLayout Orientation="Horizontal">
-                                <Image Source="{Binding ImageSource}" WidthRequest="24" HeightRequest="24" VerticalOptions="Center"/>
-                                <Label Text="{Binding ResortName}" FontSize="16" VerticalOptions="Center" TextColor="White" Margin="10,0,0,0"/>
+                                <Label Text="{Binding Price}" FontSize="16" VerticalOptions="Center" TextColor="White"/>
+                                <Label Text=" zł - " FontSize="16" VerticalOptions="Center" TextColor="White"/>
+                                <Label Text="{Binding Points}" FontSize="16" VerticalOptions="Center" TextColor="White"/>
+                                <Label Text=" token" FontSize="16" VerticalOptions="Center" TextColor="White"/>
                             </StackLayout>
                         </Frame>
                     </DataTemplate>
@@ -44,7 +46,7 @@
             </CollectionView>
 
             <custom:ErrorMessageLabelView 
-            BindingContext="{Binding}">
+                    BindingContext="{Binding}">
             </custom:ErrorMessageLabelView>
 
         </VerticalStackLayout>

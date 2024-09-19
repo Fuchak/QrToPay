@@ -45,32 +45,33 @@ public class SkiResortService
         }
     }
 
-    public async Task<ServiceResult<List<SkiResortData>>> GetSkiResortsAsync(string cityName)
+    //TODO ten model do wymiany na poprawny który przyjmuje co zwraca api a nie jakiś lokalny który przyjmuje lokalny obrazek dla stoków było SkiResortData
+    public async Task<ServiceResult<List<SkiResortsResponse>>> GetSkiResortsAsync(string cityName)
     {
         try
         {
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            HttpResponseMessage response = await client.GetAsync($"/api/SkiResorts/resorts?cityName={cityName}");
+            HttpResponseMessage response = await client.GetAsync($"/api/SkiResorts/city?cityName={cityName}");
 
             if (response.IsSuccessStatusCode)
             {
-                List<SkiResortData>? skiResorts = await response.Content.ReadFromJsonAsync<List<SkiResortData>>();
+                List<SkiResortsResponse>? skiResorts = await response.Content.ReadFromJsonAsync<List<SkiResortsResponse>>();
                 if (skiResorts != null)
                 {
-                    return ServiceResult<List<SkiResortData>>.Success(skiResorts);
+                    return ServiceResult<List<SkiResortsResponse>>.Success(skiResorts);
                 }
-                return ServiceResult<List<SkiResortData>>.Failure("Nie udało się pobrać danych ze stoku narciarskiego.");
+                return ServiceResult<List<SkiResortsResponse>>.Failure("Nie udało się pobrać danych ze stoku narciarskiego.");
             }
             else
             {
                 string errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
                     ?? "Błąd podczas pobierania danych ze stoku narciarskiego.";
-                return ServiceResult<List<SkiResortData>>.Failure(errorMessage);
+                return ServiceResult<List<SkiResortsResponse>>.Failure(errorMessage);
             }
         }
         catch (Exception ex)
         {
-            return ServiceResult<List<SkiResortData>>.Failure(HttpError.HandleError(ex));
+            return ServiceResult<List<SkiResortsResponse>>.Failure(HttpError.HandleError(ex));
         }
     }
 }

@@ -3,27 +3,27 @@ using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.Common.Results;
 using QrToPay.Api.Models;
 
-namespace QrToPay.Api.Features.SkiResorts.Resorts;
+namespace QrToPay.Api.Features.FunFairs.FunFairs;
 
-public class GetSkiResortsHandler : IRequestHandler<GetSkiResortsRequestModel, Result<IEnumerable<SkiResortsDto>>>
+public class GetFunFairsHandler : IRequestHandler<GetFunFairsRequestModel, Result<IEnumerable<FunFairsDto>>>
 {
     private readonly QrToPayDbContext _context;
 
-    public GetSkiResortsHandler(QrToPayDbContext context)
+    public GetFunFairsHandler(QrToPayDbContext context)
     {
         _context = context;
     }
 
-    public async Task<Result<IEnumerable<SkiResortsDto>>> Handle(GetSkiResortsRequestModel request, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<FunFairsDto>>> Handle(GetFunFairsRequestModel request, CancellationToken cancellationToken)
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
-            IEnumerable<SkiResortsDto> response = await _context.SkiResorts
+            IEnumerable<FunFairsDto> response = await _context.FunFairs
                 .Where(s => !s.IsDeleted &&
                             _context.ServiceCategories.Any(e => e.CityName == request.CityName && e.ServiceId == s.ServiceId && !e.IsDeleted))
-                .Select(s => new SkiResortsDto
+                .Select(s => new FunFairsDto
                 {
-                    SkiResortId = s.SkiResortId,
+                    FunFairId = s.FunFairId,
                     ResortName = _context.ServiceCategories
                         .Where(e => e.ServiceId == s.ServiceId && e.CityName == request.CityName && !e.IsDeleted)
                         .Select(e => e.ServiceName)
@@ -35,10 +35,10 @@ public class GetSkiResortsHandler : IRequestHandler<GetSkiResortsRequestModel, R
 
             if (!response.Any())
             {
-                return Result<IEnumerable<SkiResortsDto>>.Failure("Nie znaleziono stoków narciarskich w tym mieście.", ErrorType.NotFound);
+                return Result<IEnumerable<FunFairsDto>>.Failure("Nie znaleziono stoków narciarskich w tym mieście.", ErrorType.NotFound);
             }
 
-            return Result<IEnumerable<SkiResortsDto>>.Success(response.AsEnumerable());
+            return Result<IEnumerable<FunFairsDto>>.Success(response.AsEnumerable());
         });
     }
 }

@@ -8,16 +8,17 @@ using QrToPay.Services.Api;
 using QrToPay.Services.Local;
 using QrToPay.View;
 
-namespace QrToPay.ViewModels.SkiResort;
+namespace QrToPay.ViewModels.FunFair;
 
-public partial class SkiResortBuyViewModel : QuantityViewModelBase
+public partial class FunFairBuyViewModel : QuantityViewModelBase
 {
+
     private readonly TicketService _ticketService;
     private readonly QrCodeStorageService _qrCodeStorageService;
     private readonly AppState _appState;
     private readonly BalanceService _balanceService;
 
-    public SkiResortBuyViewModel(TicketService ticketService, QrCodeStorageService qrCodeStorageService, AppState appState, BalanceService balanceService)
+    public FunFairBuyViewModel(TicketService ticketService, QrCodeStorageService qrCodeStorageService, AppState appState, BalanceService balanceService)
     {
         _ticketService = ticketService;
         _qrCodeStorageService = qrCodeStorageService;
@@ -123,7 +124,7 @@ public partial class SkiResortBuyViewModel : QuantityViewModelBase
             Tickets.Add(newTicket);
 
             await _qrCodeStorageService.GenerateAndSaveQrCodeImageAsync(userId, token);
-            
+
             await Shell.Current.DisplayAlert("Potwierdzenie", "Bilet został zakupiony, kod QR wygenerowany", "OK");
 
             await NavigateAsync($"//{nameof(MainPage)}/{nameof(ActiveBiletsPage)}");

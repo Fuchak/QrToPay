@@ -1,4 +1,6 @@
-﻿namespace QrToPay
+﻿using QrToPay.View.FunFair;
+
+namespace QrToPay
 {
     public partial class App
     {
@@ -12,7 +14,7 @@
             Routing.RegisterRoute(nameof(CreateUserPage), typeof(CreateUserPage));
             Routing.RegisterRoute(nameof(ResetPasswordPage), typeof(ResetPasswordPage));
             Routing.RegisterRoute(nameof(ResetPasswordConfirmPage), typeof(ResetPasswordConfirmPage));
-            Routing.RegisterRoute(nameof(SkiPage), typeof(SkiPage));
+            Routing.RegisterRoute(nameof(SkiResortPage), typeof(SkiResortPage));
             Routing.RegisterRoute(nameof(FunFairPage), typeof(FunFairPage));
             Routing.RegisterRoute(nameof(AccountPage), typeof(AccountPage));
             Routing.RegisterRoute(nameof(HelpPage), typeof(HelpPage));
@@ -23,11 +25,13 @@
             Routing.RegisterRoute(nameof(ChangeEmailPage), typeof(ChangeEmailPage));
             Routing.RegisterRoute(nameof(HistoryPage), typeof(HistoryPage));
             Routing.RegisterRoute(nameof(ScanQrCodePage), typeof(ScanQrCodePage));
-            Routing.RegisterRoute(nameof(SkiResortPage), typeof(SkiResortPage));
+            Routing.RegisterRoute(nameof(SkiResortPricesPage), typeof(SkiResortPricesPage));
             Routing.RegisterRoute(nameof(SkiResortBuyPage), typeof(SkiResortBuyPage));
             Routing.RegisterRoute(nameof(ActiveBiletsPage), typeof(ActiveBiletsPage));
             Routing.RegisterRoute(nameof(SkiResortCityPage), typeof(SkiResortCityPage));
             Routing.RegisterRoute(nameof(FunFairCityPage), typeof(FunFairCityPage));
+            Routing.RegisterRoute(nameof(FunFairPricesPage), typeof(FunFairPricesPage));
+            Routing.RegisterRoute(nameof(FunFairBuyPage), typeof(FunFairBuyPage));
         }
     }
 }

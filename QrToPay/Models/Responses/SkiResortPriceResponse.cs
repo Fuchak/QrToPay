@@ -2,7 +2,8 @@
 
 public sealed class SkiResortPriceResponse
 {
-    //public int SkiSlopePriceId { get; init; }
+    //TODO api nie zwraca lift name a mogłoby
+    public int SkiResortPriceId { get; init; }
     public required int Tokens { get; init; }
     public required decimal Price { get; init; }
     //public string? LiftName { get; init; }

@@ -18,7 +18,7 @@ public class GetCitiesHandler : IRequestHandler<GetCitiesRequestModel, Result<IE
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
-            List<CitiesDto> response = await _context.ServiceCategories
+            IEnumerable<CitiesDto> response = await _context.ServiceCategories
                             .Where(e => !e.IsDeleted && e.ServiceType == (int)request.ServiceType)
                             .Select(e => new CitiesDto
                             {
@@ -29,7 +29,7 @@ public class GetCitiesHandler : IRequestHandler<GetCitiesRequestModel, Result<IE
                             .OrderBy(c => c.CityName)
                             .ToListAsync(cancellationToken);
 
-            if (response.Count == 0)
+            if (!response.Any())
             {
                 return Result<IEnumerable<CitiesDto>>.Failure($"Nie znaleziono miast.", ErrorType.NotFound);
             }

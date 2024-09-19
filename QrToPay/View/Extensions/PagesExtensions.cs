@@ -1,4 +1,6 @@
-﻿namespace QrToPay.View.Extensions;
+﻿using QrToPay.View.FunFair;
+
+namespace QrToPay.View.Extensions;
 
 public static class PagesExtensions
 {
@@ -10,7 +12,7 @@ public static class PagesExtensions
             builder.Services.AddTransient<CreateUserPage>();
             builder.Services.AddTransient<ResetPasswordPage>();
             builder.Services.AddTransient<ResetPasswordConfirmPage>();
-            builder.Services.AddTransient<SkiPage>();
+            builder.Services.AddTransient<SkiResortPage>();
             builder.Services.AddTransient<FunFairPage>();
             builder.Services.AddTransient<AccountPage>();
             builder.Services.AddTransient<HelpPage>();
@@ -21,11 +23,13 @@ public static class PagesExtensions
             builder.Services.AddTransient<ChangeEmailPage>();
             builder.Services.AddTransient<HistoryPage>();
             builder.Services.AddTransient<ScanQrCodePage>();
-            builder.Services.AddTransient<SkiResortPage>();
+            builder.Services.AddTransient<SkiResortPricesPage>();
             builder.Services.AddTransient<SkiResortBuyPage>();
             builder.Services.AddTransient<ActiveBiletsPage>();
             builder.Services.AddTransient<SkiResortCityPage>();
             builder.Services.AddTransient<FunFairCityPage>();
+            builder.Services.AddTransient<FunFairPricesPage>();
+            builder.Services.AddTransient<FunFairBuyPage>();
 
             return builder;
         }   

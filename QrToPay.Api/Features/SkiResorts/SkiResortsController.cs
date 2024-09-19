@@ -17,11 +17,11 @@ public class SkiResortsController : ControllerBase
         _mediator = mediator;
     }
 
-    /// <summary> Gets skiresort from selected resort </summary>
+    /// <summary> Gets skiresorts from selected city </summary>
     /// <response code="404">Not Found </response>
     /// <response code="400">Validation error </response>
     /// <response code="200">Success </response>
-    [HttpGet("resorts")]
+    [HttpGet("city")]
     public async Task<IActionResult> GetSkiResorts([FromQuery] GetSkiResortsRequestModel request)
     {
         Result<IEnumerable<SkiResortsDto>> result = await _mediator.Send(request);
