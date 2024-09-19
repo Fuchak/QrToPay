@@ -13,14 +13,21 @@ public static class JsonErrorExtractor
     /// <returns>The extracted error message or a default message if not found.</returns>
     public static async Task<string> ExtractErrorMessageAsync(HttpResponseMessage response)
     {
-        string jsonContent = await response.Content.ReadAsStringAsync();
-        using var jsonDoc = JsonDocument.Parse(jsonContent);
-
-        if (jsonDoc.RootElement.TryGetProperty("message", out var message))
+        try
         {
-            return message.GetString() ?? "Nieznany błąd serwera.";
-        }
+            string jsonContent = await response.Content.ReadAsStringAsync();
+            using var jsonDoc = JsonDocument.Parse(jsonContent);
 
-        return "Nieznany błąd serwera.";
+            if (jsonDoc.RootElement.TryGetProperty("message", out var message))
+            {
+                return message.GetString() ?? "Nieznany błąd serwera.";
+            }
+
+            return "Nieznany błąd serwera.";
+        }
+        catch
+        {
+            throw new HttpRequestException(null, null, response.StatusCode);
+        }
     }
 }
