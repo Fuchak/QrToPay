@@ -26,6 +26,7 @@ public static class HttpError
                 HttpStatusCode.InternalServerError or
                 HttpStatusCode.BadGateway or
                 HttpStatusCode.ServiceUnavailable or
+                HttpStatusCode.TemporaryRedirect or
                 HttpStatusCode.GatewayTimeout => "Błąd serwera: Spróbuj ponownie później.",
 
                 HttpStatusCode.BadRequest => "Błąd żądania: Sprawdź dane i spróbuj ponownie.",

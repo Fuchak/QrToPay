@@ -56,7 +56,7 @@ public static class MauiProgram
         // Rejestrujesz IHttpClientFactory i konfigurujesz klienta HTTP
         builder.Services.AddHttpClient("ApiHttpClient", client =>
         {
-            client.BaseAddress = new Uri("https://vs81hq7r-7041.euw.devtunnels.ms/");
+            client.BaseAddress = new Uri("https://pet-optimum-goshawk.ngrok-free.app/");
         });
 
         builder.Services.AddTransient<AuthService>();
