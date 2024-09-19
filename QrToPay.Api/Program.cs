@@ -7,7 +7,6 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container and add global filters
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ValidationFilter>();
@@ -24,20 +23,16 @@ builder.Services.AddSwaggerGen(c =>
         c.IncludeXmlComments(xmlPath);
     });
 
-// Get the current assembly
 var assembly = typeof(Program).Assembly;
 
-// Add FluentValidation
 builder.Services.AddValidatorsFromAssembly(assembly);
 
-// Add MediatR
 builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(assembly));
 
 builder.Services.AddSingleton<VerificationStorageService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

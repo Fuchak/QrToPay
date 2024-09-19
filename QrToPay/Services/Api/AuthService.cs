@@ -81,15 +81,5 @@ namespace QrToPay.Services.Api
             Preferences.Remove(UserEmailKey);
             Preferences.Remove(UserPhoneKey);
         }
-
-        public UserPreferences GetUserData()
-        {
-            return new UserPreferences()
-            {
-                UserId = Preferences.Get(UserIdKey, 0),
-                Email = Preferences.Get(UserEmailKey, string.Empty),
-                PhoneNumber = Preferences.Get(UserPhoneKey, string.Empty),
-            };
-        }
     }
 }
