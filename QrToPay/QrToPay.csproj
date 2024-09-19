@@ -76,6 +76,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
+		<PackageReference Include="Auth0.OidcClient.MAUI" Version="1.0.1" />
 		<PackageReference Include="BarcodeScanning.Native.Maui" Version="1.5.7" />
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.3" />
