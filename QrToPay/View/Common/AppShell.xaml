@@ -5,11 +5,11 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:local="clr-namespace:QrToPay.View"
     xmlns:vm="clr-namespace:QrToPay.ViewModels.Common"
+    xmlns:custom="clr-namespace:QrToPay.View.CustomControls;assembly=QrToPay"
     x:Class="QrToPay.View.AppShell"
     x:DataType="vm:ShellViewModel"
     FlyoutBackgroundColor="White"
-    FlyoutWidth="250"
-    Title="QrToPay">
+    FlyoutWidth="250">
 
     <Shell.Behaviors>
         <toolkit:StatusBarBehavior StatusBarColor="White" StatusBarStyle="DarkContent" />
@@ -54,16 +54,9 @@
     <!-- Menu boczne-->
     <Shell.FlyoutContent>
         <Grid>
-            <Border Grid.Row="0" 
-                    HorizontalOptions="FillAndExpand"
-                    VerticalOptions="Start">
-                <Border.Shadow>
-                    <Shadow Brush="Black"
-                            Offset="0,5"
-                            Radius="7"
-                            Opacity="0.8" />
-                </Border.Shadow>
-            </Border>
+            
+            <custom:BorderShadowBrushView/>
+            
             <!-- isbusy to not get redirected to two pages at same time when fast clicking -->
             <StackLayout Spacing="10" Padding="5,10,5,0">
                 <Button Text="Konto" Command="{Binding NavigateToPageCommand}" CommandParameter="AccountPage"/>

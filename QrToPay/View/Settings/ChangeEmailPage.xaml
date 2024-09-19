@@ -5,42 +5,20 @@
              xmlns:custom="clr-namespace:QrToPay.View.CustomControls;assembly=QrToPay"
              x:Class="QrToPay.View.ChangeEmailPage"
              Style="{StaticResource BasePageStyle}"
-             x:DataType="vm:ChangeEmailViewModel"
-             Title="ChangeEmailPage">
-    
+             x:DataType="vm:ChangeEmailViewModel">
+
     <Shell.TitleView>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
-            <!-- Wycentrowany tytuł -->
-            <Label 
-                   FontFamily="Arial"
-                   Text="Zmień Email" 
-                   FontSize="20"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center" 
-                   HorizontalTextAlignment="Center" 
-                   VerticalOptions="Center"/>
-        </Grid>
+        <custom:TitleTextView TitleText="Zmień Email"/>
     </Shell.TitleView>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Border Grid.Row="0" 
-                HorizontalOptions="FillAndExpand"
-                VerticalOptions="Start">
-            <Border.Shadow>
-                <Shadow Brush="Black"
-                       Offset="0,5"
-                       Radius="7"
-                       Opacity="0.8"/>
-            </Border.Shadow>
-        </Border>
+        
+        <custom:BorderShadowBrushView/>
+        
         <VerticalStackLayout Grid.Row="1" Padding="30,25,30,0" Spacing="10">
 
             <Label
@@ -49,7 +27,6 @@
                 FontAttributes="Bold"/>
             <Frame>
                 <Entry
-                    x:Name="EmailEntry"
                     Placeholder="Email"
                     Text="{Binding NewEmail}" />
             </Frame>
@@ -59,7 +36,6 @@
                 Style="{StaticResource SubHeadline}" />
             <Frame>
                 <Entry
-                    x:Name="PasswordEntry"
                     Placeholder="Hasło"
                     Text="{Binding Password}"/>
             </Frame>
@@ -68,9 +44,9 @@
                 Text="Zmień email" 
                 Command="{Binding RequestEmailChangeCommand}"/>
             
-            <custom:ErrorMessageLabel 
+            <custom:ErrorMessageLabelView 
                     BindingContext="{Binding}">
-            </custom:ErrorMessageLabel>
+            </custom:ErrorMessageLabelView>
             
         </VerticalStackLayout>
     </Grid>

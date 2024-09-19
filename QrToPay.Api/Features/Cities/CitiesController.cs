@@ -15,7 +15,7 @@ public class CitiesController : ControllerBase
         _mediator = mediator;
     }
 
-    /// <summary> Logins user into app </summary>
+    /// <summary> Get cities of opened type </summary>
     /// <response code="404">Not Found </response>
     /// <response code="400">Validation error </response>
     /// <response code="200">Success </response>

@@ -9,13 +9,7 @@
              x:DataType="vm:ScanQrCodeViewModel">
 
     <Shell.TitleView>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
-            <Image Source="logo.png" HeightRequest="120" WidthRequest="120" HorizontalOptions="Center"/>
-        </Grid>
+        <custom:TitleImageView/>
     </Shell.TitleView>
 
     <Grid>
@@ -23,16 +17,9 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Border Grid.Row="0" 
-                HorizontalOptions="FillAndExpand"
-                VerticalOptions="Start">
-            <Border.Shadow>
-                <Shadow Brush="Black"
-                        Offset="0,5"
-                        Radius="7"
-                        Opacity="0.8"/>
-            </Border.Shadow>
-        </Border>
+        
+        <custom:BorderShadowBrushView/>
+        
         <VerticalStackLayout Grid.Row="1" Padding="30,70,30,0" Spacing="10">
             <Label Text="Skanowanie kodu QR" FontSize="Large" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"/>
 
@@ -63,9 +50,9 @@
                         HorizontalOptions="Center" VerticalOptions="Center" />
             </HorizontalStackLayout>
             
-            <custom:ErrorMessageLabel 
+            <custom:ErrorMessageLabelView 
                     BindingContext="{Binding}">
-            </custom:ErrorMessageLabel>
+            </custom:ErrorMessageLabelView>
             
         </VerticalStackLayout>
     </Grid>

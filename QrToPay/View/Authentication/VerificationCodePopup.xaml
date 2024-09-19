@@ -10,9 +10,9 @@
              CanBeDismissedByTappingOutsideOfPopup="False">
 
     <Border HeightRequest="200"
-           WidthRequest="250"
-           Stroke="Transparent"
-           BackgroundColor="White">
+            WidthRequest="250"
+            Stroke="Transparent"
+            BackgroundColor="White">
         <Border.StrokeShape>
             <RoundRectangle CornerRadius="10"/>
         </Border.StrokeShape>
@@ -22,20 +22,19 @@
                        FontSize="Medium"/>
                 <Frame
                         Margin="0,0,0,10">
-                    <Entry x:Name="VerificationCodeEntry"
-                               HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center"
-                               Placeholder="Kod weryfikacyjny"
-                               FontSize="Small"
-                               Text="{Binding VerificationCode, Mode=TwoWay}"/>
+                    <Entry HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           Placeholder="Kod weryfikacyjny"
+                           FontSize="Small"
+                           Text="{Binding VerificationCode, Mode=TwoWay}"/>
                 </Frame>
                 <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
                     <Button Text="Anuluj"
-                                WidthRequest="100"
-                                Command="{Binding CancelCommand}"/>
+                            WidthRequest="100"
+                            Command="{Binding CancelCommand}"/>
                     <Button Text="Potwierdzam"
-                                WidthRequest="100"
-                                Command="{Binding ConfirmCommand}"/>
+                            WidthRequest="100"
+                            Command="{Binding ConfirmCommand}"/>
                 </HorizontalStackLayout>
             </VerticalStackLayout>
     </Border>

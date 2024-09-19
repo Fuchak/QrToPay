@@ -8,21 +8,7 @@
              x:DataType="vm:TopUpAccountViewModel">
 
     <Shell.TitleView>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
-            <!-- Wycentrowany tytuł -->
-            <Label 
-                   FontFamily="Arial"
-                   Text="Doładuj Konto" 
-                   FontSize="20"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center" 
-                   HorizontalTextAlignment="Center" 
-                   VerticalOptions="Center"/>
-        </Grid>
+        <custom:TitleTextView TitleText="Doładuj Konto"/>
     </Shell.TitleView>
     
     <Grid>
@@ -30,25 +16,17 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Border Grid.Row="0" 
-                HorizontalOptions="FillAndExpand"
-                VerticalOptions="Start">
-            <Border.Shadow>
-                <Shadow Brush="Black"
-                       Offset="0,5"
-                       Radius="7"
-                       Opacity="0.8"/>
-            </Border.Shadow>
-        </Border>
+        
+        <custom:BorderShadowBrushView/>
+        
         <VerticalStackLayout Grid.Row="1" Padding="30,25,30,0" Spacing="10">
             <Image Source="przelewy24_logo.png" 
-               HeightRequest="100" 
-               WidthRequest="150"
-               HorizontalOptions="Center" 
-               VerticalOptions="Center" />
+                   HeightRequest="100" 
+                   WidthRequest="150"
+                   HorizontalOptions="Center" 
+                   VerticalOptions="Center" />
             <Frame>
                 <Entry
-                    x:Name="AmountEntry"
                     Keyboard="Numeric"
                     Placeholder="Kwota doładowania"
                     Text="{Binding Amount, Mode=TwoWay}" />
@@ -57,9 +35,9 @@
                     Command="{Binding NavigateToTopUpCommand}" 
                     IsEnabled="{Binding IsNotBusy}" />
             
-            <custom:ErrorMessageLabel 
+            <custom:ErrorMessageLabelView 
                     BindingContext="{Binding}">
-            </custom:ErrorMessageLabel>
+            </custom:ErrorMessageLabelView>
             
         </VerticalStackLayout>
     </Grid>

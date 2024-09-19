@@ -27,20 +27,7 @@
     </ContentPage.Resources>
 
     <Shell.TitleView>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
-            <Label 
-                   FontFamily="Arial"
-                   Text="Historia" 
-                   FontSize="20"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center" 
-                   HorizontalTextAlignment="Center" 
-                   VerticalOptions="Center"/>
-        </Grid>
+        <custom:TitleTextView TitleText="Historia"/>
     </Shell.TitleView>
 
     <Grid>
@@ -49,6 +36,8 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <custom:BorderShadowBrushView/>
+        
         <Label Text="Brak historii biletów" 
                FontSize="18" 
                HorizontalOptions="Center" 
@@ -61,10 +50,10 @@
             </Label.Triggers>
         </Label>
 
-        <custom:ErrorMessageLabel 
+        <custom:ErrorMessageLabelView 
             Margin="0,100,0,0"
             IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}">
-        </custom:ErrorMessageLabel>
+        </custom:ErrorMessageLabelView>
 
         <CollectionView Grid.Row="1"
                         ItemsSource="{Binding HistoryItems}"
@@ -88,16 +77,5 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
-        <Border Grid.Row="0" 
-                HorizontalOptions="FillAndExpand"
-                VerticalOptions="Start">
-            <Border.Shadow>
-                <Shadow Brush="Black"
-                        Offset="0,5"
-                        Radius="7"
-                        Opacity="0.8"/>
-            </Border.Shadow>
-        </Border>
     </Grid>
 </ContentPage>

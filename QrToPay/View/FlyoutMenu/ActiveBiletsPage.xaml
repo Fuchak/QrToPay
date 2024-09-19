@@ -9,21 +9,7 @@
              x:DataType="vm:ActiveBiletsViewModel">
 
     <Shell.TitleView>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
-            <!-- Wycentrowany tytuł -->
-            <Label 
-               FontFamily="Arial"
-               Text="Aktywne bilety" 
-               FontSize="20"
-               FontAttributes="Bold"
-               HorizontalOptions="Center" 
-               HorizontalTextAlignment="Center" 
-               VerticalOptions="Center"/>
-        </Grid>
+        <custom:TitleTextView TitleText="Aktywne Bilety"/>
     </Shell.TitleView>
 
     <Grid>
@@ -32,6 +18,8 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <custom:BorderShadowBrushView/>
+        
         <Label Text="Brak aktywnych biletów" 
                FontSize="18" 
                HorizontalOptions="Center" 
@@ -44,10 +32,10 @@
             </Label.Triggers>
         </Label>
 
-        <custom:ErrorMessageLabel 
+        <custom:ErrorMessageLabelView 
             Margin="0,100,0,0"
             IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}">
-        </custom:ErrorMessageLabel>
+        </custom:ErrorMessageLabelView>
 
         <CollectionView Grid.Row="1"
                         ItemsSource="{Binding ActiveTickets}">
@@ -71,16 +59,5 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
-        <Border Grid.Row="0" 
-                HorizontalOptions="FillAndExpand"
-                VerticalOptions="Start">
-            <Border.Shadow>
-                <Shadow Brush="Black"
-                        Offset="0,5"
-                        Radius="7"
-                        Opacity="0.8"/>
-            </Border.Shadow>
-        </Border>
     </Grid>
 </ContentPage>

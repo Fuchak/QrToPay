@@ -9,21 +9,7 @@
              x:DataType="vm:SkiResortCityViewModel">
 
     <Shell.TitleView>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
-            <!-- Wycentrowany tytuł -->
-            <Label 
-               FontFamily="Arial"
-               Text="Wybierz Miasto" 
-               FontSize="20"
-               FontAttributes="Bold"
-               HorizontalOptions="Center" 
-               HorizontalTextAlignment="Center" 
-               VerticalOptions="Center"/>
-        </Grid>
+        <custom:TitleTextView TitleText="Wybierz Miasto"/>
     </Shell.TitleView>
 
     <Grid>
@@ -31,18 +17,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid>
-            <Border Grid.Row="0" 
-                HorizontalOptions="FillAndExpand"
-                VerticalOptions="Start">
-                <Border.Shadow>
-                    <Shadow Brush="Black"
-                            Offset="0,5"
-                            Radius="7"
-                            Opacity="0.8"/>
-                </Border.Shadow>
-            </Border>
-        </Grid>
+        
+        <custom:BorderShadowBrushView/>
 
         <VerticalStackLayout Grid.Row="1" Padding="10,10,10,0" Spacing="10">
             <CollectionView ItemsSource="{Binding Cities}">
@@ -66,9 +42,9 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <custom:ErrorMessageLabel 
+            <custom:ErrorMessageLabelView 
                     BindingContext="{Binding}">
-            </custom:ErrorMessageLabel>
+            </custom:ErrorMessageLabelView>
             
         </VerticalStackLayout>
     </Grid>

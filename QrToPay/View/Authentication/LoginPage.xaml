@@ -47,9 +47,9 @@
             Command="{Binding ForgotPasswordCommand}"
             IsEnabled="{Binding IsNotBusy}"/>
 
-        <custom:ErrorMessageLabel 
+        <custom:ErrorMessageLabelView 
                     BindingContext="{Binding}">
-        </custom:ErrorMessageLabel>
+        </custom:ErrorMessageLabelView>
 
         <ActivityIndicator 
             HorizontalOptions="Center"

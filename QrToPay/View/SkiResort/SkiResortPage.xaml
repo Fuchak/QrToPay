@@ -7,23 +7,9 @@
              x:Class="QrToPay.View.SkiResortPage"
              Style="{StaticResource BasePageStyle}"
              x:DataType="vm:SkiResortViewModel">
-    
+
     <Shell.TitleView>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
-            <!-- Wycentrowany tytuł -->
-            <Label 
-               FontFamily="Arial"
-               Text="{Binding ResortName}" 
-               FontSize="20"
-               FontAttributes="Bold"
-               HorizontalOptions="Center" 
-               HorizontalTextAlignment="Center" 
-               VerticalOptions="Center"/>
-        </Grid>
+        <custom:TitleTextView TitleText="{Binding ResortName}"/>
     </Shell.TitleView>
 
     <Grid>
@@ -31,16 +17,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Border Grid.Row="0" 
-                HorizontalOptions="FillAndExpand"
-                VerticalOptions="Start">
-            <Border.Shadow>
-                <Shadow Brush="Black"
-                        Offset="0,5"
-                        Radius="7"
-                        Opacity="0.8"/>
-            </Border.Shadow>
-        </Border>
+        
+        <custom:BorderShadowBrushView/>
 
         <VerticalStackLayout Grid.Row="1" Padding="10">
             <CollectionView ItemsSource="{Binding Tickets}">
@@ -67,9 +45,9 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
             
-            <custom:ErrorMessageLabel 
+            <custom:ErrorMessageLabelView 
                     BindingContext="{Binding}">
-            </custom:ErrorMessageLabel>
+            </custom:ErrorMessageLabelView>
             
         </VerticalStackLayout>
     </Grid>

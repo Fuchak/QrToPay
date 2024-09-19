@@ -33,31 +33,16 @@
     </ContentPage.Resources>
 
     <Shell.TitleView>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
-            <!-- Wycentrowany tytuł -->
-            <Image Source="logo.png" HeightRequest="120" WidthRequest="120" HorizontalOptions="Center"/>
-        </Grid>
+        <custom:TitleImageView/>
     </Shell.TitleView>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Border Grid.Row="0" 
-                HorizontalOptions="FillAndExpand"
-                VerticalOptions="Start">
-            <Border.Shadow>
-                <Shadow Brush="Black"
-                        Offset="0,5"
-                        Radius="7"
-                        Opacity="0.8" />
-            </Border.Shadow>
-        </Border>
+        
+        <custom:BorderShadowBrushView/>
 
         <VerticalStackLayout Grid.Row="1" Spacing="25" Padding="30">
             <StackLayout>
@@ -99,9 +84,9 @@
                                  WidthRequest="30"/>
                 </Grid>
                
-                <custom:ErrorMessageLabel 
+                <custom:ErrorMessageLabelView 
                     BindingContext="{Binding}">
-                </custom:ErrorMessageLabel>
+                </custom:ErrorMessageLabelView>
                     
             </StackLayout>
 

@@ -8,21 +8,7 @@
              x:DataType="vm:HelpViewModel">
 
     <Shell.TitleView>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
-            <!-- Wycentrowany tytuł -->
-            <Label 
-                   FontFamily="Arial"
-                   Text="Pomoc" 
-                   FontSize="20"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center" 
-                   HorizontalTextAlignment="Center" 
-                   VerticalOptions="Center"/>
-        </Grid>
+        <custom:TitleTextView TitleText="Pomoc"/>
     </Shell.TitleView>
 
     <Grid>
@@ -30,6 +16,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+
+        <custom:BorderShadowBrushView/>
         
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Padding="30,25,30,0" Spacing="10">
@@ -39,7 +27,6 @@
                     Style="{StaticResource SubHeadline}" />
                 <Frame>
                     <Entry
-                        x:Name="UserNameEntry"
                         Placeholder="Imię i Nazwisko"
                         Text="{Binding UserName, Mode=TwoWay}" />
                 </Frame>
@@ -49,7 +36,6 @@
                     Style="{StaticResource SubHeadline}" />
                 <Frame>
                     <Entry
-                        x:Name="UserEmailEntry"
                         Placeholder="Adres E-mail"
                         Text="{Binding UserEmail, Mode=TwoWay}" />
                 </Frame>
@@ -59,7 +45,6 @@
                     Style="{StaticResource SubHeadline}" />
                 <Frame>
                     <Picker
-                        x:Name="SubjectPicker"
                         Title="Wybierz temat" 
                         ItemsSource="{Binding Subjects}"
                         SelectedItem="{Binding SelectedSubject}"/>
@@ -70,7 +55,6 @@
                     Style="{StaticResource SubHeadline}" />
                 <Frame>
                     <Editor
-                        x:Name="DescriptionEditor"
                         Placeholder="Opis problemu"
                         HorizontalTextAlignment="Start"
                         VerticalTextAlignment="Start"
@@ -83,22 +67,11 @@
                     Text="Wyślij"
                     Command="{Binding SubmitCommand}" />
 
-                <custom:ErrorMessageLabel 
+                <custom:ErrorMessageLabelView 
                     BindingContext="{Binding}">
-                </custom:ErrorMessageLabel>
-                
+                </custom:ErrorMessageLabelView>
+
             </VerticalStackLayout>
         </ScrollView>
-        
-        <Border Grid.Row="0" 
-           HorizontalOptions="FillAndExpand"
-           VerticalOptions="Start">
-            <Border.Shadow>
-                <Shadow Brush="Black"
-                       Offset="0,6"
-                       Radius="7"
-                       Opacity="0.8"/>
-            </Border.Shadow>
-        </Border>
     </Grid>
 </ContentPage>

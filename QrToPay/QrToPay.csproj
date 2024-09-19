@@ -90,7 +90,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="View\CustomControls\ErrorMessageLabel.xaml">
+	  <MauiXaml Update="View\CustomControls\BorderShadowBrushView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\CustomControls\ErrorMessageLabelViewView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\CustomControls\PasswordRequirementsView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\CustomControls\TitleImageView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\CustomControls\TitleTextView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\FlyoutMenu\AccountPage.xaml">
@@ -168,6 +180,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="View\CustomControls\ErrorMessageLabelViewView.xaml.cs">
+	    <DependentUpon>ErrorMessageLabelViewView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="View\FunFair\FunFairCityPage.xaml.cs">
 	    <DependentUpon>FunFairCityPage.xaml</DependentUpon>
 	  </Compile>
