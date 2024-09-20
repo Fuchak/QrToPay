@@ -3,9 +3,11 @@ using QrToPay.Api.Features.UserBalance.TopUp;
 using QrToPay.Api.Features.UserBalance.CheckBalance;
 using MediatR;
 using QrToPay.Api.Common.Results;
+using Microsoft.AspNetCore.Authorization;
 
 namespace QrToPay.Api.Features.UserBalance;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class UserBalanceController : ControllerBase
@@ -17,20 +19,17 @@ public class UserBalanceController : ControllerBase
         _mediator = mediator;
     }
 
-    /// <summary> Get account balance </summary>
+    /// <summary> Get account balance. Optional UserID. If not passed will be taken out from JWT token</summary>
     /// <response code="404">Not Found </response>
+    /// <response code="401">Unauthorized </response>
     /// <response code="400">Validation error </response>
     /// <response code="200">Success </response>
-    #pragma warning disable ASP0018
-    //[GitHub issue `#54212`](https://github.com/dotnet/aspnetcore/issues/54212).
-    [HttpGet("{userId:int}/balance")]
-    public async Task<IActionResult> GetUserBalance([FromRoute] GetUserBalanceRequestModel request)
+    [HttpGet("balance")]
+    public async Task<IActionResult> GetUserBalance([FromQuery] GetUserBalanceRequestModel request)
     {
         Result<UserBalanceDto> result = await _mediator.Send(request);
-
         return result.ToActionResult();
     }
-    #pragma warning restore ASP0018
 
     /// <summary> Topup account with money </summary>
     /// <response code="404">Not Found </response>

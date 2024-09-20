@@ -6,6 +6,7 @@ using QrToPay.Models.Responses;
 using QrToPay.Models.Requests;
 using QrToPay.Models.Common;
 using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace QrToPay.Services.Api
 {
@@ -18,15 +19,27 @@ namespace QrToPay.Services.Api
             _httpClientFactory = httpClientFactory;
         }
 
-        private const string AuthStateKey = "AuthState";
-        private const string UserIdKey = "UserId";
-        private const string UserEmailKey = "UserEmail";
-        private const string UserPhoneKey = "UserPhone";
+        private const string AuthTokenKey = "AuthToken";
 
         public async Task<bool> IsAuthenticatedAsync()
         {
-            await Task.Delay(200);
-            return Preferences.Get(AuthStateKey, false);
+            //await Task.Delay(200);
+            // Sprawdzenie, czy token istnieje w SecureStorage
+            var token = await SecureStorage.GetAsync(AuthTokenKey);
+            if (string.IsNullOrEmpty(token))
+            {
+                return false;
+            }
+
+            if (IsTokenExpired(token))
+            {
+                // Token jest przeterminowany, usuń go
+                await LogoutAsync();
+                return false;
+            }
+
+            // Token jest ważny
+            return true;
         }
 
         public async Task<ServiceResult<UserResponse>> LoginAsync(string emailPhone, string password)
@@ -49,10 +62,7 @@ namespace QrToPay.Services.Api
 
                     if (userResponse != null)
                     {
-                        Preferences.Set(AuthStateKey, true);
-                        Preferences.Set(UserIdKey, userResponse.UserId);
-                        Preferences.Set(UserEmailKey, userResponse.Email ?? "Brak");
-                        Preferences.Set(UserPhoneKey, userResponse.PhoneNumber ?? "Brak");
+                        await SecureStorage.SetAsync(AuthTokenKey, userResponse.Token);
 
                         return ServiceResult<UserResponse>.Success(userResponse);
                     }
@@ -74,12 +84,31 @@ namespace QrToPay.Services.Api
             }
         }
 
-        public void Logout()
+        public async Task LogoutAsync()
         {
-            Preferences.Remove(AuthStateKey);
-            Preferences.Remove(UserIdKey);
-            Preferences.Remove(UserEmailKey);
-            Preferences.Remove(UserPhoneKey);
+            SecureStorage.Remove(AuthTokenKey);
+            await Task.CompletedTask;
+        }
+
+        private bool IsTokenExpired(string token)
+        {
+            try
+            {
+                var jwtTokenHandler = new JwtSecurityTokenHandler();
+
+                if (!jwtTokenHandler.CanReadToken(token))
+                    return true;
+
+                var jwtToken = jwtTokenHandler.ReadJwtToken(token);
+
+                var expirationDate = jwtToken.ValidTo;
+
+                return expirationDate < DateTime.UtcNow;
+            }
+            catch (Exception)
+            {
+                return true;
+            }
         }
     }
 }

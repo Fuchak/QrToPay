@@ -1,17 +1,20 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.Common.Results;
+using QrToPay.Api.Common.Services;
 using QrToPay.Api.Models;
 
 namespace QrToPay.Api.Features.Auth.Login;
 
-public class LoginHandler : IRequestHandler<LoginRequestModel, Result<LoginDto>>
+internal sealed class LoginHandler : IRequestHandler<LoginRequestModel, Result<LoginDto>>
 {
     private readonly QrToPayDbContext _context;
+    private readonly TokenProviderService _tokenProviderService;
 
-    public LoginHandler(QrToPayDbContext context)
+    public LoginHandler(QrToPayDbContext context, TokenProviderService tokenProviderService)
     {
         _context = context;
+        _tokenProviderService = tokenProviderService;
     }
 
     public async Task<Result<LoginDto>> Handle(LoginRequestModel request, CancellationToken cancellationToken)
@@ -38,16 +41,20 @@ public class LoginHandler : IRequestHandler<LoginRequestModel, Result<LoginDto>>
                 return Result<LoginDto>.Failure("Konto zablokowane.", ErrorType.Unauthorized);
             }
 
-            LoginDto response = new()
+            /*
+             LoginDto response = new()
             {
                 UserId = user.UserId,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 AccountBalance = user.AccountBalance
                 //Podmianka email phone i balance na token jwt?
-            };
+            };*/
+            
+            string token = _tokenProviderService.Create(user);
 
-            return Result<LoginDto>.Success(response);
+
+            return Result<LoginDto>.Success(new() { Token = token});
         });
     }
 }

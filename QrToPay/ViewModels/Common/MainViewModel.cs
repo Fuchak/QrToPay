@@ -1,6 +1,7 @@
 ﻿using QrToPay.Models.Common;
 using QrToPay.Models.Enums;
 using QrToPay.Services.Api;
+using System.Diagnostics;
 
 namespace QrToPay.ViewModels.Common;
 
@@ -36,9 +37,16 @@ public partial class MainViewModel : ViewModelBase
         {
             IsLoading = true;
 
-            int userId = Preferences.Get("UserId", 0);
+            var jwtToken = await SecureStorage.GetAsync("AuthToken");
+            if (string.IsNullOrEmpty(jwtToken))
+            {
+                ErrorMessage = "Brak autoryzacji. Zaloguj się ponownie.";
+                return;
+            }
 
-            var result = await _balanceService.LoadUserDataAsync(userId);
+            //int userId = Preferences.Get("UserId", 0);
+
+            var result = await _balanceService.LoadUserDataAsync(jwtToken);
             if (result.IsSuccess)
             {
                 AccountBalance = result.Data;

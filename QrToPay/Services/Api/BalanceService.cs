@@ -4,6 +4,8 @@ using System.Net.Http.Json;
 using QrToPay.Models.Requests;
 using System.Text.Json;
 using QrToPay.Models.Responses;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace QrToPay.Services.Api;
 public class BalanceService
@@ -17,12 +19,15 @@ public class BalanceService
 
     public event EventHandler<decimal>? BalanceUpdated;
 
-    public async Task<ServiceResult<decimal>> LoadUserDataAsync(int userId)
+    public async Task<ServiceResult<decimal>> LoadUserDataAsync(string jwtToken)
     {
         try
         {
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            HttpResponseMessage response = await client.GetAsync($"/api/UserBalance/{userId}/balance");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
+            HttpResponseMessage response = await client.GetAsync($"/api/UserBalance/balance");
 
             if (response.IsSuccessStatusCode)
             {

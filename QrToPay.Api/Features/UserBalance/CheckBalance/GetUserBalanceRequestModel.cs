@@ -1,11 +1,10 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+using QrToPay.Api.Common.Filters;
 using QrToPay.Api.Common.Results;
 
 namespace QrToPay.Api.Features.UserBalance.CheckBalance;
 
-public sealed class GetUserBalanceRequestModel : IRequest<Result<UserBalanceDto>>
+public sealed class GetUserBalanceRequestModel : IRequest<Result<UserBalanceDto>>, IUserRequest
 {
-    [FromRoute(Name = "userId")]
-    public required int UserId { get; init; }
+    public int UserId { get; set; }
 }

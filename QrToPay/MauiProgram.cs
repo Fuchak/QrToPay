@@ -8,8 +8,7 @@ using QrToPay.View.Extensions;
 using QrToPay.Models.Common;
 using QrToPay.ViewModels.Authentication;
 using QrToPay.ViewModels.QR;
-using QrToPay.Services.Api;
-using QrToPay.Services.Local;
+using QrToPay.Services.Extensions;
 using Android.Graphics.Drawables;
 using Microsoft.Maui.Controls.Platform;
 
@@ -24,6 +23,7 @@ public static class MauiProgram
             .UseMauiApp<App>()
             .ConfigurePages()
             .ConfigureViewModels()
+            .ConfigureServices()
             .UseMauiCommunityToolkit()
             .UseLocalNotification()
             .UseBarcodeScanning()
@@ -56,26 +56,14 @@ public static class MauiProgram
         // Rejestrujesz IHttpClientFactory i konfigurujesz klienta HTTP
         builder.Services.AddHttpClient("ApiHttpClient", client =>
         {
-            client.BaseAddress = new Uri("https://pet-optimum-goshawk.ngrok-free.app/");
+            client.BaseAddress = new Uri("https://xw5clp6t-5015.euw.devtunnels.ms/");
+            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
         });
-
-        builder.Services.AddTransient<AuthService>();
-
+        
         builder.Services.AddSingleton<VerificationCodeHelper>();
-        builder.Services.AddSingleton<QrCodeStorageService>();
 
         builder.Services.AddTransientPopup<VerificationCodePopup, VerificationCodePopupViewModel>();
         builder.Services.AddTransientPopup<QrCodePopup, QrCodePopupViewModel>();
-        builder.Services.AddSingleton<QrCodeService>();
-
-        builder.Services.AddScoped<BalanceService>();
-        builder.Services.AddScoped<UserService>();
-        builder.Services.AddScoped<TicketService>();
-        builder.Services.AddScoped<HelpService>();
-        builder.Services.AddScoped<CityService>();
-        builder.Services.AddScoped<ScanService>();
-        builder.Services.AddScoped<SkiResortService>();
-        builder.Services.AddScoped<FunFairService>();
 
         //usługa lokalnego magazynu by nie przekazywać po ekranach wszystkich danych
         builder.Services.AddSingleton<AppState>();

@@ -6,3 +6,4 @@ global using QrToPay.Services;
 global using QrToPay.View;
 global using QrToPay.Models;
 global using QrToPay.Helpers;
+global using Microsoft.Maui.Storage;

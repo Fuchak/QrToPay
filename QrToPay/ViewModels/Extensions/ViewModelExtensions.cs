@@ -6,7 +6,6 @@ using QrToPay.ViewModels.QR;
 using QrToPay.ViewModels.ResetPassword;
 using QrToPay.ViewModels.Settings;
 using QrToPay.ViewModels.SkiResort;
-using QrToPay.View.FunFair;
 
 namespace QrToPay.ViewModels.Extensions;
 public static class ViewModelExtensions

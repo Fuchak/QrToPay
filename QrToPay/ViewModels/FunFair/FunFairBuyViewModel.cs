@@ -68,7 +68,7 @@ public partial class FunFairBuyViewModel : QuantityViewModelBase
     [RelayCommand]
     private async Task GenerateQrCodeAsync()
     {
-        if (IsBuying) return;
+/*        if (IsBuying) return;
         try
         {
             IsBuying = true;
@@ -132,6 +132,6 @@ public partial class FunFairBuyViewModel : QuantityViewModelBase
         finally
         {
             IsBuying = false;
-        }
+        }*/
     }
 }

@@ -67,7 +67,7 @@ public partial class SkiResortBuyViewModel : QuantityViewModelBase
     [RelayCommand]
     private async Task GenerateQrCodeAsync()
     {
-        if (IsBuying) return;
+       /* if (IsBuying) return;
         try
         {
             IsBuying = true;
@@ -131,6 +131,6 @@ public partial class SkiResortBuyViewModel : QuantityViewModelBase
         finally
         {
             IsBuying = false;
-        }
+        }*/
     }
 }

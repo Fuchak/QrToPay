@@ -76,7 +76,6 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="Auth0.OidcClient.MAUI" Version="1.0.1" />
 		<PackageReference Include="BarcodeScanning.Native.Maui" Version="1.5.7" />
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.3" />
@@ -88,6 +87,7 @@
 		<PackageReference Include="Plugin.LocalNotification" Version="11.1.4" />
 		<PackageReference Include="QRCoder" Version="1.6.0" />
 		<PackageReference Include="System.Drawing.Common" Version="8.0.8" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>
