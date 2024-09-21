@@ -34,15 +34,16 @@ public partial class TopUpAccountViewModel : ViewModelBase
             {
             string formattedAmount = topUpAmount.ToString("F2", CultureInfo.InvariantCulture);
 
-            int userId = Preferences.Get("UserId", 0);
+                var jwtToken = await SecureStorage.GetAsync("AuthToken");
 
-            TopUpRequest topUpRequest = new()
-            {
-                UserId = userId,
-                Amount = decimal.Parse(formattedAmount, CultureInfo.InvariantCulture)
-            };
+                //int userId = Preferences.Get("UserId", 0);
 
-                var result = await _balanceService.TopUpAccountAsync(topUpRequest);
+                TopUpRequest topUpRequest = new()
+                {
+                    Amount = decimal.Parse(formattedAmount, CultureInfo.InvariantCulture)
+                };
+
+                var result = await _balanceService.TopUpAccountAsync(topUpRequest, jwtToken!);
 
                 if (result.IsSuccess)
                 {

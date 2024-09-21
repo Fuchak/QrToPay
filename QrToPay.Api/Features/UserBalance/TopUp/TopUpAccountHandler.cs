@@ -5,7 +5,7 @@ using QrToPay.Api.Common.Services;
 
 namespace QrToPay.Api.Features.UserBalance.TopUp;
 
-public class TopUpAccountHandler : IRequestHandler<TopUpRequestModel, Result<decimal>>
+public class TopUpAccountHandler : IRequestHandler<TopUpRequestModel, Result<TopUpAccountDto>>
 {
     private readonly QrToPayDbContext _context;
     private readonly ICurrentUserService _currentUserService;
@@ -16,7 +16,7 @@ public class TopUpAccountHandler : IRequestHandler<TopUpRequestModel, Result<dec
         _currentUserService = currentUserService;
     }
 
-    public async Task<Result<decimal>> Handle(TopUpRequestModel request, CancellationToken cancellationToken)
+    public async Task<Result<TopUpAccountDto>> Handle(TopUpRequestModel request, CancellationToken cancellationToken)
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
@@ -24,7 +24,7 @@ public class TopUpAccountHandler : IRequestHandler<TopUpRequestModel, Result<dec
                 .FindAsync([_currentUserService.UserId], cancellationToken);
             if (user is null)
             {
-                return Result<decimal>.Failure("Użytkownik nieodnaleziony.", ErrorType.NotFound);
+                return Result<TopUpAccountDto>.Failure("Użytkownik nieodnaleziony.", ErrorType.NotFound);
             }
 
             user.AccountBalance += request.Amount;
@@ -33,7 +33,7 @@ public class TopUpAccountHandler : IRequestHandler<TopUpRequestModel, Result<dec
             _context.Users.Update(user);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<decimal>.Success(user.AccountBalance);
+            return Result<TopUpAccountDto>.Success(new() { AccountBalance = user.AccountBalance });
         });
     }
 }

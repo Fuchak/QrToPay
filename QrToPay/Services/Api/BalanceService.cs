@@ -52,11 +52,14 @@ public class BalanceService
         }
     }
 
-    public async Task<ServiceResult<decimal>> TopUpAccountAsync(TopUpRequest topUpRequest)
+    public async Task<ServiceResult<decimal>> TopUpAccountAsync(TopUpRequest topUpRequest, string jwtToken)
     {
         try
         {
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/UserBalance/topUp", topUpRequest);
 
             if (response.IsSuccessStatusCode)

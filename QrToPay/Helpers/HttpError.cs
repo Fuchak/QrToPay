@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -30,7 +31,7 @@ public static class HttpError
                 HttpStatusCode.GatewayTimeout => "Błąd serwera: Spróbuj ponownie później.",
 
                 HttpStatusCode.BadRequest => "Błąd żądania: Sprawdź dane i spróbuj ponownie.",
-                HttpStatusCode.Unauthorized => "Nieautoryzowany dostęp: Zaloguj się ponownie.",
+                HttpStatusCode.Unauthorized => "Brak autoryzacji: Zaloguj się ponownie.",
                 HttpStatusCode.Forbidden => "Brak uprawnień: Skontaktuj się z administratorem.",
                 _ => "Wystąpił problem z połączeniem. Spróbuj ponownie.",
             };

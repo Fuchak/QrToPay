@@ -38,7 +38,7 @@ public class UserBalanceController : ControllerBase
     [HttpPost("topup")]
     public async Task<IActionResult> TopUpAccount([FromBody] TopUpRequestModel request)
     {
-        Result<decimal> result = await _mediator.Send(request);
+        Result<TopUpAccountDto> result = await _mediator.Send(request);
 
         return result.ToActionResult();
     }
