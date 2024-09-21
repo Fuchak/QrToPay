@@ -25,9 +25,9 @@ public class UserBalanceController : ControllerBase
     /// <response code="400">Validation error </response>
     /// <response code="200">Success </response>
     [HttpGet("balance")]
-    public async Task<IActionResult> GetUserBalance([FromQuery] GetUserBalanceRequestModel request)
+    public async Task<IActionResult> GetUserBalance()
     {
-        Result<UserBalanceDto> result = await _mediator.Send(request);
+        Result<UserBalanceDto> result = await _mediator.Send(new GetUserBalanceRequestModel());
         return result.ToActionResult();
     }
 

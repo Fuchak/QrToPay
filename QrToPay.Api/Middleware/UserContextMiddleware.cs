@@ -17,8 +17,7 @@ public class UserContextMiddleware : IMiddleware
 
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        string? token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-        //string? token = context.Request.Headers.Authorization;
+        string? token = context.Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
         if (token is not null)
         {
             try

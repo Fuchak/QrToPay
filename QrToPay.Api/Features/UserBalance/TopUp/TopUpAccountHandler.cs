@@ -1,16 +1,19 @@
 ﻿using MediatR;
 using QrToPay.Api.Models;
 using QrToPay.Api.Common.Results;
+using QrToPay.Api.Common.Services;
 
 namespace QrToPay.Api.Features.UserBalance.TopUp;
 
 public class TopUpAccountHandler : IRequestHandler<TopUpRequestModel, Result<decimal>>
 {
     private readonly QrToPayDbContext _context;
+    private readonly ICurrentUserService _currentUserService;
 
-    public TopUpAccountHandler(QrToPayDbContext context)
+    public TopUpAccountHandler(QrToPayDbContext context, ICurrentUserService currentUserService)
     {
         _context = context;
+        _currentUserService = currentUserService;
     }
 
     public async Task<Result<decimal>> Handle(TopUpRequestModel request, CancellationToken cancellationToken)
@@ -18,7 +21,7 @@ public class TopUpAccountHandler : IRequestHandler<TopUpRequestModel, Result<dec
         return await ResultHandler.HandleRequestAsync(async () =>
         {
             User? user = await _context.Users
-                .FindAsync([request.UserId], cancellationToken);
+                .FindAsync([_currentUserService.UserId], cancellationToken);
             if (user is null)
             {
                 return Result<decimal>.Failure("Użytkownik nieodnaleziony.", ErrorType.NotFound);

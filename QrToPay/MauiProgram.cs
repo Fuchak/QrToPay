@@ -56,7 +56,7 @@ public static class MauiProgram
         // Rejestrujesz IHttpClientFactory i konfigurujesz klienta HTTP
         builder.Services.AddHttpClient("ApiHttpClient", client =>
         {
-            client.BaseAddress = new Uri("https://xw5clp6t-5015.euw.devtunnels.ms/");
+            client.BaseAddress = new Uri("https://pet-optimum-goshawk.ngrok-free.app/");
             client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
         });
         

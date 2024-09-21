@@ -16,13 +16,13 @@ builder.Services.Configure<AppAuthSettings>(builder.Configuration.GetSection("Jw
 
 builder.Services.AddControllers(options =>
 {
-    options.Filters.Add<UserActionFilter>();
     options.Filters.Add<ValidationFilter>();
 });
 
 builder.Services.AddScoped<UserContextMiddleware>();
 builder.Services.AddHttpContextAccessor();
-//builder.Services.AddScoped<UserActionFilter>();
+
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 builder.Services.AddDbContext<QrToPayDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

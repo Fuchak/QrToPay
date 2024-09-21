@@ -5,8 +5,8 @@ public class GetUserBalanceRequestModelValidator : AbstractValidator<GetUserBala
 {
     public GetUserBalanceRequestModelValidator()
     {
-        RuleFor(x => x.UserId)
+/*        RuleFor(x => x.UserId)
             .GreaterThan(0)
-            .WithMessage("Identyfikator użytkownika musi być większy niż 0.");
+            .WithMessage("Identyfikator użytkownika musi być większy niż 0.");*/
     }
 }

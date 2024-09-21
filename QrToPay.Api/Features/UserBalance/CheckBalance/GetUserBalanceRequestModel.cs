@@ -1,10 +1,9 @@
 ﻿using MediatR;
-using QrToPay.Api.Common.Filters;
 using QrToPay.Api.Common.Results;
 
 namespace QrToPay.Api.Features.UserBalance.CheckBalance;
 
-public sealed class GetUserBalanceRequestModel : IRequest<Result<UserBalanceDto>>, IUserRequest
+public sealed class GetUserBalanceRequestModel : IRequest<Result<UserBalanceDto>>
 {
-    public int UserId { get; set; }
+    //public int UserId { get; set; }
 }
