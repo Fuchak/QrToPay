@@ -22,7 +22,7 @@ builder.Services.AddControllers(options =>
 builder.Services.AddScoped<UserContextMiddleware>();
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<CurrentUserService>();
 
 builder.Services.AddDbContext<QrToPayDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
