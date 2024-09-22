@@ -34,8 +34,6 @@ public partial class TopUpAccountViewModel : ViewModelBase
             {
             string formattedAmount = topUpAmount.ToString("F2", CultureInfo.InvariantCulture);
 
-                var jwtToken = await SecureStorage.GetAsync("AuthToken");
-
                 //int userId = Preferences.Get("UserId", 0);
 
                 TopUpRequest topUpRequest = new()
@@ -43,7 +41,7 @@ public partial class TopUpAccountViewModel : ViewModelBase
                     Amount = decimal.Parse(formattedAmount, CultureInfo.InvariantCulture)
                 };
 
-                var result = await _balanceService.TopUpAccountAsync(topUpRequest, jwtToken!);
+                var result = await _balanceService.TopUpAccountAsync(topUpRequest);
 
                 if (result.IsSuccess)
                 {

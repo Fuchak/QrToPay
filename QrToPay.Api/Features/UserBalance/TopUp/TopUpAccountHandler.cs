@@ -8,9 +8,9 @@ namespace QrToPay.Api.Features.UserBalance.TopUp;
 public class TopUpAccountHandler : IRequestHandler<TopUpRequestModel, Result<TopUpAccountDto>>
 {
     private readonly QrToPayDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
+    private readonly CurrentUserService _currentUserService;
 
-    public TopUpAccountHandler(QrToPayDbContext context, ICurrentUserService currentUserService)
+    public TopUpAccountHandler(QrToPayDbContext context, CurrentUserService currentUserService)
     {
         _context = context;
         _currentUserService = currentUserService;

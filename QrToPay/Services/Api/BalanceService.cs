@@ -19,10 +19,12 @@ public class BalanceService
 
     public event EventHandler<decimal>? BalanceUpdated;
 
-    public async Task<ServiceResult<decimal>> LoadUserDataAsync(string jwtToken)
+    public async Task<ServiceResult<decimal>> LoadUserDataAsync()
     {
         try
         {
+            var jwtToken = await SecureStorage.GetAsync("AuthToken");
+
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
@@ -52,10 +54,12 @@ public class BalanceService
         }
     }
 
-    public async Task<ServiceResult<decimal>> TopUpAccountAsync(TopUpRequest topUpRequest, string jwtToken)
+    public async Task<ServiceResult<decimal>> TopUpAccountAsync(TopUpRequest topUpRequest)
     {
         try
         {
+            var jwtToken = await SecureStorage.GetAsync("AuthToken");
+
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);

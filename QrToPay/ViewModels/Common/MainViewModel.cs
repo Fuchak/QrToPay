@@ -37,16 +37,9 @@ public partial class MainViewModel : ViewModelBase
         {
             IsLoading = true;
 
-            var jwtToken = await SecureStorage.GetAsync("AuthToken");
-            if (string.IsNullOrEmpty(jwtToken))
-            {
-                ErrorMessage = "Brak autoryzacji. Zaloguj się ponownie.";
-                return;
-            }
-
             //int userId = Preferences.Get("UserId", 0);
 
-            var result = await _balanceService.LoadUserDataAsync(jwtToken);
+            var result = await _balanceService.LoadUserDataAsync();
             if (result.IsSuccess)
             {
                 AccountBalance = result.Data;

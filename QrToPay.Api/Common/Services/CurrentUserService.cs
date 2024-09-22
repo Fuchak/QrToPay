@@ -1,13 +1,6 @@
 ﻿namespace QrToPay.Api.Common.Services;
 
-public interface ICurrentUserService
-{
-    int UserId { get; }
-    string? Email { get; }
-    string? PhoneNumber { get; }
-}
-
-public class CurrentUserService : ICurrentUserService
+public class CurrentUserService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 

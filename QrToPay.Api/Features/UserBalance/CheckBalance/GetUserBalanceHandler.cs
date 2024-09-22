@@ -9,9 +9,9 @@ namespace QrToPay.Api.Features.UserBalance.CheckBalance;
 public class GetUserBalanceHandler : IRequestHandler<GetUserBalanceRequestModel, Result<UserBalanceDto>>
 {
     private readonly QrToPayDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
+    private readonly CurrentUserService _currentUserService;
 
-    public GetUserBalanceHandler(QrToPayDbContext context, ICurrentUserService currentUserService)
+    public GetUserBalanceHandler(QrToPayDbContext context, CurrentUserService currentUserService)
     {
         _context = context;
         _currentUserService = currentUserService;
