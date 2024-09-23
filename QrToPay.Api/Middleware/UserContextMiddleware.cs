@@ -24,9 +24,11 @@ public class UserContextMiddleware : IMiddleware
             {
                 AttachUserToContext(context, token);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception("Błąd weryfikacji tokena JWT.", ex);
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                await context.Response.WriteAsync("Błąd weryfikacji tokena JWT. Proszę zalogować się ponownie.");
+                return;
             }
         }
         await next(context);
@@ -40,14 +42,10 @@ public class UserContextMiddleware : IMiddleware
         var principal = tokenHandler.ValidateToken(token, validationParameters, out _);
 
         var userIdClaim = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var emailClaim = principal.FindFirst(ClaimTypes.Email)?.Value;
-        var phoneNumberClaim = principal.FindFirst("phone_number")?.Value;
 
         if (userIdClaim != null && int.TryParse(userIdClaim, out int userId))
         {
             context.Items["UserId"] = userId;
-            context.Items["UserEmail"] = emailClaim;
-            context.Items["UserPhoneNumber"] = phoneNumberClaim;
         }
 }
 

@@ -16,24 +16,11 @@ internal sealed class TokenProviderService(IConfiguration configuration)
 
         var credential = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-        var claims = new List<Claim>
-        {
-            new(JwtRegisteredClaimNames.Sub, user.UserId.ToString())
-        };
-
-        if (!string.IsNullOrEmpty(user.Email))
-        {
-            claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
-        }
-
-        if (!string.IsNullOrEmpty(user.PhoneNumber))
-        {
-            claims.Add(new Claim(JwtRegisteredClaimNames.PhoneNumber, user.PhoneNumber));
-        }
-
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(claims),
+            Subject = new ClaimsIdentity([
+                    new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
+                ]),
             Expires = DateTime.UtcNow.AddDays(configuration.GetValue<int>("Jwt:ExpirationInDays")),
             SigningCredentials = credential,
             Issuer = configuration["Jwt:Issuer"],
