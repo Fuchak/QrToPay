@@ -15,13 +15,13 @@ public class QrCodeService
         _httpClientFactory = httpClientFactory;
     }
 
-    public async Task ActivateQrCodeAsync(string token, int userId)
+    public async Task ActivateQrCodeAsync(string token)
     {
 
         var requestModel = new
         {
             Token = token,
-            UserID = userId
+            //UserID = userId
         };
 
         HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
@@ -30,12 +30,12 @@ public class QrCodeService
 
     }
 
-    public async Task DeactivateQrCodeAsync(string token, int userId)
+    public async Task DeactivateQrCodeAsync(string token)
     {//Todo zrobić model do tego xd
         var requestModel = new
         {
             Token = token,
-            UserID = userId
+            //UserID = userId
         };
 
         HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");

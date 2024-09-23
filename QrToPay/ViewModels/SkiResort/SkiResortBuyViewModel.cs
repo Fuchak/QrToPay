@@ -67,7 +67,7 @@ public partial class SkiResortBuyViewModel : QuantityViewModelBase
     [RelayCommand]
     private async Task GenerateQrCodeAsync()
     {
-       /* if (IsBuying) return;
+        if (IsBuying) return;
         try
         {
             IsBuying = true;
@@ -79,9 +79,10 @@ public partial class SkiResortBuyViewModel : QuantityViewModelBase
             }
             string formattedPrice = Price.ToString(CultureInfo.InvariantCulture);
 
-            int userId = Preferences.Get("UserId", 0);
+            //int userId = Preferences.Get("UserId", 0);
 
-            var balanceResult = await _balanceService.LoadUserDataAsync(userId);
+
+            var balanceResult = await _balanceService.LoadUserDataAsync();
             if (!balanceResult.IsSuccess)
             {
                 ErrorMessage = balanceResult.ErrorMessage;
@@ -96,7 +97,7 @@ public partial class SkiResortBuyViewModel : QuantityViewModelBase
 
             UpdateTicketRequest updateRequest = new()
             {
-                UserId = userId,
+                UserId = 1,
                 ServiceId = ServiceId,
                 Quantity = Quantity,
                 Tokens = Points,
@@ -112,7 +113,7 @@ public partial class SkiResortBuyViewModel : QuantityViewModelBase
 
             Ticket newTicket = new()
             {
-                UserId = userId,
+                UserId = 1,
                 EntityName = ResortName,
                 CityName = CityName,
                 Price = Price,
@@ -122,8 +123,10 @@ public partial class SkiResortBuyViewModel : QuantityViewModelBase
 
             Tickets.Add(newTicket);
 
-            await _qrCodeStorageService.GenerateAndSaveQrCodeImageAsync(userId, token);
-            
+            var userUuid = await UserIdentifierService.GetOrCreateUserUUIDAsync();
+
+            await _qrCodeStorageService.GenerateAndSaveQrCodeImageAsync(userUuid, token);
+
             await Shell.Current.DisplayAlert("Potwierdzenie", "Bilet został zakupiony, kod QR wygenerowany", "OK");
 
             await NavigateAsync($"//{nameof(MainPage)}/{nameof(ActiveBiletsPage)}");
@@ -131,6 +134,6 @@ public partial class SkiResortBuyViewModel : QuantityViewModelBase
         finally
         {
             IsBuying = false;
-        }*/
+        }
     }
 }

@@ -17,14 +17,14 @@ public partial class QrCodePopupViewModel : ViewModelBase
     private bool isActive;
 
     private readonly QrCodeService _qrCodeService;
-    private readonly int _userId;
+    private readonly string _userId;
     private readonly string _token;
 
-    public QrCodePopupViewModel(ImageSource qrCodeImage, QrCodeService qrCodeService, int userId, string token, int? remainingTime = null)
+    public QrCodePopupViewModel(ImageSource qrCodeImage, QrCodeService qrCodeService, string userUuid, string token, int? remainingTime = null)
     {
         QrCodeImage = qrCodeImage;
         _qrCodeService = qrCodeService;
-        _userId = userId;
+        _userId = userUuid;
         _token = token;
 
         InitializeRemainingTime(remainingTime);
@@ -54,7 +54,7 @@ public partial class QrCodePopupViewModel : ViewModelBase
     [RelayCommand]
     public async Task ActivateQrCodeAsync()
     {
-        await _qrCodeService.ActivateQrCodeAsync(_token, _userId);
+        await _qrCodeService.ActivateQrCodeAsync(_token);
         SetActivationState(5 * 60, true);
         Preferences.Set($"ActivationTime_{_token}", DateTime.UtcNow);
     }
@@ -62,7 +62,7 @@ public partial class QrCodePopupViewModel : ViewModelBase
     [RelayCommand]
     public async Task DeactivateQrCodeAsync()
     {
-        await _qrCodeService.DeactivateQrCodeAsync(_token, _userId);
+        await _qrCodeService.DeactivateQrCodeAsync(_token);
         SetActivationState(0, false);
         Preferences.Remove($"ActivationTime_{_token}");
     }

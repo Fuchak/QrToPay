@@ -7,6 +7,7 @@ using QrToPay.Models.Requests;
 using QrToPay.Models.Common;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
+using QrToPay.Services.Local;
 
 namespace QrToPay.Services.Api
 {
@@ -26,6 +27,7 @@ namespace QrToPay.Services.Api
             //await Task.Delay(200);
             // Sprawdzenie, czy token istnieje w SecureStorage
             var token = await SecureStorage.GetAsync(AuthTokenKey);
+            await UserIdentifierService.GetOrCreateUserUUIDAsync();
             if (string.IsNullOrEmpty(token))
             {
                 return false;
