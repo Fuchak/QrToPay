@@ -16,17 +16,10 @@ public partial class AccountViewModel : ViewModelBase
     [RelayCommand]
     public async Task LoadUserData()
     {
-
         Email = await GetSecureStorageValueOrDefaultAsync(SecureStorageConst.UserEmail, "brak");
         PhoneNumber = await GetSecureStorageValueOrDefaultAsync(SecureStorageConst.UserPhone, "brak");
-
-        OnPropertyChanged(nameof(Email));
-        OnPropertyChanged(nameof(PhoneNumber));
     }
 
-    public static async Task<string> GetSecureStorageValueOrDefaultAsync(string key, string defaultValue)
-    {
-        string? value = await SecureStorage.GetAsync(key);
-        return string.IsNullOrEmpty(value) ? defaultValue : value;
-    }
+    public static async Task<string> GetSecureStorageValueOrDefaultAsync(string key, string defaultValue) 
+        => await SecureStorage.GetAsync(key) ?? defaultValue;
 }

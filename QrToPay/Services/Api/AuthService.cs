@@ -35,6 +35,7 @@ namespace QrToPay.Services.Api
                 return false;
             }
             // Token jest ważny
+            
             return true;
         }
 
