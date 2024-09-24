@@ -75,7 +75,7 @@ public partial class ChangeEmailViewModel: ViewModelBase
                     var verifyResult = await _userService.VerifyChangeAsync(verifyRequest);
                     if (verifyResult.IsSuccess)
                     {
-                        await SecureStorage.SetAsync("UserEmail", NewEmail);
+                        await SecureStorage.SetAsync(SecureStorageConst.UserEmail, NewEmail);
                         await Shell.Current.DisplayAlert("Sukces", "Adres e-mail został zmieniony.", "OK");
                         NewEmail = string.Empty;
                         Password = string.Empty;

@@ -5,12 +5,10 @@ namespace QrToPay.ViewModels.Common;
 
 public partial class LoadingViewModel : ViewModelBase
 {
-    private readonly AuthService _authService;
     private readonly QrCodeStorageService _qrCodeStorageService;
 
-    public LoadingViewModel(AuthService authService, QrCodeStorageService qrCodeStorageService)
+    public LoadingViewModel(QrCodeStorageService qrCodeStorageService)
     {
-        _authService = authService;
         _qrCodeStorageService = qrCodeStorageService;
     }
 
@@ -18,7 +16,7 @@ public partial class LoadingViewModel : ViewModelBase
     {
         CleanOldQrCodes();
 
-        bool isAuthenticated = await _authService.IsAuthenticatedAsync();
+        bool isAuthenticated = await AuthService.IsAuthenticatedAsync();
 
         if (isAuthenticated)
         {

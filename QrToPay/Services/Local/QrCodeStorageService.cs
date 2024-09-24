@@ -1,4 +1,6 @@
-﻿using QRCoder;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using QRCoder;
+using QrToPay.Messages;
 
 namespace QrToPay.Services.Local;
 
@@ -8,6 +10,10 @@ public class QrCodeStorageService
 
     public QrCodeStorageService()
     {
+        WeakReferenceMessenger.Default.Register<UserLogoutMessage>(this, (r, message) =>
+        {
+            CleanAllQrCodeFiles();
+        });
         _qrCodeDirectory = FileSystem.AppDataDirectory;
     }
 

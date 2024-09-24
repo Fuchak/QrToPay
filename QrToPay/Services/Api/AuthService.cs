@@ -8,6 +8,7 @@ using QrToPay.Models.Common;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using QrToPay.Services.Local;
+using QrToPay.Messages;
 
 namespace QrToPay.Services.Api
 {
@@ -20,29 +21,19 @@ namespace QrToPay.Services.Api
             _httpClientFactory = httpClientFactory;
         }
 
-        //Dać jako GLOBAL public const odda mocniutko TODO czyli jakas inna klasa osobna const np w helperach
-        private const string AuthTokenKey = "AuthToken";
-        private const string UserEmail = "UserEmail";
-        private const string UserPhone = "UserPhone";
-
-        public async Task<bool> IsAuthenticatedAsync()
+        public static async Task<bool> IsAuthenticatedAsync()
         {
             //await Task.Delay(200);
             // Sprawdzenie, czy token istnieje w SecureStorage
-            var token = await SecureStorage.GetAsync(AuthTokenKey);
+            var token = await SecureStorage.GetAsync(SecureStorageConst.AuthToken);
             await UserIdentifierService.GetOrCreateUserUUIDAsync();
-            if (string.IsNullOrEmpty(token))
+
+            if (string.IsNullOrEmpty(token) || IsTokenExpired(token))
             {
+                // Wysłanie wiadomości o potrzebie wylogowania
+                WeakReferenceMessenger.Default.Send(new UserLogoutRequestMessage("Token expired"));
                 return false;
             }
-
-            if (IsTokenExpired(token))
-            {
-                // Token jest przeterminowany, usuń go
-                await LogoutAsync();
-                return false;
-            }
-
             // Token jest ważny
             return true;
         }
@@ -67,9 +58,9 @@ namespace QrToPay.Services.Api
 
                     if (userResponse != null)
                     {
-                        await SecureStorage.SetAsync(AuthTokenKey, userResponse.Token);
-                        await SecureStorage.SetAsync(UserEmail, userResponse.Email!);
-                        await SecureStorage.SetAsync(UserPhone, userResponse.PhoneNumber!);
+                        await SecureStorage.SetAsync(SecureStorageConst.AuthToken, userResponse.Token);
+                        await SecureStorage.SetAsync(SecureStorageConst.UserEmail, userResponse.Email!);
+                        await SecureStorage.SetAsync(SecureStorageConst.UserPhone, userResponse.PhoneNumber!);
 
                         return ServiceResult<UserResponse>.Success(userResponse);
                     }
@@ -91,13 +82,7 @@ namespace QrToPay.Services.Api
             }
         }
 
-        public async Task LogoutAsync()
-        {
-            SecureStorage.Remove(AuthTokenKey);
-            await Task.CompletedTask;
-        }
-
-        private bool IsTokenExpired(string token)
+        private static bool IsTokenExpired(string token)
         {
             try
             {

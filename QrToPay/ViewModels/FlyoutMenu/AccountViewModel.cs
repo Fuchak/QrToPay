@@ -17,8 +17,8 @@ public partial class AccountViewModel : ViewModelBase
     public async Task LoadUserData()
     {
 
-        Email = await GetSecureStorageValueOrDefaultAsync("UserEmail", "brak");
-        PhoneNumber = await GetSecureStorageValueOrDefaultAsync("UserPhone", "brak");
+        Email = await GetSecureStorageValueOrDefaultAsync(SecureStorageConst.UserEmail, "brak");
+        PhoneNumber = await GetSecureStorageValueOrDefaultAsync(SecureStorageConst.UserPhone, "brak");
 
         OnPropertyChanged(nameof(Email));
         OnPropertyChanged(nameof(PhoneNumber));

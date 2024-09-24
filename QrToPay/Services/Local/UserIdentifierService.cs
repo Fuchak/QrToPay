@@ -2,17 +2,15 @@
 
 public static class UserIdentifierService
 {
-    private const string UserUuidKey = "UserUUID";
-
     public static async Task<string> GetOrCreateUserUUIDAsync()
     {
         // Sprawdź, czy UUID już istnieje
-        string? userUuid = await SecureStorage.GetAsync(UserUuidKey);
+        string? userUuid = await SecureStorage.GetAsync(SecureStorageConst.UserUuid);
         if (string.IsNullOrEmpty(userUuid))
         {
             // Jeśli nie istnieje, wygeneruj nowy UUID
             userUuid = Guid.NewGuid().ToString();
-            await SecureStorage.SetAsync(UserUuidKey, userUuid);
+            await SecureStorage.SetAsync(SecureStorageConst.UserUuid, userUuid);
         }
         return userUuid;
     }
@@ -20,6 +18,6 @@ public static class UserIdentifierService
     public static void ClearUserUUIDAsync()
     {
         // Usuwanie UUID przy wylogowaniu lub zmianie konta
-        SecureStorage.Remove(UserUuidKey);
+        SecureStorage.Remove(SecureStorageConst.UserUuid);
     }
 }
