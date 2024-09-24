@@ -37,8 +37,6 @@ public partial class MainViewModel : ViewModelBase
         {
             IsLoading = true;
 
-            //int userId = Preferences.Get("UserId", 0);
-
             var result = await _balanceService.LoadUserDataAsync();
             if (result.IsSuccess)
             {

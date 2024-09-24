@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using QrToPay.Models.Common;
@@ -20,7 +21,12 @@ public class SkiResortService
     {
         try
         {
+            var jwtToken = await SecureStorage.GetAsync("AuthToken");
+
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
             HttpResponseMessage response = await client.GetAsync($"/api/SkiResorts/prices?skiResortId={skiResortId}");
 
             if (response.IsSuccessStatusCode)
@@ -45,12 +51,16 @@ public class SkiResortService
         }
     }
 
-    //TODO ten model do wymiany na poprawny który przyjmuje co zwraca api a nie jakiś lokalny który przyjmuje lokalny obrazek dla stoków było SkiResortData
     public async Task<ServiceResult<List<SkiResortsResponse>>> GetSkiResortsAsync(string cityName)
     {
         try
         {
+            var jwtToken = await SecureStorage.GetAsync("AuthToken");
+
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
             HttpResponseMessage response = await client.GetAsync($"/api/SkiResorts/city?cityName={cityName}");
 
             if (response.IsSuccessStatusCode)

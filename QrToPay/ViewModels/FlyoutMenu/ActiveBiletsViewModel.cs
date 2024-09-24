@@ -55,8 +55,7 @@ public partial class ActiveBiletsViewModel : ViewModelBase
             IsBusy = true;
             ErrorMessage = null;
 
-            int userId = Preferences.Get("UserId", 0);
-            var result = await _ticketService.GetActiveTicketsAsync(userId);
+            var result = await _ticketService.GetActiveTicketsAsync();
 
             ActiveTickets.Clear();
 
@@ -83,14 +82,15 @@ public partial class ActiveBiletsViewModel : ViewModelBase
     [RelayCommand]
     private async Task ShowQrCodePopupAsync(Ticket ticket)
     {
+        var userUuid = await UserIdentifierService.GetOrCreateUserUUIDAsync();
         // Użycie serwisu do wczytania lub wygenerowania kodu QR
-        ImageSource? imageSource = await _qrCodeStorageService.LoadQrCodeImageAsync(ticket.UserId, ticket.QrCode!);
+        ImageSource? imageSource = await _qrCodeStorageService.LoadQrCodeImageAsync(userUuid, ticket.QrCode!);
 
         if (imageSource == null)
         {
             // Jeśli kod QR nie został znaleziony w pamięci, generujemy go ponownie
-            await _qrCodeStorageService.GenerateAndSaveQrCodeImageAsync(ticket.UserId, ticket.QrCode!);
-            imageSource = await _qrCodeStorageService.LoadQrCodeImageAsync(ticket.UserId, ticket.QrCode!);
+            await _qrCodeStorageService.GenerateAndSaveQrCodeImageAsync(userUuid, ticket.QrCode!);
+            imageSource = await _qrCodeStorageService.LoadQrCodeImageAsync(userUuid, ticket.QrCode!);
         }
 
         if (imageSource == null)
@@ -107,7 +107,7 @@ public partial class ActiveBiletsViewModel : ViewModelBase
             remainingTime = Math.Max(0, (int)(5 * 60 - elapsedTime.TotalSeconds));
         }
 
-        QrCodePopup qrCodePopup = new(imageSource, _qrCodeService, ticket.UserId, ticket.QrCode!, remainingTime);
+        QrCodePopup qrCodePopup = new(imageSource, _qrCodeService, userUuid, ticket.QrCode!, remainingTime);
         await Shell.Current.ShowPopupAsync(qrCodePopup);
     }
 }

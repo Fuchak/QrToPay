@@ -4,54 +4,58 @@ using QrToPay.Api.Features.Settings.Password;
 using QrToPay.Api.Features.Settings.Verify;
 using QrToPay.Api.Features.Settings.EmailPhone;
 using QrToPay.Api.Common.Results;
+using Microsoft.AspNetCore.Authorization;
 
-namespace QrToPay.Api.Features.Settings
+namespace QrToPay.Api.Features.Settings;
+
+[Authorize]
+[ApiController]
+[Route("api/[controller]")]
+public class SettingsController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class SettingsController : ControllerBase
+    private readonly IMediator _mediator;
+
+    public SettingsController(IMediator mediator)
     {
-        private readonly IMediator _mediator;
+        _mediator = mediator;
+    }
 
-        public SettingsController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+    /// <summary> Change phone or email </summary>
+    /// <response code="404">Not Found </response>
+    /// <response code="401">Unauthorized </response>
+    /// <response code="400">Validation error </response>
+    /// <response code="200">Success </response>
+    [HttpPost("requestChange")]
+    public async Task<IActionResult> RequestChange([FromBody] ChangeEmailPhoneRequestModel request)
+    {
+        Result<ChangeEmailPhoneDto> result = await _mediator.Send(request);
 
-        /// <summary> Change phone or email </summary>
-        /// <response code="404">Not Found </response>
-        /// <response code="400">Validation error </response>
-        /// <response code="200">Success </response>
-        [HttpPost("requestChange")]
-        public async Task<IActionResult> RequestChange([FromBody] ChangeEmailPhoneRequestModel request)
-        {
-            Result<SuccesMessageDto> result = await _mediator.Send(request);
+        return result.ToActionResult();
+    }
 
-            return result.ToActionResult();
-        }
+    /// <summary> Change Password </summary>
+    /// <response code="404">Not Found </response>
+    /// <response code="401">Unauthorized </response>
+    /// <response code="400">Validation error </response>
+    /// <response code="200">Success </response>
+    [HttpPost("changePassword")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestModel request)
+    {
+        Result<SuccesMessageDto> result = await _mediator.Send(request);
 
-        /// <summary> Change Password </summary>
-        /// <response code="404">Not Found </response>
-        /// <response code="400">Validation error </response>
-        /// <response code="200">Success </response>
-        [HttpPost("changePassword")]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestModel request)
-        {
-            Result<SuccesMessageDto> result = await _mediator.Send(request);
+        return result.ToActionResult();
+    }
 
-            return result.ToActionResult();
-        }
+    /// <summary> Verify change of password, phone or email</summary>
+    /// <response code="404">Not Found </response>
+    /// <response code="401">Unauthorized </response>
+    /// <response code="400">Validation error </response>
+    /// <response code="200">Success </response>
+    [HttpPost("verifyChange")]
+    public async Task<IActionResult> VerifyChange([FromBody] VerifyRequestModel request)
+    {
+        Result<SuccesMessageDto> result = await _mediator.Send(request);
 
-        /// <summary> Verify change of password, phone or email</summary>
-        /// <response code="404">Not Found </response>
-        /// <response code="400">Validation error </response>
-        /// <response code="200">Success </response>
-        [HttpPost("verifyChange")]
-        public async Task<IActionResult> VerifyChange([FromBody] VerifyRequestModel request)
-        {
-            Result<SuccesMessageDto> result = await _mediator.Send(request);
-
-            return result.ToActionResult();
-        }
+        return result.ToActionResult();
     }
 }

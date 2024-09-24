@@ -34,8 +34,6 @@ public partial class TopUpAccountViewModel : ViewModelBase
             {
             string formattedAmount = topUpAmount.ToString("F2", CultureInfo.InvariantCulture);
 
-                //int userId = Preferences.Get("UserId", 0);
-
                 TopUpRequest topUpRequest = new()
                 {
                     Amount = decimal.Parse(formattedAmount, CultureInfo.InvariantCulture)

@@ -42,16 +42,8 @@ public partial class ChangeEmailViewModel: ViewModelBase
                 return;
             }
 
-            int userId = Preferences.Get("UserId", 0);
-            if (userId == 0)
-            {
-                ErrorMessage = "Nie można znaleźć identyfikatora użytkownika.";
-                return;
-            }
-
             ChangeRequest changeRequest = new()
             {
-                UserId = userId,
                 NewValue = NewEmail,
                 Password = Password,
                 ChangeType = ChangeType.Email
@@ -76,7 +68,6 @@ public partial class ChangeEmailViewModel: ViewModelBase
                 {
                     VerifyChangeRequest verifyRequest = new()
                     {
-                        UserId = userId,
                         VerificationCode = result.Data.VerificationCode,
                         ChangeType = ChangeType.Email
                     };
@@ -84,7 +75,7 @@ public partial class ChangeEmailViewModel: ViewModelBase
                     var verifyResult = await _userService.VerifyChangeAsync(verifyRequest);
                     if (verifyResult.IsSuccess)
                     {
-                        Preferences.Set("UserEmail", NewEmail);
+                        await SecureStorage.SetAsync("UserEmail", NewEmail);
                         await Shell.Current.DisplayAlert("Sukces", "Adres e-mail został zmieniony.", "OK");
                         NewEmail = string.Empty;
                         Password = string.Empty;

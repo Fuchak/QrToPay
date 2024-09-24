@@ -2,15 +2,18 @@
 using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.Models;
 using QrToPay.Api.Common.Results;
+using QrToPay.Api.Common.Services;
 namespace QrToPay.Api.Features.Tickets.Activate;
 
 public class ActivateQrCodeHandler : IRequestHandler<ActivateQrCodeRequestModel, Result<SuccesMessageDto>>
 {
     private readonly QrToPayDbContext _context;
+    private readonly CurrentUserService _currentUserService;
 
-    public ActivateQrCodeHandler(QrToPayDbContext context)
+    public ActivateQrCodeHandler(QrToPayDbContext context, CurrentUserService currentUserService)
     {
         _context = context;
+        _currentUserService = currentUserService;
     }
 
     public async Task<Result<SuccesMessageDto>> Handle(ActivateQrCodeRequestModel request, CancellationToken cancellationToken)
@@ -18,7 +21,7 @@ public class ActivateQrCodeHandler : IRequestHandler<ActivateQrCodeRequestModel,
         return await ResultHandler.HandleRequestAsync(async () =>
         {
             UserTicket? response = await _context.UserTickets
-                .Where(t => t.Token == request.Token && t.UserId == request.UserID)
+                .Where(t => t.Token == request.Token && t.UserId == _currentUserService.UserId)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (response is null)

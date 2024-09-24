@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using QrToPay.Models.Common;
 using QrToPay.Models.Requests;
 using QrToPay.Models.Responses;
@@ -14,27 +15,50 @@ public class TicketService
         _httpClientFactory = httpClientFactory;
     }
 
-    public async Task<string> GenerateAndUpdateTicketAsync(UpdateTicketRequest updateRequest)
-    {
-        HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
-        HttpResponseMessage response = await client.PostAsJsonAsync("/api/Tickets/purchase", updateRequest);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            return string.Empty;
-        }
-
-        UpdateTicketResponse? result = await response.Content.ReadFromJsonAsync<UpdateTicketResponse>();
-        return result?.QrCode ?? string.Empty;
-    }
-
-    public async Task<ServiceResult<List<Ticket>>> GetActiveTicketsAsync(int userId)
+    public async Task<ServiceResult<string>> GenerateAndUpdateTicketAsync(UpdateTicketRequest updateRequest)
     {
         try
         {
+            var jwtToken = await SecureStorage.GetAsync("AuthToken");
+
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            HttpResponseMessage response = await client.GetAsync($"/api/Tickets/active?userId={userId}");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
+            HttpResponseMessage response = await client.PostAsJsonAsync("/api/Tickets/purchase", updateRequest);
+
+            if (response.IsSuccessStatusCode)
+            {
+                UpdateTicketResponse? result = await response.Content.ReadFromJsonAsync<UpdateTicketResponse>();
+                if (result != null)
+                {
+                    return ServiceResult<string>.Success(result.QrCode);
+                }
+                return ServiceResult<string>.Failure("Nie udało się przetworzyć płatności");
+            }
+            else
+            {
+                string errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response);
+                return ServiceResult<string>.Failure(errorMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            return ServiceResult<string>.Failure(HttpError.HandleError(ex));
+        }
+    }
+
+    public async Task<ServiceResult<List<Ticket>>> GetActiveTicketsAsync()
+    {
+        try
+        {
+            var jwtToken = await SecureStorage.GetAsync("AuthToken");
+
+            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
+            HttpResponseMessage response = await client.GetAsync($"/api/Tickets/active");
 
             if (response.IsSuccessStatusCode)
             {
@@ -61,8 +85,13 @@ public class TicketService
     {
         try
         {
+            var jwtToken = await SecureStorage.GetAsync("AuthToken");
+
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-            HttpResponseMessage response = await client.GetAsync($"/api/Tickets/history?userId={request.UserId}&pageNumber={request.PageNumber}&pageSize={request.PageSize}");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
+            HttpResponseMessage response = await client.GetAsync($"/api/Tickets/history?pageNumber={request.PageNumber}&pageSize={request.PageSize}");
 
             if (response.IsSuccessStatusCode)
             {

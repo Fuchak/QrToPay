@@ -68,7 +68,7 @@ public partial class FunFairBuyViewModel : QuantityViewModelBase
     [RelayCommand]
     private async Task GenerateQrCodeAsync()
     {
-/*        if (IsBuying) return;
+        if (IsBuying) return;
         try
         {
             IsBuying = true;
@@ -80,9 +80,8 @@ public partial class FunFairBuyViewModel : QuantityViewModelBase
             }
             string formattedPrice = Price.ToString(CultureInfo.InvariantCulture);
 
-            int userId = Preferences.Get("UserId", 0);
 
-            var balanceResult = await _balanceService.LoadUserDataAsync(userId);
+            var balanceResult = await _balanceService.LoadUserDataAsync();
             if (!balanceResult.IsSuccess)
             {
                 ErrorMessage = balanceResult.ErrorMessage;
@@ -97,23 +96,24 @@ public partial class FunFairBuyViewModel : QuantityViewModelBase
 
             UpdateTicketRequest updateRequest = new()
             {
-                UserId = userId,
                 ServiceId = ServiceId,
                 Quantity = Quantity,
                 Tokens = Points,
                 TotalPrice = formattedPrice
             };
 
-            var token = await _ticketService.GenerateAndUpdateTicketAsync(updateRequest);
-            if (string.IsNullOrEmpty(token))
+            var result = await _ticketService.GenerateAndUpdateTicketAsync(updateRequest);
+
+            if (!result.IsSuccess)
             {
-                ErrorMessage = "Nie udało się przetworzyć płatności";
+                ErrorMessage = result.ErrorMessage;
                 return;
             }
 
+            string token = result.Data!;
+
             Ticket newTicket = new()
             {
-                UserId = userId,
                 EntityName = ResortName,
                 CityName = CityName,
                 Price = Price,
@@ -123,7 +123,9 @@ public partial class FunFairBuyViewModel : QuantityViewModelBase
 
             Tickets.Add(newTicket);
 
-            await _qrCodeStorageService.GenerateAndSaveQrCodeImageAsync(userId, token);
+            var userUuid = await UserIdentifierService.GetOrCreateUserUUIDAsync();
+
+            await _qrCodeStorageService.GenerateAndSaveQrCodeImageAsync(userUuid, token);
 
             await Shell.Current.DisplayAlert("Potwierdzenie", "Bilet został zakupiony, kod QR wygenerowany", "OK");
 
@@ -132,6 +134,6 @@ public partial class FunFairBuyViewModel : QuantityViewModelBase
         finally
         {
             IsBuying = false;
-        }*/
+        }
     }
 }

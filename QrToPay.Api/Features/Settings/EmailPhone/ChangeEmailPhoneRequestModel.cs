@@ -4,9 +4,8 @@ using QrToPay.Api.Common.Results;
 
 namespace QrToPay.Api.Features.Settings.EmailPhone;
 
-public sealed class ChangeEmailPhoneRequestModel : IRequest<Result<SuccesMessageDto>>
+public sealed class ChangeEmailPhoneRequestModel : IRequest<Result<ChangeEmailPhoneDto>>
 {
-    public required int UserId { get; init; }
     public required string NewValue { get; init; }
     public required string Password { get; init; }
     public required ChangeType ChangeType { get; init; }

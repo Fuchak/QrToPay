@@ -41,20 +41,16 @@ internal sealed class LoginHandler : IRequestHandler<LoginRequestModel, Result<L
                 return Result<LoginDto>.Failure("Konto zablokowane.", ErrorType.Unauthorized);
             }
 
-            /*
-             LoginDto response = new()
-            {
-                UserId = user.UserId,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                AccountBalance = user.AccountBalance
-                //Podmianka email phone i balance na token jwt?
-            };*/
-            
             string token = _tokenProviderService.Create(user);
 
-
-            return Result<LoginDto>.Success(new() { Token = token});
+            LoginDto response = new()
+            {
+                Token = token,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+            };
+            
+            return Result<LoginDto>.Success(response);
         });
     }
 }

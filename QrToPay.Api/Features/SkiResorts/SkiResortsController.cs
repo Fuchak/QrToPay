@@ -3,9 +3,11 @@ using MediatR;
 using QrToPay.Api.Features.SkiResorts.Prices;
 using QrToPay.Api.Features.SkiResorts.Resorts;
 using QrToPay.Api.Common.Results;
+using Microsoft.AspNetCore.Authorization;
 
 namespace QrToPay.Api.Features.SkiResorts;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class SkiResortsController : ControllerBase
@@ -19,6 +21,7 @@ public class SkiResortsController : ControllerBase
 
     /// <summary> Gets skiresorts from selected city </summary>
     /// <response code="404">Not Found </response>
+    /// <response code="401">Unauthorized </response>
     /// <response code="400">Validation error </response>
     /// <response code="200">Success </response>
     [HttpGet("city")]
@@ -31,6 +34,7 @@ public class SkiResortsController : ControllerBase
 
     /// <summary> Gets skiresort prices of all slopes </summary>
     /// <response code="404">Not Found </response>
+    /// <response code="401">Unauthorized </response>
     /// <response code="400">Validation error </response>
     /// <response code="200">Success </response>
     [HttpGet("prices")]

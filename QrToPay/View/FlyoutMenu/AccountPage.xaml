@@ -40,11 +40,11 @@
         
         <VerticalStackLayout  Grid.Row="1" Spacing="10" Padding="20">
              <!-- Sekcje informacji o użytkowniku -->
-            <StackLayout>
+            <!--<StackLayout>
                 <Label Text="UserID" Style="{StaticResource AccountLabelStyle}"/>
                 <Label Text="{Binding UserId, StringFormat='# {0}'}" Style="{StaticResource AccountLabelMiniStyle}"/>
                 <BoxView Style="{StaticResource AccountBoxViewStyle}"/>
-            </StackLayout>
+            </StackLayout>-->
 
             <StackLayout>
                 <Label Text="Numer telefonu" Style="{StaticResource AccountLabelStyle}"/>

@@ -4,6 +4,7 @@ using QrToPay.Services.Api;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Net.Http.Headers;
 
 namespace QrToPay.Services.Api;
 
@@ -20,7 +21,12 @@ public class CityService
     {
         try
         {
+            var jwtToken = await SecureStorage.GetAsync("AuthToken");
+
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
             HttpResponseMessage response = await client.GetAsync($"/api/Cities?serviceType={serviceType}");
 
             if (response.IsSuccessStatusCode)

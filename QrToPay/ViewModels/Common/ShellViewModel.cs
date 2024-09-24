@@ -8,10 +8,10 @@ public partial class ShellViewModel : ViewModelBase
     [RelayCommand]
     private async Task Logout()
     {
-        if (Preferences.ContainsKey("AuthState"))
-        {
-            Preferences.Remove("AuthState");
-        }
+        SecureStorage.Remove("AuthToken");
+        SecureStorage.Remove("UserUUID");
+
+        //_qrCodeStorageeService.CleanAllQrCodeFiles(); jak tego tu użyć żeby usuwało zawsze po wyjścu? czy powinno raczej tak
         Shell.Current.FlyoutIsPresented = false;
         await NavigateAsync($"///{nameof(LoginPage)}");
     }

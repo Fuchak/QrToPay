@@ -12,21 +12,21 @@ public class QrCodeStorageService
     }
 
     // Metoda do generowania i zapisywania kodu QR
-    public async Task GenerateAndSaveQrCodeImageAsync(int userId, string token)
+    public async Task GenerateAndSaveQrCodeImageAsync(string userUuid, string token)
     {
         ImageSource imageSource = await Task.Run(() => GenerateQrCodeImage(token));
         byte[] qrCodeBytes = ImageSourceToBytes(imageSource);
 
-        string fileName = GetQrCodeFileName(userId, token);
+        string fileName = GetQrCodeFileName(userUuid, token);
         string filePath = Path.Combine(_qrCodeDirectory, fileName);
 
         await File.WriteAllBytesAsync(filePath, qrCodeBytes);
     }
 
     // Metoda do wczytywania kodu QR z pamięci
-    public async Task<ImageSource?> LoadQrCodeImageAsync(int userId, string token)
+    public async Task<ImageSource?> LoadQrCodeImageAsync(string userUuid, string token)
     {
-        string fileName = GetQrCodeFileName(userId, token);
+        string fileName = GetQrCodeFileName(userUuid, token);
         string filePath = Path.Combine(_qrCodeDirectory, fileName);
 
         if (File.Exists(filePath))
@@ -53,10 +53,20 @@ public class QrCodeStorageService
         }
     }
 
-    // Pomocnicza metoda do generowania nazwy pliku
-    private static string GetQrCodeFileName(int userId, string token)
+    public void CleanAllQrCodeFiles()
     {
-        return $"QRCode_{userId}_{token}.png";
+        var files = Directory.GetFiles(_qrCodeDirectory, "QRCode_*.png");
+
+        foreach (var file in files)
+        {
+            File.Delete(file);
+        }
+    }
+
+    // Pomocnicza metoda do generowania nazwy pliku
+    private static string GetQrCodeFileName(string userUuid, string token)
+    {
+        return $"QRCode_{userUuid}_{token}.png";
     }
 
     // Pomocnicza metoda do generowania obrazu kodu QR

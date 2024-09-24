@@ -4,6 +4,7 @@ using QrToPay.Models.Requests;
 using System.Net.Http;
 using System.Threading.Tasks;
 using QrToPay.Models.Common;
+using System.Net.Http.Headers;
 
 namespace QrToPay.Services.Api;
 
@@ -20,7 +21,12 @@ public class ScanService
     {
         try
         {
+            var jwtToken = await SecureStorage.GetAsync("AuthToken");
+
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
             HttpResponseMessage response = await client.GetAsync($"/api/Scan/{qrCode}");
 
             if (response.IsSuccessStatusCode)
@@ -49,7 +55,12 @@ public class ScanService
     {
         try
         {
+            var jwtToken = await SecureStorage.GetAsync("AuthToken");
+
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/Scan/purchase", purchaseRequest);
 
             if (response.IsSuccessStatusCode)

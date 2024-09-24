@@ -11,11 +11,13 @@ public class VerifyHandler : IRequestHandler<VerifyRequestModel, Result<SuccesMe
 {
     private readonly QrToPayDbContext _context;
     private readonly VerificationStorageService _verificationStorageService;
+    private readonly CurrentUserService _currentUserService;
 
-    public VerifyHandler(QrToPayDbContext context, VerificationStorageService verificationStorageService)
+    public VerifyHandler(QrToPayDbContext context, VerificationStorageService verificationStorageService, CurrentUserService currentUserService)
     {
         _context = context;
         _verificationStorageService = verificationStorageService;
+        _currentUserService = currentUserService;
     }
 
     public async Task<Result<SuccesMessageDto>> Handle(VerifyRequestModel request, CancellationToken cancellationToken)
@@ -23,7 +25,7 @@ public class VerifyHandler : IRequestHandler<VerifyRequestModel, Result<SuccesMe
         return await ResultHandler.HandleRequestAsync(async () =>
         {
             User? response = await _context.Users
-                .FirstOrDefaultAsync(u => u.UserId == request.UserId && u.IsVerified, cancellationToken);
+                .FirstOrDefaultAsync(u => u.UserId == _currentUserService.UserId && u.IsVerified, cancellationToken);
 
             if (response is null)
             {
@@ -37,23 +39,23 @@ public class VerifyHandler : IRequestHandler<VerifyRequestModel, Result<SuccesMe
 
             if (request.ChangeType == ChangeType.Email)
             {
-                if (!_verificationStorageService.TryGetEmailVerification(request.UserId, out var newEmail))
+                if (!_verificationStorageService.TryGetEmailVerification(_currentUserService.UserId, out var newEmail))
                 {
                     return Result<SuccesMessageDto>.Failure("Kod weryfikacyjny wygasł lub jest nieprawidłowy.", ErrorType.BadRequest);
                 }
 
                 response.Email = newEmail;
-                _verificationStorageService.RemoveEmailVerification(request.UserId);
+                _verificationStorageService.RemoveEmailVerification(_currentUserService.UserId);
             }
             else if (request.ChangeType == ChangeType.Phone)
             {
-                if (!_verificationStorageService.TryGetPhoneVerification(request.UserId, out var newPhone))
+                if (!_verificationStorageService.TryGetPhoneVerification(_currentUserService.UserId, out var newPhone))
                 {
                     return Result<SuccesMessageDto>.Failure("Kod weryfikacyjny wygasł lub jest nieprawidłowy.", ErrorType.BadRequest);
                 }
 
                 response.PhoneNumber = newPhone;
-                _verificationStorageService.RemovePhoneVerification(request.UserId);
+                _verificationStorageService.RemovePhoneVerification(_currentUserService.UserId);
             }
 
             response.VerificationCode = null;
