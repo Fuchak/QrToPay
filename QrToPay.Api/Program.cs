@@ -64,11 +64,19 @@ if (app.Environment.IsDevelopment())
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "QrToPay API V1");
     });
+    app.UseReDoc(c =>
+    {
+        c.RoutePrefix = "redoc";
+        c.SpecUrl = "/swagger/v1/swagger.json";
+        c.DocumentTitle = "QrToPay API Documentation";
+    });
 }
 
 app.UseHttpsRedirection();
 
 app.UseMiddleware<UserContextMiddleware>();
+
+
 
 app.UseAuthentication();
 app.UseAuthorization();
