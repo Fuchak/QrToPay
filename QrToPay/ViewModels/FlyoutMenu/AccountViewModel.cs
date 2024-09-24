@@ -16,11 +16,9 @@ public partial class AccountViewModel : ViewModelBase
     [RelayCommand]
     public async Task LoadUserData()
     {
-        await Task.Run(async () =>
-        {
-            Email = await GetSecureStorageValueOrDefaultAsync("UserEmail", "brak");
-            PhoneNumber = await GetSecureStorageValueOrDefaultAsync("UserPhone", "brak");
-        });
+
+        Email = await GetSecureStorageValueOrDefaultAsync("UserEmail", "brak");
+        PhoneNumber = await GetSecureStorageValueOrDefaultAsync("UserPhone", "brak");
 
         OnPropertyChanged(nameof(Email));
         OnPropertyChanged(nameof(PhoneNumber));
