@@ -6,9 +6,11 @@ using QrToPay.Api.Features.Tickets.Purchase;
 using QrToPay.Api.Features.Tickets.Activate;
 using QrToPay.Api.Features.Tickets.Deactivate;
 using QrToPay.Api.Common.Results;
+using Microsoft.AspNetCore.Authorization;
 
 namespace QrToPay.Api.Features.Tickets;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class TicketsController : ControllerBase
@@ -22,17 +24,19 @@ public class TicketsController : ControllerBase
 
     /// <summary> Get all active tickets </summary>
     /// <response code="404">Not Found </response>
+    /// <response code="401">Unauthorized </response>
     /// <response code="400">Validation error </response>
     /// <response code="200">Success </response>
     [HttpGet("active")]
-    public async Task<IActionResult> GetActiveTickets([FromQuery] GetActiveTicketsRequestModel request)
+    public async Task<IActionResult> GetActiveTickets()
     {
-        Result<IEnumerable<ActiveTicketDto>> result = await _mediator.Send(request);
+        Result<IEnumerable<ActiveTicketDto>> result = await _mediator.Send(new GetActiveTicketsRequestModel());
 
         return result.ToActionResult();
     }
 
     /// <summary> Purchase ticket by clicking not by scanning </summary>
+    /// <response code="401">Unauthorized </response>
     /// <response code="400">Validation error </response>
     /// <response code="200">Success </response>
     [HttpPost("purchase")]
@@ -45,6 +49,7 @@ public class TicketsController : ControllerBase
 
     /// <summary> Get history of bought tickets </summary>
     /// <response code="404">Not Found </response>
+    /// <response code="401">Unauthorized </response>
     /// <response code="400">Validation error </response>
     /// <response code="200">Success </response>
     [HttpGet("history")]
@@ -57,6 +62,7 @@ public class TicketsController : ControllerBase
 
     /// <summary> activate ticket </summary>
     /// <response code="404">Not Found </response>
+    /// <response code="401">Unauthorized </response>
     /// <response code="400">Validation error </response>
     /// <response code="200">Success </response>
     [HttpPost("activate")]
@@ -69,6 +75,7 @@ public class TicketsController : ControllerBase
 
     /// <summary> deactivate ticket </summary>
     /// <response code="404">Not Found </response>
+    /// <response code="401">Unauthorized </response>
     /// <response code="400">Validation error </response>
     /// <response code="200">Success </response>
     [HttpPost("deactivate")]

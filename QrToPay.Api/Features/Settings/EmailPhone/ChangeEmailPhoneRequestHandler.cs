@@ -8,32 +8,34 @@ using QrToPay.Api.Common.Services;
 
 namespace QrToPay.Api.Features.Settings.EmailPhone;
 
-public class ChangeEmailPhoneRequestHandler : IRequestHandler<ChangeEmailPhoneRequestModel, Result<SuccesMessageDto>>
+public class ChangeEmailPhoneRequestHandler : IRequestHandler<ChangeEmailPhoneRequestModel, Result<ChangeEmailPhoneDto>>
 {
     private readonly QrToPayDbContext _context;
     private readonly VerificationStorageService _verificationStorageService;
+    private readonly CurrentUserService _currentUserService;
 
-    public ChangeEmailPhoneRequestHandler(QrToPayDbContext context, VerificationStorageService verificationStorageService)
+    public ChangeEmailPhoneRequestHandler(QrToPayDbContext context, VerificationStorageService verificationStorageService, CurrentUserService currentUserService)
     {
         _context = context;
         _verificationStorageService = verificationStorageService;
+        _currentUserService = currentUserService;
     }
 
-    public async Task<Result<SuccesMessageDto>> Handle(ChangeEmailPhoneRequestModel request, CancellationToken cancellationToken)
+    public async Task<Result<ChangeEmailPhoneDto>> Handle(ChangeEmailPhoneRequestModel request, CancellationToken cancellationToken)
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
             User? user = await _context.Users
-                .FirstOrDefaultAsync(u => u.UserId == request.UserId && u.IsVerified, cancellationToken);
+                .FirstOrDefaultAsync(u => u.UserId == _currentUserService.UserId && u.IsVerified, cancellationToken);
 
             if(user is null)
             {
-                return Result<SuccesMessageDto>.Failure("Użytkownik z podanym identyfikatorem nie istnieje.", ErrorType.NotFound);
+                return Result<ChangeEmailPhoneDto>.Failure("Użytkownik z podanym identyfikatorem nie istnieje.", ErrorType.NotFound);
             }
 
             if (!AuthenticationHelper.VerifyPassword(request.Password, user.PasswordHash))
             {
-                return Result<SuccesMessageDto>.Failure("Nieprawidłowe hasło.", ErrorType.BadRequest);
+                return Result<ChangeEmailPhoneDto>.Failure("Nieprawidłowe hasło.", ErrorType.BadRequest);
             }
 
             //User? existingUser = null;
@@ -45,7 +47,7 @@ public class ChangeEmailPhoneRequestHandler : IRequestHandler<ChangeEmailPhoneRe
 
                 if(existingUser != null)
                 {
-                    return Result<SuccesMessageDto>.Failure($"Użytkownik z takim adresem email już istnieje.", ErrorType.BadRequest);
+                    return Result<ChangeEmailPhoneDto>.Failure($"Użytkownik z takim adresem email już istnieje.", ErrorType.BadRequest);
                 }
 
                 _verificationStorageService.StoreEmailVerification(user.UserId, request.NewValue);
@@ -57,14 +59,14 @@ public class ChangeEmailPhoneRequestHandler : IRequestHandler<ChangeEmailPhoneRe
 
                 if (existingUser != null)
                 {
-                    return Result<SuccesMessageDto>.Failure($"Użytkownik z takim numerem telefonu już istnieje.", ErrorType.BadRequest);
+                    return Result<ChangeEmailPhoneDto>.Failure($"Użytkownik z takim numerem telefonu już istnieje.", ErrorType.BadRequest);
                 }
 
                 _verificationStorageService.StorePhoneVerification(user.UserId, request.NewValue);
             }
             else
             {
-                return Result<SuccesMessageDto>.Failure("Nieprawidłowy typ zmiany.", ErrorType.BadRequest);
+                return Result<ChangeEmailPhoneDto>.Failure("Nieprawidłowy typ zmiany.", ErrorType.BadRequest);
             }
 
             string verificationCode = AuthenticationHelper.GenerateVerificationCode();
@@ -73,7 +75,7 @@ public class ChangeEmailPhoneRequestHandler : IRequestHandler<ChangeEmailPhoneRe
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<SuccesMessageDto>.Success(new() { Message = verificationCode });
+            return Result<ChangeEmailPhoneDto>.Success(new() { VerificationCode = verificationCode });
         });
     }
 

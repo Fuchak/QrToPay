@@ -4,6 +4,7 @@ using QrToPay.Models.Responses;
 using QrToPay.Models.Requests;
 using System.Net.Http;
 using System.Text.Json;
+using System.Net.Http.Headers;
 
 namespace QrToPay.Services.Api;
 public class QrCodeService
@@ -24,7 +25,11 @@ public class QrCodeService
             //UserID = userId
         };
 
+        var jwtToken = await SecureStorage.GetAsync("AuthToken");
+
         HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
 
         await client.PostAsJsonAsync("api/Tickets/activate", requestModel);
 
@@ -38,7 +43,11 @@ public class QrCodeService
             //UserID = userId
         };
 
+        var jwtToken = await SecureStorage.GetAsync("AuthToken");
+
         HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
 
         await client.PostAsJsonAsync("api/Tickets/deactivate", requestModel);
     }

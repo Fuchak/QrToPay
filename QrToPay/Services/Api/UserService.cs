@@ -5,6 +5,7 @@ using QrToPay.Models.Requests;
 using QrToPay.Models.Responses;
 using QrToPay.Helpers;
 using System.Diagnostics;
+using System.Net.Http.Headers;
 
 namespace QrToPay.Services.Api;
 
@@ -92,7 +93,7 @@ public class UserService
         }
     }
 
-    public async Task<ServiceResult<ChangeResponse>> CheckAccountAsync(ResetPasswordRequest request)
+    public async Task<ServiceResult<VerificationCodeResponse>> CheckAccountAsync(ResetPasswordRequest request)
     {
         HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
 
@@ -101,55 +102,60 @@ public class UserService
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/Auth/checkAccount", request);
             if (response.IsSuccessStatusCode)
             {
-                ChangeResponse? changeResponse = await response.Content.ReadFromJsonAsync<ChangeResponse>();
+                VerificationCodeResponse? changeResponse = await response.Content.ReadFromJsonAsync<VerificationCodeResponse>();
                 if (changeResponse != null)
                 {
-                    return ServiceResult<ChangeResponse>.Success(changeResponse);
+                    return ServiceResult<VerificationCodeResponse>.Success(changeResponse);
                 }
                 else
                 {
-                    return ServiceResult<ChangeResponse>.Failure("Błąd podczas odczytywania kodu weryfikacyjnego.");
+                    return ServiceResult<VerificationCodeResponse>.Failure("Błąd podczas odczytywania kodu weryfikacyjnego.");
                 }
             }
             else
             {
                 string errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
                     ?? "Błąd podczas resetowania hasła. Spróbuj ponownie.";
-                return ServiceResult<ChangeResponse>.Failure(errorMessage);
+                return ServiceResult<VerificationCodeResponse>.Failure(errorMessage);
             }
         }
         catch (Exception ex)
         {
-            return ServiceResult<ChangeResponse>.Failure(HttpError.HandleError(ex));
+            return ServiceResult<VerificationCodeResponse>.Failure(HttpError.HandleError(ex));
         }
     }
 
-    public async Task<ServiceResult<ChangeResponse>> RequestChangeAsync(ChangeRequest request)
+    public async Task<ServiceResult<VerificationCodeResponse>> RequestChangeAsync(ChangeRequest request)
     {
         try
         {
+            var jwtToken = await SecureStorage.GetAsync("AuthToken");
+
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/Settings/requestChange", request);
 
             if (response.IsSuccessStatusCode)
             {
-                ChangeResponse? changeResponse = await response.Content.ReadFromJsonAsync<ChangeResponse>();
+                VerificationCodeResponse? changeResponse = await response.Content.ReadFromJsonAsync<VerificationCodeResponse>();
                 if (changeResponse != null)
                 {
-                    return ServiceResult<ChangeResponse>.Success(changeResponse);
+                    return ServiceResult<VerificationCodeResponse>.Success(changeResponse);
                 }
-                return ServiceResult<ChangeResponse>.Failure("Błąd podczas odczytywania odpowiedzi serwera.");
+                return ServiceResult<VerificationCodeResponse>.Failure("Błąd podczas odczytywania odpowiedzi serwera.");
             }
             else
             {
                 string errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
                     ?? "Żądanie zmiany danych kontaktowych nie powiodło się.";
-                return ServiceResult<ChangeResponse>.Failure(errorMessage);
+                return ServiceResult<VerificationCodeResponse>.Failure(errorMessage);
             }
         }
         catch (Exception ex)
         {
-            return ServiceResult<ChangeResponse>.Failure(HttpError.HandleError(ex));
+            return ServiceResult<VerificationCodeResponse>.Failure(HttpError.HandleError(ex));
         }
     }
 
@@ -157,7 +163,12 @@ public class UserService
     {
         try
         {
+            var jwtToken = await SecureStorage.GetAsync("AuthToken");
+
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/Settings/verifyChange", request);
 
             if (response.IsSuccessStatusCode)
@@ -181,7 +192,12 @@ public class UserService
     {
         try
         {
+            var jwtToken = await SecureStorage.GetAsync("AuthToken");
+
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/Settings/changePassword", request);
 
             if (response.IsSuccessStatusCode)

@@ -20,7 +20,10 @@ namespace QrToPay.Services.Api
             _httpClientFactory = httpClientFactory;
         }
 
+        //Dać jako GLOBAL public const odda mocniutko TODO czyli jakas inna klasa osobna const np w helperach
         private const string AuthTokenKey = "AuthToken";
+        private const string UserEmail = "UserEmail";
+        private const string UserPhone = "UserPhone";
 
         public async Task<bool> IsAuthenticatedAsync()
         {
@@ -65,6 +68,8 @@ namespace QrToPay.Services.Api
                     if (userResponse != null)
                     {
                         await SecureStorage.SetAsync(AuthTokenKey, userResponse.Token);
+                        await SecureStorage.SetAsync(UserEmail, userResponse.Email!);
+                        await SecureStorage.SetAsync(UserPhone, userResponse.PhoneNumber!);
 
                         return ServiceResult<UserResponse>.Success(userResponse);
                     }

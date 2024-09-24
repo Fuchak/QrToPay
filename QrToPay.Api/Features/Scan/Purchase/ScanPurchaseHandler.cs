@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.Common.Results;
+using QrToPay.Api.Common.Services;
 using QrToPay.Api.Models;
 
 namespace QrToPay.Api.Features.Scan.Purchase;
@@ -8,10 +9,12 @@ namespace QrToPay.Api.Features.Scan.Purchase;
 public class ScanPurchaseHandler : IRequestHandler<ScanPurchaseRequestModel, Result<SuccesMessageDto>>
 {
     private readonly QrToPayDbContext _context;
+    private readonly CurrentUserService _currentUserService;
 
-    public ScanPurchaseHandler(QrToPayDbContext context)
+    public ScanPurchaseHandler(QrToPayDbContext context, CurrentUserService currentUserService)
     {
         _context = context;
+        _currentUserService = currentUserService;
     }
 
     public async Task<Result<SuccesMessageDto>> Handle(ScanPurchaseRequestModel request, CancellationToken cancellationToken)
@@ -19,7 +22,7 @@ public class ScanPurchaseHandler : IRequestHandler<ScanPurchaseRequestModel, Res
         return await ResultHandler.HandleRequestAsync(async () =>
         {
             User? response = await _context.Users
-                .FirstOrDefaultAsync(u => u.UserId == request.UserId, cancellationToken);
+                .FirstOrDefaultAsync(u => u.UserId == _currentUserService.UserId, cancellationToken);
 
 
             if (response is null)
@@ -36,7 +39,7 @@ public class ScanPurchaseHandler : IRequestHandler<ScanPurchaseRequestModel, Res
 
             TicketHistory ticketHistoryRequest = new()
             {
-                UserId = request.UserId,
+                UserId = _currentUserService.UserId,
                 ServiceId = request.ServiceId,
                 //Dodać do bazy kolumnę attraction name do historii biletów
                 //AttractionName = request.ServiceName,

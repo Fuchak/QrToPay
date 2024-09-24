@@ -49,16 +49,8 @@ public partial class ChangePasswordViewModel : ViewModelBase
                 return;
             }
 
-            int userId = Preferences.Get("UserId", 0);
-            if (userId == 0)
-            {
-                ErrorMessage = "Nie można znaleźć identyfikatora użytkownika.";
-                return;
-            }
-
             ChangePasswordRequest changePasswordRequest = new()
             {
-                UserId = userId,
                 OldPassword = OldPassword,
                 NewPassword = Password,
                 ConfirmNewPassword = PasswordConfirm

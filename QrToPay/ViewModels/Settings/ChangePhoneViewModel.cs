@@ -44,16 +44,8 @@ public partial class ChangePhoneViewModel : ViewModelBase
                 return;
             }
 
-            int userId = Preferences.Get("UserId", 0);
-            if (userId == 0)
-            {
-                ErrorMessage = "Nie można znaleźć identyfikatora użytkownika.";
-                return;
-            }
-
             ChangeRequest changeRequest = new()
             {
-                UserId = userId,
                 NewValue = NewPhoneNumber,
                 Password = Password,
                 ChangeType = ChangeType.Phone
@@ -78,7 +70,6 @@ public partial class ChangePhoneViewModel : ViewModelBase
                 {
                     VerifyChangeRequest verifyRequest = new()
                     {
-                        UserId = userId,
                         VerificationCode = result.Data.VerificationCode,
                         ChangeType = ChangeType.Phone
                     };
@@ -86,7 +77,7 @@ public partial class ChangePhoneViewModel : ViewModelBase
                     var verifyResult = await _userService.VerifyChangeAsync(verifyRequest);
                     if (verifyResult.IsSuccess)
                     {
-                        Preferences.Set("UserPhone", NewPhoneNumber);
+                        await SecureStorage.SetAsync("UserPhone", NewPhoneNumber);
                         await Shell.Current.DisplayAlert("Sukces", "Numer telefonu został zmieniony.", "OK");
                         NewPhoneNumber = string.Empty;
                         Password = string.Empty;

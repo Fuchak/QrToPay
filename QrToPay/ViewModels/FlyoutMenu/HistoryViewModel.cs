@@ -36,10 +36,9 @@ public partial class HistoryViewModel : ViewModelBase
             IsBusy = true;
             ErrorMessage = null;
 
-            int userId = Preferences.Get("UserId", 0);
             HistoryRequest request = new()
             {
-                UserId = userId,
+
                 PageNumber = pageNumber,
                 PageSize = pageSize,
             };

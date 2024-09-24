@@ -5,5 +5,5 @@ namespace QrToPay.Api.Features.UserBalance.CheckBalance;
 
 public sealed class GetUserBalanceRequestModel : IRequest<Result<UserBalanceDto>>
 {
-    //public int UserId { get; set; }
+
 }

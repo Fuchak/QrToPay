@@ -55,8 +55,7 @@ public partial class ActiveBiletsViewModel : ViewModelBase
             IsBusy = true;
             ErrorMessage = null;
 
-            int userId = Preferences.Get("UserId", 0);
-            var result = await _ticketService.GetActiveTicketsAsync(userId);
+            var result = await _ticketService.GetActiveTicketsAsync();
 
             ActiveTickets.Clear();
 

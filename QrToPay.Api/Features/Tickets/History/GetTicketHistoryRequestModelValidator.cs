@@ -6,6 +6,5 @@ public class GetTicketHistoryRequestModelValidator : AbstractValidator<GetTicket
 {
     public GetTicketHistoryRequestModelValidator()
     {
-        RuleFor(x => x.UserId).GreaterThan(0).WithMessage("Identyfikator użytkownika musi być większy niż 0.");
     }
 }

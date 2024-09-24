@@ -34,11 +34,10 @@
             <Label
                 Text="Wpisz hasło:"
                 Style="{StaticResource SubHeadline}" />
-            <Frame>
-                <Entry
-                    Placeholder="Hasło"
-                    Text="{Binding Password, Mode=TwoWay}"/>
-            </Frame>
+            
+            <custom:PasswordEntryView 
+               Text="{Binding Password}"
+               BindingContext="{Binding}" />
 
             <Button
                 Text="Zmień numer" 

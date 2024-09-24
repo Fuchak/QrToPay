@@ -19,7 +19,7 @@ public class UserBalanceController : ControllerBase
         _mediator = mediator;
     }
 
-    /// <summary> Get account balance. Optional UserID. If not passed will be taken out from JWT token</summary>
+    /// <summary> Get account balance. UserID will be taken out from JWT token</summary>
     /// <response code="404">Not Found </response>
     /// <response code="401">Unauthorized </response>
     /// <response code="400">Validation error </response>
@@ -33,6 +33,7 @@ public class UserBalanceController : ControllerBase
 
     /// <summary> Topup account with money </summary>
     /// <response code="404">Not Found </response>
+    /// <response code="401">Unauthorized </response>
     /// <response code="400">Validation error </response>
     /// <response code="200">Success </response>
     [HttpPost("topup")]

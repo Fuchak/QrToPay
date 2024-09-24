@@ -79,9 +79,6 @@ public partial class SkiResortBuyViewModel : QuantityViewModelBase
             }
             string formattedPrice = Price.ToString(CultureInfo.InvariantCulture);
 
-            //int userId = Preferences.Get("UserId", 0);
-
-
             var balanceResult = await _balanceService.LoadUserDataAsync();
             if (!balanceResult.IsSuccess)
             {
@@ -97,23 +94,24 @@ public partial class SkiResortBuyViewModel : QuantityViewModelBase
 
             UpdateTicketRequest updateRequest = new()
             {
-                UserId = 1,
                 ServiceId = ServiceId,
                 Quantity = Quantity,
                 Tokens = Points,
                 TotalPrice = formattedPrice
             };
 
-            var token = await _ticketService.GenerateAndUpdateTicketAsync(updateRequest);
-            if (string.IsNullOrEmpty(token))
+            var result = await _ticketService.GenerateAndUpdateTicketAsync(updateRequest);
+
+            if (!result.IsSuccess)
             {
-                ErrorMessage = "Nie udało się przetworzyć płatności";
+                ErrorMessage = result.ErrorMessage;
                 return;
             }
 
+            string token = result.Data!;
+
             Ticket newTicket = new()
             {
-                UserId = 1,
                 EntityName = ResortName,
                 CityName = CityName,
                 Price = Price,

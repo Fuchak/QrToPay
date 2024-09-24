@@ -86,13 +86,10 @@ public partial class ScanQrCodeViewModel : ViewModelBase
         {
             IsBusy = true;
 
-            int userId = Preferences.Get("UserId", 0);
-
             if (CurrentAttraction != null)
             {
                 PurchaseRequest purchaseRequest = new()
                 {
-                    UserId = userId,
                     ServiceName = CurrentAttraction.ServiceName,
                     ServiceId = CurrentAttraction.ServiceId,
                     AttractionName = CurrentAttraction.AttractionName,

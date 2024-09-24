@@ -3,9 +3,11 @@ using MediatR;
 using System.ComponentModel.DataAnnotations;
 using QrToPay.Api.Features.Support.CreateHelpForm;
 using QrToPay.Api.Common.Results;
+using Microsoft.AspNetCore.Authorization;
 
 namespace QrToPay.Api.Features.Support;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class SupportController : ControllerBase
@@ -19,6 +21,7 @@ public class SupportController : ControllerBase
 
     /// <summary> Sends helpform to database </summary>
     /// <response code="404">Not Found </response>
+    /// <response code="401">Unauthorized </response>
     /// <response code="400">Validation error </response>
     /// <response code="200">Success </response>
     [HttpPost]

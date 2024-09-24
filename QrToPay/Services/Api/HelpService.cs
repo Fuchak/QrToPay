@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using QrToPay.Models.Requests;
 using QrToPay.Models.Responses;
 
@@ -16,7 +17,12 @@ public class HelpService
     {
         try
         {
+            var jwtToken = await SecureStorage.GetAsync("AuthToken");
+
             HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/Support", request);
 
             if (response.IsSuccessStatusCode)
