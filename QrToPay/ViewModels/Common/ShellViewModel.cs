@@ -19,10 +19,9 @@ public partial class ShellViewModel : ViewModelBase
     [RelayCommand]
     private async Task Logout()
     {
-        SecureStorage.Remove(SecureStorageConst.AuthToken);
-        SecureStorage.Remove(SecureStorageConst.UserUuid);
-        SecureStorage.Remove(SecureStorageConst.UserEmail);
-        SecureStorage.Remove(SecureStorageConst.UserPhone);
+        SecureStorage.Remove(AppDataConst.AuthToken);
+        SecureStorage.Remove(AppDataConst.UserEmail);
+        SecureStorage.Remove(AppDataConst.UserPhone);
 
         WeakReferenceMessenger.Default.Send(new UserLogoutMessage());
 

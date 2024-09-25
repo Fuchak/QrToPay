@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Net.Http.Json;
 using QrToPay.Models.Common;
 using QrToPay.Services.Api;
+using QrToPay.Services.Local;
 using QrToPay.View.FunFair;
 
 namespace QrToPay.ViewModels.FunFair;
@@ -10,12 +11,15 @@ public partial class FunFairViewModel : ViewModelBase
 {
     private readonly AppState _appState;
     private readonly FunFairService _funFairService;
+    private readonly CacheService _cacheService;
 
-    public FunFairViewModel(AppState appState, FunFairService funFairService)
+    public FunFairViewModel(AppState appState, FunFairService funFairService, CacheService cacheService)
     {
         _appState = appState;
         _funFairService = funFairService;
+        _cacheService = cacheService;
     }
+
     [ObservableProperty]
     private ObservableCollection<FunFairData> funFairs = [];
 
@@ -27,19 +31,28 @@ public partial class FunFairViewModel : ViewModelBase
         {
             IsBusy = true;
 
-            var result = await _funFairService.GetFunFairsAsync(_appState.CityName!);
+            var cacheKey = CacheKeyHelper.GetCacheKey(AppDataConst.FunFairCache, _appState.CityName!);
 
+            var cachedFunFairs = await _cacheService.LoadFromCacheAsync<IEnumerable<FunFairData>>(cacheKey);
+            if (cachedFunFairs != null)
+            {
+                CacheService.UpdateCollection(FunFairs, cachedFunFairs);
+            }
+
+            var result = await _funFairService.GetFunFairsAsync(_appState.CityName!);
             if (result.IsSuccess && result.Data != null)
             {
-                FunFairs.Clear();
-                foreach (var skiResort in result.Data)
+                var newFunFairs = result.Data.Select(funFair => new FunFairData
                 {
-                    FunFairs.Add(new FunFairData
-                    {
-                        FunFairId = skiResort.FunFairId,
-                        ResortName = skiResort.ResortName,
-                        ImageSource = "miasteczko.png"
-                    });
+                    FunFairId = funFair.FunFairId,
+                    ResortName = funFair.ResortName,
+                    ImageSource = AppDataConst.FunFairPNG
+                });
+
+                if (!CacheService.AreDataEqual(FunFairs, newFunFairs))
+                {
+                    await _cacheService.SaveToCacheAsync(cacheKey, newFunFairs);
+                    CacheService.UpdateCollection(FunFairs, newFunFairs);
                 }
                 ErrorMessage = null;
             }

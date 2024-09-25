@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using QrToPay.Models.Common;
 using QrToPay.Models.Responses;
 using QrToPay.Services.Api;
+using QrToPay.Services.Local;
 
 namespace QrToPay.ViewModels.SkiResort;
 
@@ -10,11 +11,13 @@ public partial class SkiResortPricesViewModel : ViewModelBase
 {
     private readonly AppState _appState;
     private readonly SkiResortService _skiResortService;
+    private readonly CacheService _cacheService;
 
-    public SkiResortPricesViewModel(AppState appState, SkiResortService skiResortService)
+    public SkiResortPricesViewModel(AppState appState, SkiResortService skiResortService, CacheService cacheService)
     {
         _appState = appState;
         _skiResortService = skiResortService;
+        _cacheService = cacheService;
     }
 
     [ObservableProperty]
@@ -35,18 +38,28 @@ public partial class SkiResortPricesViewModel : ViewModelBase
             CityName = _appState.CityName;
 
             IsBusy = true;
-            var result = await _skiResortService.GetSkiResortPricesAsync(_appState.AttractionId);
+            var cacheKey = CacheKeyHelper.GetCacheKey(AppDataConst.SkiResortCache, _appState.CityName!, _appState.ResortName!);
+            // Krok 1: Próba załadowania danych z pamięci podręcznej, jeśli istnieją
+            var cachedTickets = await _cacheService.LoadFromCacheAsync<IEnumerable<Ticket>>(cacheKey);
+            if (cachedTickets != null)
+            {
+                CacheService.UpdateCollection(Tickets, cachedTickets);
+            }
 
+            // Krok 2: Próba pobrania danych z API i aktualizacja, jeśli są nowe dane
+            var result = await _skiResortService.GetSkiResortPricesAsync(_appState.AttractionId);
             if (result.IsSuccess && result.Data != null)
             {
-                Tickets.Clear();
-                foreach (var price in result.Data)
+                var newTickets = result.Data.Select(price => new Ticket
                 {
-                    Tickets.Add(new Ticket
-                    {
-                        Points = price.Tokens,
-                        Price = price.Price
-                    });
+                    Points = price.Tokens,
+                    Price = price.Price
+                });
+
+                if (!CacheService.AreDataEqual(Tickets, newTickets))
+                {
+                    await _cacheService.SaveToCacheAsync(cacheKey, newTickets);
+                    CacheService.UpdateCollection(Tickets, newTickets);
                 }
                 ErrorMessage = null;
             }

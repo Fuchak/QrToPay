@@ -77,7 +77,7 @@ public partial class ChangePhoneViewModel : ViewModelBase
                     var verifyResult = await _userService.VerifyChangeAsync(verifyRequest);
                     if (verifyResult.IsSuccess)
                     {
-                        await SecureStorage.SetAsync(SecureStorageConst.UserPhone, NewPhoneNumber);
+                        await SecureStorage.SetAsync(AppDataConst.UserPhone, NewPhoneNumber);
                         await Shell.Current.DisplayAlert("Sukces", "Numer telefonu został zmieniony.", "OK");
                         NewPhoneNumber = string.Empty;
                         Password = string.Empty;

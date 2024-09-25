@@ -1,6 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Net.Http.Json;
 using QRCoder;
 using CommunityToolkit.Maui.Views;
 using QrToPay.Models.Common;
@@ -14,12 +12,14 @@ public partial class ActiveBiletsViewModel : ViewModelBase
     private readonly TicketService _ticketService;
     private readonly QrCodeStorageService _qrCodeStorageService;
     private readonly QrCodeService _qrCodeService;
+    private readonly CacheService _cacheService;
 
-    public ActiveBiletsViewModel(TicketService ticketService, QrCodeStorageService qrCodeStorageService, QrCodeService qrCodeService)
+    public ActiveBiletsViewModel(TicketService ticketService, QrCodeStorageService qrCodeStorageService, QrCodeService qrCodeService, CacheService cacheService)
     {
         _ticketService = ticketService;
         _qrCodeStorageService = qrCodeStorageService;
         _qrCodeService = qrCodeService;
+        _cacheService = cacheService;
     }
 
     [ObservableProperty]
@@ -55,22 +55,32 @@ public partial class ActiveBiletsViewModel : ViewModelBase
             IsBusy = true;
             ErrorMessage = null;
 
+            var cachedActiveTickets = await _cacheService.LoadFromCacheAsync<IEnumerable<Ticket>>(AppDataConst.ActiveTickets);
+            if (cachedActiveTickets != null)
+            {
+                CacheService.UpdateCollection(ActiveTickets, cachedActiveTickets);
+            }
+
             var result = await _ticketService.GetActiveTicketsAsync();
-
-            ActiveTickets.Clear();
-
             if (result.IsSuccess && result.Data != null)
             {
-                foreach (var ticket in result.Data)
+                var newActiveTickets = result.Data;
+
+                if (!CacheService.AreDataEqual(ActiveTickets, newActiveTickets))
                 {
-                    ActiveTickets.Add(ticket);
+                    await _cacheService.SaveToCacheAsync(AppDataConst.ActiveTickets, newActiveTickets);
+                    CacheService.UpdateCollection(ActiveTickets, newActiveTickets);
                 }
+
                 HasActiveTickets = true;
             }
             else
             {
-                HasActiveTickets = false;
-                ErrorMessage = result.ErrorMessage;
+                if (!ActiveTickets.Any())
+                {
+                    HasActiveTickets = false;
+                    ErrorMessage = result.ErrorMessage;
+                }
             }
         }
         finally
@@ -82,15 +92,14 @@ public partial class ActiveBiletsViewModel : ViewModelBase
     [RelayCommand]
     private async Task ShowQrCodePopupAsync(Ticket ticket)
     {
-        var userUuid = await UserIdentifierService.GetOrCreateUserUUIDAsync();
         // Użycie serwisu do wczytania lub wygenerowania kodu QR
-        ImageSource? imageSource = await _qrCodeStorageService.LoadQrCodeImageAsync(userUuid, ticket.QrCode!);
+        ImageSource? imageSource = await _qrCodeStorageService.LoadQrCodeImageAsync(ticket.QrCode!);
 
         if (imageSource == null)
         {
             // Jeśli kod QR nie został znaleziony w pamięci, generujemy go ponownie
-            await _qrCodeStorageService.GenerateAndSaveQrCodeImageAsync(userUuid, ticket.QrCode!);
-            imageSource = await _qrCodeStorageService.LoadQrCodeImageAsync(userUuid, ticket.QrCode!);
+            await _qrCodeStorageService.GenerateAndSaveQrCodeImageAsync(ticket.QrCode!);
+            imageSource = await _qrCodeStorageService.LoadQrCodeImageAsync(ticket.QrCode!);
         }
 
         if (imageSource == null)
@@ -107,7 +116,7 @@ public partial class ActiveBiletsViewModel : ViewModelBase
             remainingTime = Math.Max(0, (int)(5 * 60 - elapsedTime.TotalSeconds));
         }
 
-        QrCodePopup qrCodePopup = new(imageSource, _qrCodeService, userUuid, ticket.QrCode!, remainingTime);
+        QrCodePopup qrCodePopup = new(imageSource, _qrCodeService, ticket.QrCode!, remainingTime);
         await Shell.Current.ShowPopupAsync(qrCodePopup);
     }
 }

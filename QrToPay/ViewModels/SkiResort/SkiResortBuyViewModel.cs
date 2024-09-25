@@ -121,9 +121,7 @@ public partial class SkiResortBuyViewModel : QuantityViewModelBase
 
             Tickets.Add(newTicket);
 
-            var userUuid = await UserIdentifierService.GetOrCreateUserUUIDAsync();
-
-            await _qrCodeStorageService.GenerateAndSaveQrCodeImageAsync(userUuid, token);
+            await _qrCodeStorageService.GenerateAndSaveQrCodeImageAsync(token);
 
             await Shell.Current.DisplayAlert("Potwierdzenie", "Bilet został zakupiony, kod QR wygenerowany", "OK");
 

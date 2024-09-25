@@ -18,6 +18,7 @@ public static class ServiceExtensions
         builder.Services.AddScoped<SkiResortService>();
         builder.Services.AddScoped<FunFairService>();
         builder.Services.AddSingleton<QrCodeService>();
+        builder.Services.AddSingleton<CacheService>();
 
         //LOCAL
         builder.Services.AddSingleton<QrCodeStorageService>();

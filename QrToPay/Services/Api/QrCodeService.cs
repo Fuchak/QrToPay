@@ -15,14 +15,12 @@ public class QrCodeService
     {
         _httpClientFactory = httpClientFactory;
     }
-
+    //TODO Zabezpieczyć to try-catch
     public async Task ActivateQrCodeAsync(string token)
     {
-
         var requestModel = new
         {
             Token = token,
-            //UserID = userId
         };
 
         var jwtToken = await SecureStorage.GetAsync("AuthToken");
@@ -40,7 +38,6 @@ public class QrCodeService
         var requestModel = new
         {
             Token = token,
-            //UserID = userId
         };
 
         var jwtToken = await SecureStorage.GetAsync("AuthToken");

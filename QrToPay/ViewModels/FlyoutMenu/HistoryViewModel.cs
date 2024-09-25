@@ -1,22 +1,24 @@
 ﻿using QrToPay.Models.Responses;
 using QrToPay.Models.Requests;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Net.Http.Json;
-using System.Text.Json;
 using QrToPay.Services.Api;
+using QrToPay.Services.Local;
 
 namespace QrToPay.ViewModels.FlyoutMenu;
 
 public partial class HistoryViewModel : ViewModelBase
 {
     private readonly TicketService _ticketService;
-    private int pageNumber = 1;
-    private const int pageSize = 10;
+    private readonly CacheService _cacheService;
 
-    public HistoryViewModel(TicketService ticketService)
+    private int pageNumber = 1;
+    private const int pageSize = 50;
+    private bool hasMoreItems = true;
+
+    public HistoryViewModel(TicketService ticketService, CacheService cacheService)
     {
         _ticketService = ticketService;
+        _cacheService = cacheService;
     }
 
     [ObservableProperty]
@@ -25,7 +27,6 @@ public partial class HistoryViewModel : ViewModelBase
     [ObservableProperty]
     private bool hasHistory = true;
 
-    private bool hasMoreItems = true;
 
     public async Task LoadHistoryAsync()
     {
@@ -36,9 +37,15 @@ public partial class HistoryViewModel : ViewModelBase
             IsBusy = true;
             ErrorMessage = null;
 
+            var cachedHistory = await _cacheService.LoadFromCacheAsync<IEnumerable<HistoryItemRequest>>(AppDataConst.TicketHisotry);
+            if (cachedHistory != null && pageNumber == 1)
+            {
+                CacheService.UpdateCollection(HistoryItems, cachedHistory);
+                hasMoreItems = cachedHistory.Count() >= pageSize;
+            }
+
             HistoryRequest request = new()
             {
-
                 PageNumber = pageNumber,
                 PageSize = pageSize,
             };
@@ -47,17 +54,20 @@ public partial class HistoryViewModel : ViewModelBase
 
             if (result.IsSuccess && result.Data != null && result.Data.Count > 0)
             {
-                foreach (var item in result.Data)
+                var newHistoryItems = result.Data.Select(item => new HistoryItemRequest
                 {
-                    HistoryItems.Add(new HistoryItemRequest
-                    {
-                        Date = item.Date,
-                        Type = item.Type.ToString(),
-                        Name = item.Name,
-                        TotalPrice = item.TotalPrice
-                    });
+                    Date = item.Date,
+                    Type = item.Type.ToString(),
+                    Name = item.Name,
+                    TotalPrice = item.TotalPrice
+                });
+
+                if (!CacheService.AreDataEqual(HistoryItems, newHistoryItems))
+                {
+                    await _cacheService.SaveToCacheAsync(AppDataConst.TicketHisotry, newHistoryItems);
+                    CacheService.UpdateCollection(HistoryItems, newHistoryItems);
                 }
-                HasHistory = true;
+
 
                 if (result.Data.Count < pageSize)
                 {

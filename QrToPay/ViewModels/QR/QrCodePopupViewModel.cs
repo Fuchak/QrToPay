@@ -17,14 +17,12 @@ public partial class QrCodePopupViewModel : ViewModelBase
     private bool isActive;
 
     private readonly QrCodeService _qrCodeService;
-    private readonly string _userId;
     private readonly string _token;
 
-    public QrCodePopupViewModel(ImageSource qrCodeImage, QrCodeService qrCodeService, string userUuid, string token, int? remainingTime = null)
+    public QrCodePopupViewModel(ImageSource qrCodeImage, QrCodeService qrCodeService, string token, int? remainingTime = null)
     {
         QrCodeImage = qrCodeImage;
         _qrCodeService = qrCodeService;
-        _userId = userUuid;
         _token = token;
 
         InitializeRemainingTime(remainingTime);

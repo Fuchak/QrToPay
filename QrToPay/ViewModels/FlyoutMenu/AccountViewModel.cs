@@ -15,8 +15,8 @@ public partial class AccountViewModel : ViewModelBase
         else
         {
             IsLoading = true;
-            Email = await GetSecureStorageValueOrDefaultAsync(SecureStorageConst.UserEmail, "brak");
-            PhoneNumber = await GetSecureStorageValueOrDefaultAsync(SecureStorageConst.UserPhone, "brak");
+            Email = await GetSecureStorageValueOrDefaultAsync(AppDataConst.UserEmail, "brak");
+            PhoneNumber = await GetSecureStorageValueOrDefaultAsync(AppDataConst.UserPhone, "brak");
             IsLoading = false;
         }
     }
