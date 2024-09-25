@@ -8,8 +8,6 @@ public partial class AccountPage : ContentPage
 	{
         InitializeComponent();
         BindingContext = _viewModel = vm;
-
-        //vm.LoadUserData();
     }
 
     protected override async void OnAppearing()

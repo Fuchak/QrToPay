@@ -46,17 +46,26 @@
                 <BoxView Style="{StaticResource AccountBoxViewStyle}"/>
             </StackLayout>-->
 
-            <StackLayout>
+            <StackLayout
+                IsVisible="{Binding IsLoading, Converter={StaticResource FalseToTrueConverter}}">
                 <Label Text="Numer telefonu" Style="{StaticResource AccountLabelStyle}"/>
                 <Label Text="{Binding PhoneNumber}" Style="{StaticResource AccountLabelMiniStyle}"/>
                 <BoxView Style="{StaticResource AccountBoxViewStyle}"/>
             </StackLayout>
 
-            <StackLayout>
+            <StackLayout
+                IsVisible="{Binding IsLoading, Converter={StaticResource FalseToTrueConverter}}">
                 <Label Text="Email" Style="{StaticResource AccountLabelStyle}"/>
                 <Label Text="{Binding Email}" Style="{StaticResource AccountLabelMiniStyle}"/>
                 <BoxView Style="{StaticResource AccountBoxViewStyle}"/>
             </StackLayout>
+
+            <ActivityIndicator 
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    IsRunning="{Binding IsLoading}" 
+                    IsVisible="{Binding IsLoading}" 
+                    Color="{StaticResource Orange}"/>
             <!-- 
                 <StackLayout>
                     <Label Text="Numery rejestracyjne" Style="{StaticResource AccountLabelStyle}"/>
