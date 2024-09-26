@@ -1,27 +1,24 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using QrToPay.Helpers;
 using QrToPay.Models.Requests;
 using QrToPay.Models.Responses;
 
 namespace QrToPay.Services.Api;
 public class HelpService
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly HttpClientHelper _httpClientHelper;
 
-    public HelpService(IHttpClientFactory httpClientFactory)
+    public HelpService(HttpClientHelper httpClientHelper)
     {
-        _httpClientFactory = httpClientFactory;
+        _httpClientHelper = httpClientHelper;
     }
 
     public async Task<ServiceResult<string>> SubmitHelpFormAsync(HelpFormRequest request)
     {
         try
         {
-            var jwtToken = await SecureStorage.GetAsync("AuthToken");
-
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            HttpClient client = await _httpClientHelper.CreateAuthenticatedClientAsync();
 
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/Support", request);
 

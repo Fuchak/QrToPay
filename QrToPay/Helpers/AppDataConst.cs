@@ -12,22 +12,23 @@ public static class AppDataConst
     /// <summary>
     /// Fun Fair Cache Const
     /// </summary>
-    public const string FunFairCache = "FunFairCities_cache";
-   // public const string FunFairPlacesCache = "FunFairPlaces_cache";
-    //public const string FunFairPricesCache = "FunFairPrices_cache";
+    public const string FunFairCache = "FunFair_cache";
     public const string FunFairPNG = "miasteczko.png";
 
     /// <summary>
     /// Ski Resort Cache Const
     /// </summary>
-    public const string SkiResortCache = "SkiResortCities_cache";
-    //public const string SkiResortPlacesCache = "SkiResortPlaces_cache";
-    //public const string SkiResortPricesCache = "SkiResortPrices_cache";
+    public const string SkiResortCache = "SkiResort_cache";
     public const string SkiResortPNG = "stok.png";
 
     /// <summary>
     /// Tickets Cache  Const
     /// </summary>
-    public const string TicketHisotry = "TicketHistory_cache";
+    public const string TicketHistory = "TicketHistory_cache";
     public const string ActiveTickets = "ActiveTickets_cache";
+
+    /// <summary>
+    ///  QR Activation Cache Const
+    /// </summary>
+    public const string QrActivationTime = "ActivationTime";
 }

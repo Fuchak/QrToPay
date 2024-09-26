@@ -10,22 +10,18 @@ namespace QrToPay.Services.Api;
 
 public class SkiResortService
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly HttpClientHelper _httpClientHelper;
 
-    public SkiResortService(IHttpClientFactory httpClientFactory)
+    public SkiResortService(HttpClientHelper httpClientHelper)
     {
-        _httpClientFactory = httpClientFactory;
+        _httpClientHelper = httpClientHelper;
     }
 
     public async Task<ServiceResult<List<SkiResortPriceResponse>>> GetSkiResortPricesAsync(int skiResortId)
     {
         try
         {
-            var jwtToken = await SecureStorage.GetAsync("AuthToken");
-
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            HttpClient client = await _httpClientHelper.CreateAuthenticatedClientAsync();
 
             HttpResponseMessage response = await client.GetAsync($"/api/SkiResorts/prices?skiResortId={skiResortId}");
 
@@ -55,11 +51,7 @@ public class SkiResortService
     {
         try
         {
-            var jwtToken = await SecureStorage.GetAsync("AuthToken");
-
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            HttpClient client = await _httpClientHelper.CreateAuthenticatedClientAsync();
 
             HttpResponseMessage response = await client.GetAsync($"/api/SkiResorts/city?cityName={cityName}");
 

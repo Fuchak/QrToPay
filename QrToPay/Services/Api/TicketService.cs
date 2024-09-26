@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using QrToPay.Helpers;
 using QrToPay.Models.Common;
 using QrToPay.Models.Requests;
 using QrToPay.Models.Responses;
@@ -8,22 +9,18 @@ namespace QrToPay.Services.Api;
 
 public class TicketService
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly HttpClientHelper _httpClientHelper;
 
-    public TicketService(IHttpClientFactory httpClientFactory)
+    public TicketService(HttpClientHelper httpClientHelper)
     {
-        _httpClientFactory = httpClientFactory;
+        _httpClientHelper = httpClientHelper;
     }
 
     public async Task<ServiceResult<string>> GenerateAndUpdateTicketAsync(UpdateTicketRequest updateRequest)
     {
         try
         {
-            var jwtToken = await SecureStorage.GetAsync("AuthToken");
-
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            HttpClient client = await _httpClientHelper.CreateAuthenticatedClientAsync();
 
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/Tickets/purchase", updateRequest);
 
@@ -52,11 +49,7 @@ public class TicketService
     {
         try
         {
-            var jwtToken = await SecureStorage.GetAsync("AuthToken");
-
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            HttpClient client = await _httpClientHelper.CreateAuthenticatedClientAsync();
 
             HttpResponseMessage response = await client.GetAsync($"/api/Tickets/active");
 
@@ -85,11 +78,7 @@ public class TicketService
     {
         try
         {
-            var jwtToken = await SecureStorage.GetAsync("AuthToken");
-
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            HttpClient client = await _httpClientHelper.CreateAuthenticatedClientAsync();
 
             HttpResponseMessage response = await client.GetAsync($"/api/Tickets/history?pageNumber={request.PageNumber}&pageSize={request.PageSize}");
 

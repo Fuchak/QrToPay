@@ -9,43 +9,67 @@ using System.Net.Http.Headers;
 namespace QrToPay.Services.Api;
 public class QrCodeService
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly HttpClientHelper _httpClientHelper;
 
-    public QrCodeService(IHttpClientFactory httpClientFactory)
+    public QrCodeService(HttpClientHelper httpClientHelper)
     {
-        _httpClientFactory = httpClientFactory;
+        _httpClientHelper = httpClientHelper;
     }
-    //TODO Zabezpieczyć to try-catch
-    public async Task ActivateQrCodeAsync(string token)
+    public async Task<ServiceResult<object>> ActivateQrCodeAsync(string token)
     {
         var requestModel = new
         {
             Token = token,
         };
+        try
+        {
+            HttpClient client = await _httpClientHelper.CreateAuthenticatedClientAsync();
 
-        var jwtToken = await SecureStorage.GetAsync("AuthToken");
+            HttpResponseMessage response = await client.PostAsJsonAsync("api/Tickets/activate", requestModel);
 
-        HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
-
-        await client.PostAsJsonAsync("api/Tickets/activate", requestModel);
-
+            if (response.IsSuccessStatusCode)
+            {
+                return ServiceResult<object>.Success();
+            }
+            else
+            {
+                string errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
+                    ?? "Aktywacja nie powiodła się.";
+                return ServiceResult<object>.Failure(errorMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            return ServiceResult<object>.Failure(HttpError.HandleError(ex));
+        }
     }
 
-    public async Task DeactivateQrCodeAsync(string token)
+    public async Task<ServiceResult<object>> DeactivateQrCodeAsync(string token)
     {//Todo zrobić model do tego xd
         var requestModel = new
         {
             Token = token,
         };
+        try
+        {
+            HttpClient client = await _httpClientHelper.CreateAuthenticatedClientAsync();
 
-        var jwtToken = await SecureStorage.GetAsync("AuthToken");
+            HttpResponseMessage response = await client.PostAsJsonAsync("api/Tickets/deactivate", requestModel);
 
-        HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
-
-        await client.PostAsJsonAsync("api/Tickets/deactivate", requestModel);
+            if (response.IsSuccessStatusCode)
+            {
+                return ServiceResult<object>.Success();
+            }
+            else
+            {
+                string errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response)
+                    ?? "Dezaktywacja nie powiodła się.";
+                return ServiceResult<object>.Failure(errorMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            return ServiceResult<object>.Failure(HttpError.HandleError(ex));
+        }
     }
 }

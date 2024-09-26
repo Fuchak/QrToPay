@@ -5,27 +5,24 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Net.Http.Headers;
+using QrToPay.Helpers;
 
 namespace QrToPay.Services.Api;
 
 public class CityService
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly HttpClientHelper _httpClientHelper;
 
-    public CityService(IHttpClientFactory httpClientFactory)
+    public CityService(HttpClientHelper httpClientHelper)
     {
-        _httpClientFactory = httpClientFactory;
+        _httpClientHelper = httpClientHelper;
     }
 
     public async Task<ServiceResult<List<City>>> GetCitiesAsync(int serviceType)
     {
         try
         {
-            var jwtToken = await SecureStorage.GetAsync("AuthToken");
-
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            HttpClient client = await _httpClientHelper.CreateAuthenticatedClientAsync();
 
             HttpResponseMessage response = await client.GetAsync($"/api/Cities?serviceType={serviceType}");
 

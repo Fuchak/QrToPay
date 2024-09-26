@@ -10,11 +10,11 @@ using System.Net.Http.Headers;
 namespace QrToPay.Services.Api;
 public class BalanceService
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly HttpClientHelper _httpClientHelper;
 
-    public BalanceService(IHttpClientFactory httpClientFactory)
+    public BalanceService(HttpClientHelper httpClientHelper)
     {
-        _httpClientFactory = httpClientFactory;
+        _httpClientHelper = httpClientHelper;
     }
 
     public event EventHandler<decimal>? BalanceUpdated;
@@ -23,11 +23,7 @@ public class BalanceService
     {
         try
         {
-            var jwtToken = await SecureStorage.GetAsync("AuthToken");
-
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            HttpClient client = await _httpClientHelper.CreateAuthenticatedClientAsync();
 
             HttpResponseMessage response = await client.GetAsync($"/api/UserBalance/balance");
 
@@ -58,11 +54,7 @@ public class BalanceService
     {
         try
         {
-            var jwtToken = await SecureStorage.GetAsync("AuthToken");
-
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            HttpClient client = await _httpClientHelper.CreateAuthenticatedClientAsync();
 
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/UserBalance/topUp", topUpRequest);
 

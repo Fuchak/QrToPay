@@ -5,27 +5,24 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using QrToPay.Models.Common;
 using System.Net.Http.Headers;
+using QrToPay.Helpers;
 
 namespace QrToPay.Services.Api;
 
 public class ScanService
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly HttpClientHelper _httpClientHelper;
 
-    public ScanService(IHttpClientFactory httpClientFactory)
+    public ScanService(HttpClientHelper httpClientHelper)
     {
-        _httpClientFactory = httpClientFactory;
+        _httpClientHelper = httpClientHelper;
     }
 
     public async Task<ServiceResult<Purchase>> FetchAttractionDataAsync(string qrCode)
     {
         try
         {
-            var jwtToken = await SecureStorage.GetAsync("AuthToken");
-
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            HttpClient client = await _httpClientHelper.CreateAuthenticatedClientAsync();
 
             HttpResponseMessage response = await client.GetAsync($"/api/Scan/{qrCode}");
 
@@ -55,11 +52,7 @@ public class ScanService
     {
         try
         {
-            var jwtToken = await SecureStorage.GetAsync("AuthToken");
-
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            HttpClient client = await _httpClientHelper.CreateAuthenticatedClientAsync();
 
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/Scan/purchase", purchaseRequest);
 

@@ -14,7 +14,7 @@ public class QrCodeStorageService
         {
             CleanAllQrCodeFiles();
         });
-        _qrCodeDirectory = FileSystem.AppDataDirectory;
+        _qrCodeDirectory = FileSystem.Current.AppDataDirectory;
     }
 
     // Metoda do generowania i zapisywania kodu QR

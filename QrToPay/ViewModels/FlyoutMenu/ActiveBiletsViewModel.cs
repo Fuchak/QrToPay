@@ -108,15 +108,19 @@ public partial class ActiveBiletsViewModel : ViewModelBase
             return;
         }
 
-        DateTime activationTime = Preferences.Get($"ActivationTime_{ticket.QrCode}", DateTime.MinValue);
+        var cacheKey = $"{AppDataConst.QrActivationTime}_{ticket.QrCode}";
+        var activationTime = await _cacheService.LoadValueFromCacheAsync<DateTime>(cacheKey);
         int? remainingTime = null;
-        if (activationTime != DateTime.MinValue)
+        if (activationTime.HasValue && activationTime != DateTime.MinValue)
         {
             var elapsedTime = DateTime.UtcNow - activationTime;
-            remainingTime = Math.Max(0, (int)(5 * 60 - elapsedTime.TotalSeconds));
+            if (elapsedTime.HasValue)
+            {
+                remainingTime = Math.Max(0, (int)(5 * 60 - elapsedTime.Value.TotalSeconds));
+            }
         }
 
-        QrCodePopup qrCodePopup = new(imageSource, _qrCodeService, ticket.QrCode!, remainingTime);
+        QrCodePopup qrCodePopup = new(imageSource, _qrCodeService, _cacheService, ticket.QrCode!, remainingTime);
         await Shell.Current.ShowPopupAsync(qrCodePopup);
     }
 }

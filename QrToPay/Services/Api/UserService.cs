@@ -12,10 +12,12 @@ namespace QrToPay.Services.Api;
 public class UserService
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly HttpClientHelper _httpClientHelper;
 
-    public UserService(IHttpClientFactory httpClientFactory)
+    public UserService(IHttpClientFactory httpClientFactory, HttpClientHelper httpClientHelper)
     {
         _httpClientFactory = httpClientFactory;
+        _httpClientHelper = httpClientHelper;
     }
 
     public async Task<ServiceResult<CreateUserResponse>> RegisterUserAsync(CreateUserRequest request)
@@ -129,11 +131,7 @@ public class UserService
     {
         try
         {
-            var jwtToken = await SecureStorage.GetAsync("AuthToken");
-
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            HttpClient client = await _httpClientHelper.CreateAuthenticatedClientAsync();
 
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/Settings/requestChange", request);
 
@@ -163,11 +161,7 @@ public class UserService
     {
         try
         {
-            var jwtToken = await SecureStorage.GetAsync("AuthToken");
-
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            HttpClient client = await _httpClientHelper.CreateAuthenticatedClientAsync();
 
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/Settings/verifyChange", request);
 
@@ -192,11 +186,7 @@ public class UserService
     {
         try
         {
-            var jwtToken = await SecureStorage.GetAsync("AuthToken");
-
-            HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            HttpClient client = await _httpClientHelper.CreateAuthenticatedClientAsync();
 
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/Settings/changePassword", request);
 

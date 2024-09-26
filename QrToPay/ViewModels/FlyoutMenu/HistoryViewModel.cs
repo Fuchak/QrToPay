@@ -37,7 +37,7 @@ public partial class HistoryViewModel : ViewModelBase
             IsBusy = true;
             ErrorMessage = null;
 
-            var cachedHistory = await _cacheService.LoadFromCacheAsync<IEnumerable<HistoryItemRequest>>(AppDataConst.TicketHisotry);
+            var cachedHistory = await _cacheService.LoadFromCacheAsync<IEnumerable<HistoryItemRequest>>(AppDataConst.TicketHistory);
             if (cachedHistory != null && pageNumber == 1)
             {
                 CacheService.UpdateCollection(HistoryItems, cachedHistory);
@@ -64,7 +64,7 @@ public partial class HistoryViewModel : ViewModelBase
 
                 if (!CacheService.AreDataEqual(HistoryItems, newHistoryItems))
                 {
-                    await _cacheService.SaveToCacheAsync(AppDataConst.TicketHisotry, newHistoryItems);
+                    await _cacheService.SaveToCacheAsync(AppDataConst.TicketHistory, newHistoryItems);
                     CacheService.UpdateCollection(HistoryItems, newHistoryItems);
                 }
 

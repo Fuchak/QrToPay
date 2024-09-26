@@ -3,11 +3,12 @@
     x:Name="popup"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:custom="clr-namespace:QrToPay.View.CustomControls;assembly=QrToPay"
     xmlns:popup="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
     xmlns:vm="clr-namespace:QrToPay.ViewModels.QR"
     x:Class="QrToPay.View.QrCodePopup"
     Color="Transparent"
-    CanBeDismissedByTappingOutsideOfPopup="False"
+    CanBeDismissedByTappingOutsideOfPopup="True"
     x:DataType="vm:QrCodePopupViewModel">
 
     <Border HeightRequest="400"
@@ -51,6 +52,9 @@
                         WidthRequest="100"
                         VerticalOptions="Start" />
             </HorizontalStackLayout>
+            <custom:ErrorMessageLabelView 
+                    BindingContext="{Binding}">
+            </custom:ErrorMessageLabelView>
         </VerticalStackLayout>
     </Border>
 </popup:Popup>

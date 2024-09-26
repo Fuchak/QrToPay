@@ -25,7 +25,7 @@ namespace QrToPay.Services.Api
         {
             //await Task.Delay(200);
             // Sprawdzenie, czy token istnieje w SecureStorage
-            var token = await SecureStorage.GetAsync(AppDataConst.AuthToken);
+            var token = await SecureStorage.Default.GetAsync(AppDataConst.AuthToken);
 
             if (string.IsNullOrEmpty(token) || IsTokenExpired(token))
             {
@@ -58,9 +58,9 @@ namespace QrToPay.Services.Api
 
                     if (userResponse != null)
                     {
-                        await SecureStorage.SetAsync(AppDataConst.AuthToken, userResponse.Token);
-                        await SecureStorage.SetAsync(AppDataConst.UserEmail, userResponse.Email!);
-                        await SecureStorage.SetAsync(AppDataConst.UserPhone, userResponse.PhoneNumber!);
+                        await SecureStorage.Default.SetAsync(AppDataConst.AuthToken, userResponse.Token);
+                        await SecureStorage.Default.SetAsync(AppDataConst.UserEmail, userResponse.Email!);
+                        await SecureStorage.Default.SetAsync(AppDataConst.UserPhone, userResponse.PhoneNumber!);
 
                         return ServiceResult<UserResponse>.Success(userResponse);
                     }
