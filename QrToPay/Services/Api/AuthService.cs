@@ -10,97 +10,95 @@ using System.IdentityModel.Tokens.Jwt;
 using QrToPay.Services.Local;
 using QrToPay.Messages;
 
-namespace QrToPay.Services.Api
+namespace QrToPay.Services.Api;
+public class AuthService
 {
-    public class AuthService
+    private readonly IHttpClientFactory _httpClientFactory;
+
+    public AuthService(IHttpClientFactory httpClientFactory)
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        _httpClientFactory = httpClientFactory;
+    }
 
-        public AuthService(IHttpClientFactory httpClientFactory)
+    public static async Task<bool> IsAuthenticatedAsync()
+    {
+        //await Task.Delay(200);
+        // Sprawdzenie, czy token istnieje w SecureStorage
+        var token = await SecureStorage.Default.GetAsync(AppDataConst.AuthToken);
+
+        if (string.IsNullOrEmpty(token) || IsTokenExpired(token))
         {
-            _httpClientFactory = httpClientFactory;
+            // Wysłanie wiadomości o potrzebie wylogowania
+            WeakReferenceMessenger.Default.Send(new UserLogoutRequestMessage("Token expired"));
+            return false;
         }
+        // Token jest ważny
+        
+        return true;
+    }
 
-        public static async Task<bool> IsAuthenticatedAsync()
+    public async Task<ServiceResult<UserResponse>> LoginAsync(string emailPhone, string password)
+    {
+        try
         {
-            //await Task.Delay(200);
-            // Sprawdzenie, czy token istnieje w SecureStorage
-            var token = await SecureStorage.Default.GetAsync(AppDataConst.AuthToken);
+            HttpClient httpClient = _httpClientFactory.CreateClient("ApiHttpClient");
 
-            if (string.IsNullOrEmpty(token) || IsTokenExpired(token))
+            LoginUserRequest loginData = ValidationHelper.IsEmail(emailPhone)
+                ? new LoginUserRequest { Email = emailPhone, PasswordHash = password }
+                : new LoginUserRequest { PhoneNumber = emailPhone, PasswordHash = password };
+
+            StringContent content = new(JsonSerializer.Serialize(loginData), Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await httpClient.PostAsync("/api/Auth/login/", content);
+
+            if (response.IsSuccessStatusCode)
             {
-                // Wysłanie wiadomości o potrzebie wylogowania
-                WeakReferenceMessenger.Default.Send(new UserLogoutRequestMessage("Token expired"));
-                return false;
-            }
-            // Token jest ważny
-            
-            return true;
-        }
+                UserResponse? userResponse = await response.Content.ReadFromJsonAsync<UserResponse>();
 
-        public async Task<ServiceResult<UserResponse>> LoginAsync(string emailPhone, string password)
-        {
-            try
-            {
-                HttpClient httpClient = _httpClientFactory.CreateClient("ApiHttpClient");
-
-                LoginUserRequest loginData = ValidationHelper.IsEmail(emailPhone)
-                    ? new LoginUserRequest { Email = emailPhone, PasswordHash = password }
-                    : new LoginUserRequest { PhoneNumber = emailPhone, PasswordHash = password };
-
-                StringContent content = new(JsonSerializer.Serialize(loginData), Encoding.UTF8, "application/json");
-
-                HttpResponseMessage response = await httpClient.PostAsync("/api/Auth/login/", content);
-
-                if (response.IsSuccessStatusCode)
+                if (userResponse != null)
                 {
-                    UserResponse? userResponse = await response.Content.ReadFromJsonAsync<UserResponse>();
+                    await SecureStorage.Default.SetAsync(AppDataConst.AuthToken, userResponse.Token);
+                    await SecureStorage.Default.SetAsync(AppDataConst.UserEmail, userResponse.Email!);
+                    await SecureStorage.Default.SetAsync(AppDataConst.UserPhone, userResponse.PhoneNumber!);
 
-                    if (userResponse != null)
-                    {
-                        await SecureStorage.Default.SetAsync(AppDataConst.AuthToken, userResponse.Token);
-                        await SecureStorage.Default.SetAsync(AppDataConst.UserEmail, userResponse.Email!);
-                        await SecureStorage.Default.SetAsync(AppDataConst.UserPhone, userResponse.PhoneNumber!);
-
-                        return ServiceResult<UserResponse>.Success(userResponse);
-                    }
-                    else
-                    {
-                        return ServiceResult<UserResponse>.Failure("Nie udało się przetworzyć odpowiedzi serwera.");
-                    }
+                    return ServiceResult<UserResponse>.Success(userResponse);
                 }
                 else
                 {
-                    // Użycie JsonErrorExtractor do wyciągnięcia wiadomości błędu
-                    var errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response);
-                    return ServiceResult<UserResponse>.Failure(errorMessage);
+                    return ServiceResult<UserResponse>.Failure("Nie udało się przetworzyć odpowiedzi serwera.");
                 }
             }
-            catch (Exception ex)
+            else
             {
-                return ServiceResult<UserResponse>.Failure(HttpError.HandleError(ex));
+                // Użycie JsonErrorExtractor do wyciągnięcia wiadomości błędu
+                var errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response);
+                return ServiceResult<UserResponse>.Failure(errorMessage);
             }
         }
-
-        private static bool IsTokenExpired(string token)
+        catch (Exception ex)
         {
-            try
-            {
-                var jwtTokenHandler = new JwtSecurityTokenHandler();
+            return ServiceResult<UserResponse>.Failure(HttpError.HandleError(ex));
+        }
+    }
 
-                if (!jwtTokenHandler.CanReadToken(token))
-                    return true;
+    private static bool IsTokenExpired(string token)
+    {
+        try
+        {
+            var jwtTokenHandler = new JwtSecurityTokenHandler();
 
-                var jwtToken = jwtTokenHandler.ReadJwtToken(token);
-
-                var expirationDate = jwtToken.ValidTo;
-
-                return expirationDate < DateTime.UtcNow;
-            }
-            catch (Exception)
-            {
+            if (!jwtTokenHandler.CanReadToken(token))
                 return true;
-            }
+
+            var jwtToken = jwtTokenHandler.ReadJwtToken(token);
+
+            var expirationDate = jwtToken.ValidTo;
+
+            return expirationDate < DateTime.UtcNow;
+        }
+        catch (Exception)
+        {
+            return true;
         }
     }
 }
