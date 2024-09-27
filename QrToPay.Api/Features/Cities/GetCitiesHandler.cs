@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.Common.Results;
+using QrToPay.Api.Common.Enums;
+using QrToPay.Api.Extensions;
 using QrToPay.Api.Models;
 
 namespace QrToPay.Api.Features.Cities;
@@ -19,7 +21,7 @@ public class GetCitiesHandler : IRequestHandler<GetCitiesRequestModel, Result<IE
         return await ResultHandler.HandleRequestAsync(async () =>
         {
             IEnumerable<CitiesDto> response = await _context.ServiceCategories
-                            .Where(e => !e.IsDeleted && e.ServiceType == (int)request.ServiceType)
+                            .Where(e => !e.IsDeleted && e.ServiceType == request.ServiceType.ToInt())
                             .Select(e => new CitiesDto
                             {
                                 CityName = e.CityName,

@@ -4,6 +4,7 @@ using QrToPay.Api.Models;
 using QrToPay.Api.Common.Results;
 using QrToPay.Api.Common.Enums;
 using QrToPay.Api.Common.Services;
+using QrToPay.Api.Extensions;
 
 namespace QrToPay.Api.Features.Tickets.Active;
 
@@ -37,7 +38,7 @@ public class GetActiveTicketsHandler : IRequestHandler<GetActiveTicketsRequestMo
                 UserTicketId = t.UserTicketId,
                 //UserId = t.UserId,
                 ServiceId = t.ServiceId,
-                EntityType = (ServiceType)t.Service.ServiceType,
+                EntityType = t.Service.ServiceType.ToEnum<ServiceType>(),
                 EntityName = t.Service.ServiceName,
                 CityName = t.Service.CityName,
                 QrCode = t.Token?.ToString(),

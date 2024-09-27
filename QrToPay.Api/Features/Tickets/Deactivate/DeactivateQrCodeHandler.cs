@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using QrToPay.Api.Common.Results;
+using QrToPay.Api.Common.Enums;
 using QrToPay.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.Common.Services;

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using QrToPay.Api.Models;
 using QrToPay.Api.Common.Results;
+using QrToPay.Api.Common.Enums;
 using QrToPay.Api.Common.Services;
 
 namespace QrToPay.Api.Features.UserBalance.TopUp;

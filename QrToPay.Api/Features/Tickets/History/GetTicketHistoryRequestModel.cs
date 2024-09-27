@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using QrToPay.Api.Common.Results;
 
 namespace QrToPay.Api.Features.Tickets.History;

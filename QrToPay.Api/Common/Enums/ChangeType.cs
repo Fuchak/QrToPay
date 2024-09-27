@@ -2,6 +2,6 @@
 
 public enum ChangeType
 {
-    Email,
-    Phone
+    Email = 0,
+    Phone = 1
 }

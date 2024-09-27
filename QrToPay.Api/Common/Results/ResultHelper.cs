@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using QrToPay.Api.Common.Enums;
 
 namespace QrToPay.Api.Common.Results;
 

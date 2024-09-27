@@ -2,7 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.Models;
 using QrToPay.Api.Common.Results;
+using QrToPay.Api.Common.Enums;
 using QrToPay.Api.Common.Services;
+
 namespace QrToPay.Api.Features.Tickets.Activate;
 
 public class ActivateQrCodeHandler : IRequestHandler<ActivateQrCodeRequestModel, Result<SuccesMessageDto>>

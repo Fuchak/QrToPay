@@ -9,6 +9,7 @@ using System.Text;
 using QrToPay.Api.Extensions;
 using QrToPay.Api.Common.Settings;
 using QrToPay.Api.Middleware;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,9 @@ builder.Services.Configure<AppAuthSettings>(builder.Configuration.GetSection("Jw
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ValidationFilter>();
+}).AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
 builder.Services.AddScoped<UserContextMiddleware>();
@@ -75,8 +79,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseMiddleware<UserContextMiddleware>();
-
-
 
 app.UseAuthentication();
 app.UseAuthorization();

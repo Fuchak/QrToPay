@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
-using QrToPay.Api.Common.Filters;
 using System.Reflection;
 
 namespace QrToPay.Api.Extensions;
@@ -17,34 +16,45 @@ public static class ServiceCollectionExtensions
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             o.IncludeXmlComments(xmlPath);
 
-            var securityScheme = new OpenApiSecurityScheme
+            o.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
             {
                 Name = "Jwt Authentication",
                 Description = "Enter your JWT token in this field",
                 In = ParameterLocation.Header,
-                Type = SecuritySchemeType.Http,
+                Type = SecuritySchemeType.Http, //ApiKey?
                 Scheme = JwtBearerDefaults.AuthenticationScheme,
-                BearerFormat = "JWT"
-            };
+                BearerFormat = "JWT"  //Nic?
+            });
 
-            o.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, securityScheme);
-
-            var securityRequirement = new OpenApiSecurityRequirement
+            o.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
+                [new OpenApiSecurityScheme
                 {
-                    new OpenApiSecurityScheme
+                    Reference = new OpenApiReference
                     {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = JwtBearerDefaults.AuthenticationScheme
-                        }
-                    },
-                    []
-                }
-            };
+                        Type = ReferenceType.SecurityScheme,
+                        Id = JwtBearerDefaults.AuthenticationScheme
+                    }
+                }] = []
+            });
 
-            o.AddSecurityRequirement(securityRequirement);
+            //Może coś takiego dla oauth2
+/*            o.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                [new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = JwtBearerDefaults.AuthenticationScheme
+                    },
+                    Scheme = "oauth2",
+                    Name = "Bearer",
+                    In = ParameterLocation.Header,
+                }] = []
+            });*/
+
+            o.SchemaFilter<EnumSchemaFilter>();
         });
 
         return services;

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.Models;
+using QrToPay.Api.Extensions;
 using QrToPay.Api.Common.Results;
 using QrToPay.Api.Common.Enums;
 using QrToPay.Api.Common.Services;
@@ -31,7 +32,7 @@ public class GetTicketHistoryHandler : IRequestHandler<GetTicketHistoryRequestMo
                 .Select(th => new TicketHistoryDto
                 {
                     Date = th.PurchaseDate.ToString("yyyy-MM-dd"),
-                    Type = (ServiceType)th.Service.ServiceType,
+                    Type = th.Service.ServiceType.ToEnum<ServiceType>(),
                     Name = th.Service.ServiceName,
                     TotalPrice = th.TotalPrice
                 })

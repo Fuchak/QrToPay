@@ -1,4 +1,6 @@
-﻿namespace QrToPay.Api.Common.Results;
+﻿using QrToPay.Api.Common.Enums;
+
+namespace QrToPay.Api.Common.Results;
 
 public class Result<T>
 {
@@ -20,13 +22,4 @@ public class Result<T>
         Error = error, 
         ErrorType = errorType 
     };
-}
-
-public enum ErrorType
-{
-    NotFound,
-    NotVerified,
-    BadRequest,
-    Unauthorized,
-    Other
 }

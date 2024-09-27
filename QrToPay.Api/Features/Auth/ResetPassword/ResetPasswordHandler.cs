@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.Common.Helpers;
 using QrToPay.Api.Common.Results;
+using QrToPay.Api.Common.Enums;
 using QrToPay.Api.Models;
 
 namespace QrToPay.Api.Features.Auth.ResetPassword;

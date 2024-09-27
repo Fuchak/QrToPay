@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MediatR;
-using QrToPay.Api.Features.Auth.Login;
 using QrToPay.Api.Common.Results;
+using QrToPay.Api.Features.Auth.Login;
 using QrToPay.Api.Features.Auth.ResetPassword;
 using QrToPay.Api.Features.Auth.CheckAccount;
 

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using QrToPay.Api.Models;
 using QrToPay.Api.Common.Results;
 using QrToPay.Api.Common.Helpers;
-using QrToPay.Api.Features.Cities;
+using QrToPay.Api.Common.Enums;
 
 namespace QrToPay.Api.Features.Register.CreateUser;
 
