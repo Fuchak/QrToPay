@@ -3,5 +3,5 @@
 public enum ServiceType
 {
     SkiResort = 0,
-    FunFair = 1,
+    FunFair = 1
 }

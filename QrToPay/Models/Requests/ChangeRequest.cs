@@ -2,7 +2,7 @@
 
 namespace QrToPay.Models.Requests;
 
-//zmiana dla zmiany numeru telefonu i email xdd
+//zmiana dla zmiany numeru telefonu i email 
 public sealed class ChangeRequest
 {
     public required string NewValue { get; init; }

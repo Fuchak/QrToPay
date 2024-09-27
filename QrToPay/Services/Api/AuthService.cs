@@ -5,9 +5,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using QrToPay.Models.Responses;
 using QrToPay.Models.Requests;
 using QrToPay.Models.Common;
-using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
-using QrToPay.Services.Local;
 using QrToPay.Messages;
 
 namespace QrToPay.Services.Api;

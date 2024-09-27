@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using QrToPay.Messages;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Text.Json;
 
 namespace QrToPay.Services.Local;

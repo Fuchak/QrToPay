@@ -1,11 +1,6 @@
-﻿using System.Diagnostics;
-using System.Net;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using QrToPay.Models.Requests;
-using System.Text.Json;
 using QrToPay.Models.Responses;
-using System.Net.Http;
-using System.Net.Http.Headers;
 
 namespace QrToPay.Services.Api;
 public class BalanceService

@@ -1,11 +1,6 @@
 ﻿using System.Net.Http.Json;
 using QrToPay.Models.Common;
 using QrToPay.Services.Api;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Net.Http.Headers;
-using QrToPay.Helpers;
 
 namespace QrToPay.Services.Api;
 
