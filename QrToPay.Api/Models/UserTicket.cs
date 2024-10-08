@@ -7,11 +7,9 @@ public partial class UserTicket
 {
     public int UserTicketId { get; set; }
 
+    public int GroupId { get; set; }
+
     public int UserId { get; set; }
-
-    public Guid ServiceId { get; set; }
-
-    public DateTime PurchaseDate { get; set; }
 
     public int Quantity { get; set; }
 
@@ -25,9 +23,13 @@ public partial class UserTicket
 
     public DateTime? QrCodeGeneratedAt { get; set; }
 
-    public bool? QrCodeIsActive { get; set; }
+    public bool QrCodeIsActive { get; set; }
 
-    public virtual ServiceCategory Service { get; set; } = null!;
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public virtual CompanyGroup Group { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }

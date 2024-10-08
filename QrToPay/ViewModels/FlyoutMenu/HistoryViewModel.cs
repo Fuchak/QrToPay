@@ -22,7 +22,7 @@ public partial class HistoryViewModel : ViewModelBase
     }
 
     [ObservableProperty]
-    private ObservableCollection<HistoryItemRequest> historyItems = [];
+    private ObservableCollection<HistoryItemResponse> historyItems = [];
 
     [ObservableProperty]
     private bool hasHistory = true;
@@ -37,7 +37,7 @@ public partial class HistoryViewModel : ViewModelBase
             IsBusy = true;
             ErrorMessage = null;
 
-            var cachedHistory = await _cacheService.LoadFromCacheAsync<IEnumerable<HistoryItemRequest>>(AppDataConst.TicketHistory);
+            var cachedHistory = await _cacheService.LoadFromCacheAsync<IEnumerable<HistoryItemResponse>>(AppDataConst.TicketHistory);
             if (cachedHistory != null && pageNumber == 1)
             {
                 CacheService.UpdateCollection(HistoryItems, cachedHistory);
@@ -54,12 +54,12 @@ public partial class HistoryViewModel : ViewModelBase
 
             if (result.IsSuccess && result.Data != null && result.Data.Count > 0)
             {
-                var newHistoryItems = result.Data.Select(item => new HistoryItemRequest
+                var newHistoryItems = result.Data.Select(item => new HistoryItemResponse
                 {
                     Date = item.Date,
-                    Type = item.Type.ToString(),
                     Name = item.Name,
-                    TotalPrice = item.TotalPrice
+                    TotalPrice = item.TotalPrice,
+                    Quantity = item.Quantity
                 });
 
                 if (!CacheService.AreDataEqual(HistoryItems, newHistoryItems))

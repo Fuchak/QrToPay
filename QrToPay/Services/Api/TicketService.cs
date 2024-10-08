@@ -1,4 +1,6 @@
-﻿using System.Net.Http.Json;
+﻿using System.Diagnostics;
+using System.Net.Http.Json;
+using Org.Apache.Http.Protocol;
 using QrToPay.Models.Common;
 using QrToPay.Models.Requests;
 using QrToPay.Models.Responses;
@@ -43,7 +45,7 @@ public class TicketService
         }
     }
 
-    public async Task<ServiceResult<List<Ticket>>> GetActiveTicketsAsync()
+    public async Task<ServiceResult<List<ActiveTicketsResponse>>> GetActiveTicketsAsync()
     {
         try
         {
@@ -53,22 +55,22 @@ public class TicketService
 
             if (response.IsSuccessStatusCode)
             {
-                List<Ticket>? tickets = await response.Content.ReadFromJsonAsync<List<Ticket>>();
+                List<ActiveTicketsResponse>? tickets = await response.Content.ReadFromJsonAsync<List<ActiveTicketsResponse>>();
                 if (tickets != null)
                 {
-                    return ServiceResult<List<Ticket>>.Success(tickets);
+                    return ServiceResult<List<ActiveTicketsResponse>>.Success(tickets);
                 }
-                return ServiceResult<List<Ticket>>.Failure("Błąd podczas odczytywania listy biletów.");
+                return ServiceResult<List<ActiveTicketsResponse>>.Failure("Błąd podczas odczytywania listy biletów.");
             }
             else 
             { 
                 string errorMessage = await JsonErrorExtractor.ExtractErrorMessageAsync(response);
-                return ServiceResult<List<Ticket>>.Failure(errorMessage);
+                return ServiceResult<List<ActiveTicketsResponse>>.Failure(errorMessage);
             }
         }
         catch (Exception ex)
         {
-            return ServiceResult<List<Ticket>>.Failure(HttpError.HandleError(ex));
+            return ServiceResult<List<ActiveTicketsResponse>>.Failure(HttpError.HandleError(ex));
         }
     }
 
@@ -79,6 +81,9 @@ public class TicketService
             HttpClient client = await _httpClientHelper.CreateAuthenticatedClientAsync();
 
             HttpResponseMessage response = await client.GetAsync($"/api/Tickets/history?pageNumber={request.PageNumber}&pageSize={request.PageSize}");
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            Debug.WriteLine("Response Content: " + responseContent);
 
             if (response.IsSuccessStatusCode)
             {
@@ -97,6 +102,7 @@ public class TicketService
         }
         catch (Exception ex)
         {
+            Debug.WriteLine("Exception: " + ex.Message);
             return ServiceResult<List<HistoryItemResponse>>.Failure(HttpError.HandleError(ex));
         }
     }

@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:QrToPay.ViewModels.FlyoutMenu"
-             xmlns:models="clr-namespace:QrToPay.Models.Common"
+             xmlns:models="clr-namespace:QrToPay.Models.Responses"
              xmlns:custom="clr-namespace:QrToPay.View.CustomControls;assembly=QrToPay"
              Style="{StaticResource BasePageStyle}"
              x:Class="QrToPay.View.ActiveBiletsPage"
@@ -43,12 +43,13 @@
                 <ActivityIndicator IsRunning="True" IsVisible="{Binding IsBusy}" Color="{StaticResource Orange}"/>
             </CollectionView.Footer>
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:Ticket">
+                <DataTemplate x:DataType="models:ActiveTicketsResponse">
                     <Frame BackgroundColor="LightGray" Padding="10" Margin="10,10,10,0">
                         <StackLayout>
                             <Label Text="Dane biletu" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" />
-                            <Label Text="{Binding EntityName}" FontSize="18" HorizontalOptions="Center" />
-                            <Label Text="{Binding CityName}" FontSize="18" HorizontalOptions="Center" />
+                            <Label Text="dla:" FontSize="18" HorizontalOptions="Center" />
+                            <Label Text="{Binding EntityNames, Converter={StaticResource ListToStringConverter}}" FontSize="12" HorizontalTextAlignment="Center" />
+                            <!-- <Label Text="{Binding Price}" FontSize="18" HorizontalOptions="Center" /> -->
                             <Label Text="{Binding Points, StringFormat='{}{0} token'}" FontSize="18" HorizontalOptions="Center" />
                             <Button Text="Pokaż kod QR" 
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ActiveBiletsViewModel}}, Path=ShowQrCodePopupCommand}" 

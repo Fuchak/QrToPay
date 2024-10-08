@@ -7,7 +7,7 @@ public partial class SkiResort
 {
     public int SkiResortId { get; set; }
 
-    public Guid ServiceId { get; set; }
+    public int ServiceId { get; set; }
 
     public DateTime CreatedAt { get; set; }
 

@@ -4,6 +4,7 @@ using CommunityToolkit.Maui.Views;
 using QrToPay.Models.Common;
 using QrToPay.Services.Api;
 using QrToPay.Services.Local;
+using QrToPay.Models.Responses;
 
 namespace QrToPay.ViewModels.FlyoutMenu;
 
@@ -23,7 +24,7 @@ public partial class ActiveBiletsViewModel : ViewModelBase
     }
 
     [ObservableProperty]
-    private ObservableCollection<Ticket> activeTickets = [];
+    private ObservableCollection<ActiveTicketsResponse> activeTickets = [];
 
     [ObservableProperty]
     private bool isQrCodeVisible;
@@ -55,7 +56,7 @@ public partial class ActiveBiletsViewModel : ViewModelBase
             IsBusy = true;
             ErrorMessage = null;
 
-            var cachedActiveTickets = await _cacheService.LoadFromCacheAsync<IEnumerable<Ticket>>(AppDataConst.ActiveTickets);
+            var cachedActiveTickets = await _cacheService.LoadFromCacheAsync<IEnumerable<ActiveTicketsResponse>>(AppDataConst.ActiveTickets);
             if (cachedActiveTickets != null)
             {
                 CacheService.UpdateCollection(ActiveTickets, cachedActiveTickets);
@@ -90,7 +91,7 @@ public partial class ActiveBiletsViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task ShowQrCodePopupAsync(Ticket ticket)
+    private async Task ShowQrCodePopupAsync(ActiveTicketsResponse ticket)
     {
         // Użycie serwisu do wczytania lub wygenerowania kodu QR
         ImageSource? imageSource = await _qrCodeStorageService.LoadQrCodeImageAsync(ticket.QrCode!);

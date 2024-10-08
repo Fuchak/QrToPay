@@ -5,6 +5,8 @@ using QrToPay.Api.Common.Results;
 using QrToPay.Api.Common.Enums;
 using QrToPay.Api.Common.Services;
 using QrToPay.Api.Extensions;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace QrToPay.Api.Features.Tickets.Active;
 
@@ -25,7 +27,9 @@ public class GetActiveTicketsHandler : IRequestHandler<GetActiveTicketsRequestMo
         {
             IEnumerable<UserTicket> activeTickets = await _context.UserTickets
                             .Where(t => t.UserId == _currentUserService.UserId && t.IsActive)
-                            .Include(t => t.Service)
+                            .Include(t => t.Group)
+                            .ThenInclude(g => g.CompanyGroupMembers)
+                            .ThenInclude(gm => gm.Service)
                             .ToListAsync(cancellationToken);
 
             if (!activeTickets.Any())
@@ -33,18 +37,21 @@ public class GetActiveTicketsHandler : IRequestHandler<GetActiveTicketsRequestMo
                 return Result<IEnumerable<ActiveTicketDto>>.Failure("Brak aktywnych biletów dla tego użytkownika.", ErrorType.NotFound);
             }
 
-            IEnumerable<ActiveTicketDto> response = activeTickets.Select(t => new ActiveTicketDto
+            IEnumerable<ActiveTicketDto> response = activeTickets.Select(ticket =>
             {
-                UserTicketId = t.UserTicketId,
-                //UserId = t.UserId,
-                ServiceId = t.ServiceId,
-                EntityType = t.Service.ServiceType.ToEnum<ServiceType>(),
-                EntityName = t.Service.ServiceName,
-                CityName = t.Service.CityName,
-                QrCode = t.Token?.ToString(),
-                Price = t.TotalPrice,
-                Points = t.RemainingTokens,
-                IsActive = t.IsActive
+                IEnumerable<string> serviceNames = ticket.Group.CompanyGroupMembers
+                    .Select(gm => $"{gm.Service.ServiceName} - {gm.Service.CityName}");
+
+                return new ActiveTicketDto
+                {
+                    UserTicketId = ticket.UserTicketId,
+                    GroupId = ticket.GroupId,
+                    EntityNames = serviceNames,
+                    Price = ticket.TotalPrice,
+                    Points = ticket.RemainingTokens,
+                    IsActive = ticket.IsActive,
+                    QrCode = ticket.Token.ToString()
+                };
             });
 
             return Result<IEnumerable<ActiveTicketDto>>.Success(response);

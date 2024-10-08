@@ -64,10 +64,10 @@
             </CollectionView.Footer>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:HistoryItemResponse">
-                    <StackLayout>
+                    <StackLayout Margin="10,0,10,0">
                         <Label Text="{Binding Date}" Style="{StaticResource AccountLabelStyle}" />
-                        <Label Text="{Binding Type}" Style="{StaticResource AccountLabelStyle}" />
                         <Label Text="{Binding Name}" Style="{StaticResource AccountLabelStyle}" />
+                        <Label Text="{Binding Quantity}" Style="{StaticResource AccountLabelStyle}" />
                         <HorizontalStackLayout>
                             <Label Text="{Binding TotalPrice}" Style="{StaticResource AccountLabelStyle}" />
                             <Label Text=" zł" Style="{StaticResource AccountLabelStyle}"/>
