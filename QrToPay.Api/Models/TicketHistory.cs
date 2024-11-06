@@ -17,6 +17,8 @@ public partial class TicketHistory
 
     public DateTime CreatedAt { get; set; }
 
+    public string? AttractionName { get; set; }
+
     public virtual ServiceCategory Service { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;

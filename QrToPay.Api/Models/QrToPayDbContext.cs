@@ -246,6 +246,9 @@ public partial class QrToPayDbContext : DbContext
             entity.ToTable("TicketHistory");
 
             entity.Property(e => e.HistoryId).HasColumnName("HistoryID");
+            entity.Property(e => e.AttractionName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
             entity.Property(e => e.TotalPrice).HasColumnType("decimal(10, 2)");
