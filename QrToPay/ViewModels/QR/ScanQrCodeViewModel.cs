@@ -64,6 +64,7 @@ public partial class ScanQrCodeViewModel : ViewModelBase
             {
                 CurrentAttraction = result.Data;
                 ErrorMessage = null;
+                SuccessMessage = null;
             }
             else
             {
@@ -102,7 +103,7 @@ public partial class ScanQrCodeViewModel : ViewModelBase
 
                 if (result.IsSuccess)
                 {
-                    await Shell.Current.DisplayAlert("Zakup", "Zakup zakończony pomyślnie!", "OK");
+                    SuccessMessage = "Zakup zakończony pomyślnie!";
 
                     Cancel();
                 }

@@ -20,16 +20,25 @@
         
         <custom:BorderShadowBrushView/>
         
-        <VerticalStackLayout Grid.Row="1" Padding="30,70,30,0" Spacing="10">
-            <Label Text="Skanowanie kodu QR" FontSize="Large" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"/>
+        <VerticalStackLayout Grid.Row="1" Padding="30,50,30,0" Spacing="10">
+            <Label Text="Skanowanie kodu QR" 
+                   Margin="5"
+                   FontSize="Large" 
+                   HorizontalOptions="Center" 
+                   VerticalOptions="CenterAndExpand"/>
 
-            <scanner:CameraView x:Name="BarcodeScanner" 
+            <Frame BorderColor="{StaticResource Orange}" 
+                   HasShadow="true"
+                   HorizontalOptions="Center" 
+                   VerticalOptions="Center">
+                <scanner:CameraView x:Name="BarcodeScanner" 
                                 WidthRequest="300" 
                                 HeightRequest="300" 
                                 OnDetectionFinishedCommand="{Binding DetectionFinishedCommand}" 
                                 VibrationOnDetected="False"
                                 TapToFocusEnabled="True"
                                 />
+            </Frame>
             <Label Text="{Binding CurrentAttraction.ServiceName}" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
             <Label Text="{Binding CurrentAttraction.AttractionName}" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center" />
             <Label Text="{Binding CurrentAttraction.Price, StringFormat='Cena: {0:F2}'}" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center" />

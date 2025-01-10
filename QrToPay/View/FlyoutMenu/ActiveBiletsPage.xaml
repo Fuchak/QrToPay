@@ -50,7 +50,7 @@
                             <Label Text="dla:" FontSize="18" HorizontalOptions="Center" />
                             <Label Text="{Binding EntityNames, Converter={StaticResource ListToStringConverter}}" FontSize="12" HorizontalTextAlignment="Center" />
                             <!-- <Label Text="{Binding Price}" FontSize="18" HorizontalOptions="Center" /> -->
-                            <Label Text="{Binding Points, StringFormat='{}{0} token'}" FontSize="18" HorizontalOptions="Center" />
+                            <Label Text="{Binding Points, StringFormat='{}{0:Tokenów: #;;}'}" FontSize="18" HorizontalOptions="Center" />
                             <Button Text="Pokaż kod QR" 
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ActiveBiletsViewModel}}, Path=ShowQrCodePopupCommand}" 
                                     CommandParameter="{Binding .}" 

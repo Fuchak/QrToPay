@@ -3,7 +3,14 @@
 public partial class ViewModelBase : ObservableObject
 {
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DisplayMessage))]
+    [NotifyPropertyChangedFor(nameof(MessageColor))]
     string? errorMessage;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DisplayMessage))]
+    [NotifyPropertyChangedFor(nameof(MessageColor))]
+    string? successMessage;
 
     [ObservableProperty]
     private bool isPassword = true;
@@ -33,6 +40,7 @@ public partial class ViewModelBase : ObservableObject
         finally
         {
             ErrorMessage = null;
+            SuccessMessage = null;
             await Task.Delay(100);
             IsBusy = false;
         }
@@ -49,8 +57,16 @@ public partial class ViewModelBase : ObservableObject
     }
 
     [RelayCommand]
-    private async Task GoBack()
+    private static async Task GoBack()
     {
         await Shell.Current.GoToAsync("..", false);
     }
+
+    public string? DisplayMessage => !string.IsNullOrEmpty(SuccessMessage)
+        ? SuccessMessage
+        : ErrorMessage;
+
+    public Color MessageColor => !string.IsNullOrEmpty(SuccessMessage)
+        ? Colors.Green
+        : Colors.Red;
 }
