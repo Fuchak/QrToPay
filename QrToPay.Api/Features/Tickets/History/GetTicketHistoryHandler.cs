@@ -26,15 +26,15 @@ public class GetTicketHistoryHandler : IRequestHandler<GetTicketHistoryRequestMo
             var skip = (request.PageNumber - 1) * request.PageSize;
             IEnumerable<TicketHistoryDto> response = await _context.TicketHistories
                 .Where(th => th.UserId == _currentUserService.UserId)
-                .OrderByDescending(th => th.PurchaseDate)
+                .OrderByDescending(th => th.CreatedAt)
                 .Skip(skip)
                 .Take(request.PageSize)
                 .Select(th => new TicketHistoryDto
                 {
-                    Date = th.PurchaseDate.ToString("yyyy-MM-dd"),
-                    Type = th.Service.ServiceType.ToEnum<ServiceType>(),
+                    Date = th.CreatedAt.ToString("yyyy-MM-dd"),
                     Name = th.Service.ServiceName,
-                    TotalPrice = th.TotalPrice
+                    TotalPrice = th.TotalPrice,
+                    Quantity = th.Quantity
                 })
                 .ToListAsync(cancellationToken);
 

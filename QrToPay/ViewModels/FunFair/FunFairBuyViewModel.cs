@@ -42,7 +42,7 @@ public partial class FunFairBuyViewModel : QuantityViewModelBase
     private string? biletType;
 
     [ObservableProperty]
-    private Guid serviceId;
+    private int serviceId;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsNotBuying))]

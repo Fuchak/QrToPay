@@ -7,7 +7,7 @@ public partial class FunFair
 {
     public int FunFairId { get; set; }
 
-    public Guid ServiceId { get; set; }
+    public int ServiceId { get; set; }
 
     public DateTime CreatedAt { get; set; }
 

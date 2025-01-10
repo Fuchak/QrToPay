@@ -15,6 +15,10 @@ public partial class QrToPayDbContext : DbContext
     {
     }
 
+    public virtual DbSet<CompanyGroup> CompanyGroups { get; set; }
+
+    public virtual DbSet<CompanyGroupMember> CompanyGroupMembers { get; set; }
+
     public virtual DbSet<FunFair> FunFairs { get; set; }
 
     public virtual DbSet<FunFairAttraction> FunFairAttractions { get; set; }
@@ -39,6 +43,44 @@ public partial class QrToPayDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<CompanyGroup>(entity =>
+        {
+            entity.HasKey(e => e.GroupId).HasName("PK__CompanyG__149AF30A4EB8A7B6");
+
+            entity.Property(e => e.GroupId).HasColumnName("GroupID");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Description).HasMaxLength(255);
+            entity.Property(e => e.GroupName).HasMaxLength(100);
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<CompanyGroupMember>(entity =>
+        {
+            entity.HasKey(e => e.GroupMemberId).HasName("PK__CompanyG__344812B22789273F");
+
+            entity.Property(e => e.GroupMemberId).HasColumnName("GroupMemberID");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.GroupId).HasColumnName("GroupID");
+            entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
+            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Group).WithMany(p => p.CompanyGroupMembers)
+                .HasForeignKey(d => d.GroupId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__CompanyGr__Group__7EC1CEDB");
+
+            entity.HasOne(d => d.Service).WithMany(p => p.CompanyGroupMembers)
+                .HasForeignKey(d => d.ServiceId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__CompanyGr__Servi__7FB5F314");
+        });
+
         modelBuilder.Entity<FunFair>(entity =>
         {
             entity.HasKey(e => e.FunFairId).HasName("PK__FunFairs__7636299B984842DA");
@@ -55,7 +97,7 @@ public partial class QrToPayDbContext : DbContext
             entity.HasOne(d => d.Service).WithMany(p => p.FunFairs)
                 .HasForeignKey(d => d.ServiceId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__FunFairs__Servic__09746778");
+                .HasConstraintName("FK_FunFairs_ServiceCategories");
         });
 
         modelBuilder.Entity<FunFairAttraction>(entity =>
@@ -122,11 +164,9 @@ public partial class QrToPayDbContext : DbContext
 
         modelBuilder.Entity<ServiceCategory>(entity =>
         {
-            entity.HasKey(e => e.ServiceId).HasName("PK__ServiceC__C51BB0EAC5F8504C");
+            entity.HasKey(e => e.ServiceId);
 
-            entity.Property(e => e.ServiceId)
-                .HasDefaultValueSql("(newid())")
-                .HasColumnName("ServiceID");
+            entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
             entity.Property(e => e.CityName).HasMaxLength(20);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
@@ -176,7 +216,7 @@ public partial class QrToPayDbContext : DbContext
             entity.HasOne(d => d.Service).WithMany(p => p.SkiResorts)
                 .HasForeignKey(d => d.ServiceId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__SkiResort__Servi__1A9EF37A");
+                .HasConstraintName("FK_SkiResorts_ServiceCategories");
         });
 
         modelBuilder.Entity<SkiResortPrice>(entity =>
@@ -206,7 +246,10 @@ public partial class QrToPayDbContext : DbContext
             entity.ToTable("TicketHistory");
 
             entity.Property(e => e.HistoryId).HasColumnName("HistoryID");
-            entity.Property(e => e.PurchaseDate).HasColumnType("datetime");
+            entity.Property(e => e.AttractionName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
             entity.Property(e => e.TotalPrice).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.UserId).HasColumnName("UserID");
@@ -214,7 +257,7 @@ public partial class QrToPayDbContext : DbContext
             entity.HasOne(d => d.Service).WithMany(p => p.TicketHistories)
                 .HasForeignKey(d => d.ServiceId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__TicketHis__Servi__32767D0B");
+                .HasConstraintName("FK_TicketHistory_ServiceCategories");
 
             entity.HasOne(d => d.User).WithMany(p => p.TicketHistories)
                 .HasForeignKey(d => d.UserId)
@@ -245,17 +288,17 @@ public partial class QrToPayDbContext : DbContext
             entity.HasKey(e => e.UserTicketId).HasName("PK__UserTick__96EB945BD7870245");
 
             entity.Property(e => e.UserTicketId).HasColumnName("UserTicketID");
-            entity.Property(e => e.PurchaseDate).HasColumnType("datetime");
+            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+            entity.Property(e => e.GroupId).HasColumnName("GroupID");
             entity.Property(e => e.QrCodeGeneratedAt).HasColumnType("datetime");
-            entity.Property(e => e.QrCodeIsActive).HasDefaultValue(false);
-            entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
             entity.Property(e => e.TotalPrice).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
-            entity.HasOne(d => d.Service).WithMany(p => p.UserTickets)
-                .HasForeignKey(d => d.ServiceId)
+            entity.HasOne(d => d.Group).WithMany(p => p.UserTickets)
+                .HasForeignKey(d => d.GroupId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__UserTicke__Servi__2EA5EC27");
+                .HasConstraintName("FK__UserTicke__Group__056ECC6A");
 
             entity.HasOne(d => d.User).WithMany(p => p.UserTickets)
                 .HasForeignKey(d => d.UserId)

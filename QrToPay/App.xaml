@@ -11,6 +11,7 @@
             </ResourceDictionary.MergedDictionaries>
             <converters:FalseToTrueConverter x:Key="FalseToTrueConverter" />
             <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
+            <converters:ListToStringConverter x:Key="ListToStringConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
