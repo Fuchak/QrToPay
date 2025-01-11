@@ -41,7 +41,7 @@
             </Frame>
             <Label Text="{Binding CurrentAttraction.ServiceName}" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
             <Label Text="{Binding CurrentAttraction.AttractionName}" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center" />
-            <Label Text="{Binding CurrentAttraction.Price, StringFormat='Cena: {0:F2}'}" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center" />
+            <Label Text="{Binding CurrentAttraction.Price, StringFormat='Cena: {0:F2} zł'}" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center" />
 
             <ActivityIndicator IsRunning="{Binding IsBusy}" 
                                IsVisible="{Binding IsBusy}"

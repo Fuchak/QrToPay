@@ -20,7 +20,6 @@ public class AuthService
 
     public static async Task<bool> IsAuthenticatedAsync()
     {
-        //await Task.Delay(200);
         // Sprawdzenie, czy token istnieje w SecureStorage
         var token = await SecureStorage.Default.GetAsync(AppDataConst.AuthToken);
 

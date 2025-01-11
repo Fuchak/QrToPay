@@ -11,11 +11,19 @@ public static class ResultHelper
             ? new OkObjectResult(result.Value)
             : result.ErrorType switch
             {
-                ErrorType.NotFound => new NotFoundObjectResult(new { Message = result.Error }),
-                ErrorType.NotVerified => new ObjectResult(new { Message = result.Error }) { StatusCode = StatusCodes.Status403Forbidden },
-                ErrorType.BadRequest => new BadRequestObjectResult(new { Message = result.Error }),
-                ErrorType.Unauthorized => new UnauthorizedObjectResult(new { Message = result.Error }),
-                _ => new ObjectResult(new { Message = result.Error }) { StatusCode = StatusCodes.Status500InternalServerError }
+                ErrorType.NotFound => new NotFoundObjectResult
+                    (new { Message = result.Error }),
+                ErrorType.NotVerified => new ObjectResult
+                    (new { Message = result.Error }) 
+                    { StatusCode = StatusCodes.Status403Forbidden },
+                ErrorType.BadRequest => new BadRequestObjectResult
+                    (new { Message = result.Error }),
+                ErrorType.Unauthorized => new UnauthorizedObjectResult
+                    (new { Message = result.Error }) 
+                    { StatusCode = StatusCodes.Status401Unauthorized },
+                _ => new ObjectResult
+                    (new { Message = result.Error })
+                    { StatusCode = StatusCodes.Status500InternalServerError }
             };
     }
 }
