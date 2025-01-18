@@ -9,8 +9,6 @@ using QrToPay.Models.Common;
 using QrToPay.ViewModels.Authentication;
 using QrToPay.ViewModels.QR;
 using QrToPay.Services.Extensions;
-using Android.Graphics.Drawables;
-using Microsoft.Maui.Controls.Platform;
 
 namespace QrToPay;
 

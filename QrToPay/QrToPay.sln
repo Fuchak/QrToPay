@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QrToPay", "QrToPay.csproj",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QrToPay.Api", "..\QrToPay.Api\QrToPay.Api.csproj", "{B6761FF3-BF66-49CE-B4F5-C6332C553376}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "..\Tests\Tests.csproj", "{CCBE4C4E-233B-46D9-8367-87B5B8E157DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{B6761FF3-BF66-49CE-B4F5-C6332C553376}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6761FF3-BF66-49CE-B4F5-C6332C553376}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6761FF3-BF66-49CE-B4F5-C6332C553376}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCBE4C4E-233B-46D9-8367-87B5B8E157DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCBE4C4E-233B-46D9-8367-87B5B8E157DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCBE4C4E-233B-46D9-8367-87B5B8E157DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCBE4C4E-233B-46D9-8367-87B5B8E157DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

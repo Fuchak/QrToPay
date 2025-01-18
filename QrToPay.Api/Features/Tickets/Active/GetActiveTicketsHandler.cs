@@ -50,7 +50,7 @@ public class GetActiveTicketsHandler : IRequestHandler<GetActiveTicketsRequestMo
                     Price = ticket.TotalPrice,
                     Points = ticket.RemainingTokens,
                     IsActive = ticket.IsActive,
-                    QrCode = ticket.Token.ToString()
+                    QrCode = ticket.Token.ToString()!
                 };
             });
 

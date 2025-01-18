@@ -19,8 +19,7 @@ public static class ResultHelper
                 ErrorType.BadRequest => new BadRequestObjectResult
                     (new { Message = result.Error }),
                 ErrorType.Unauthorized => new UnauthorizedObjectResult
-                    (new { Message = result.Error }) 
-                    { StatusCode = StatusCodes.Status401Unauthorized },
+                    (new { Message = result.Error }),
                 _ => new ObjectResult
                     (new { Message = result.Error })
                     { StatusCode = StatusCodes.Status500InternalServerError }

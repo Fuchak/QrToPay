@@ -11,37 +11,26 @@ public static class HttpError
     {
         if (ex is HttpRequestException httpEx)
         {
-            return HandleHttpError(httpEx);
-        }
-        return HandleGeneralError();
-    }
-
-    public static string HandleHttpError(HttpRequestException httpEx)
-    {
-        if (httpEx.StatusCode.HasValue)
-        {
-            return httpEx.StatusCode.Value switch
+            if (httpEx.StatusCode.HasValue)
             {
-                HttpStatusCode.NotFound => "Błąd: Nie znaleziono zasobu. Spróbuj ponownie później.",
+                return httpEx.StatusCode.Value switch
+                {
+                    HttpStatusCode.NotFound => "Błąd: Nie znaleziono zasobu. Spróbuj ponownie później.",
 
-                HttpStatusCode.InternalServerError or
-                HttpStatusCode.BadGateway or
-                HttpStatusCode.ServiceUnavailable or
-                HttpStatusCode.TemporaryRedirect or
-                HttpStatusCode.GatewayTimeout => "Błąd serwera: Spróbuj ponownie później.",
+                    HttpStatusCode.InternalServerError or
+                    HttpStatusCode.BadGateway or
+                    HttpStatusCode.ServiceUnavailable or
+                    HttpStatusCode.TemporaryRedirect or
+                    HttpStatusCode.GatewayTimeout => "Błąd serwera: Spróbuj ponownie później.",
 
-                HttpStatusCode.BadRequest => "Błąd żądania: Sprawdź dane i spróbuj ponownie.",
-                HttpStatusCode.Unauthorized => "Brak autoryzacji: Zaloguj się ponownie.",
-                HttpStatusCode.Forbidden => "Brak uprawnień: Skontaktuj się z administratorem.",
-                _ => "Wystąpił problem z połączeniem. Spróbuj ponownie.",
-            };
+                    HttpStatusCode.BadRequest => "Błąd żądania: Sprawdź dane i spróbuj ponownie.",
+                    HttpStatusCode.Unauthorized => "Brak autoryzacji: Zaloguj się ponownie.",
+                    HttpStatusCode.Forbidden => "Brak uprawnień: Skontaktuj się z administratorem.",
+                    _ => "Wystąpił problem z połączeniem. Spróbuj ponownie.",
+                };
+            }
+            return "Brak połączenia z internetem.";
         }
-
-        return "Brak połączenia z internetem.";
-    }
-
-    public static string HandleGeneralError()
-    {
         return "Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.";
     }
 }
