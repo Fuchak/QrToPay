@@ -11,6 +11,7 @@ public static class LoginScenario
     {
         return Scenario.Create("login_scenario", async context =>
         {
+            //test data account valid until 2025-01-21
             StringContent bodyContent = new(
                 "{\"email\":\"fufutrzak@vp.pl\",\"passwordHash\":\"Kargo2001?\"}",
                 Encoding.UTF8,

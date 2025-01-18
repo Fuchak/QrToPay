@@ -1,9 +1,6 @@
 ﻿using NBomber.CSharp;
-using NBomber.Http.CSharp;
 using NBomber.Contracts;
-using System.Text;
 using Tests.Static;
-using Tests.Helpers;
 using Tests.Examples;
 
 namespace Tests;
