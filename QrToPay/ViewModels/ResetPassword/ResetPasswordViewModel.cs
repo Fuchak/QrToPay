@@ -27,10 +27,10 @@ public partial class ResetPasswordViewModel : ViewModelBase
     [RelayCommand]
     private async Task Confirm()
     {
-        if(IsBusy) return;
+        if(IsLoading) return;
         try
         {
-            IsBusy = true;
+            IsLoading = true;
 
             if (string.IsNullOrWhiteSpace(EmailPhone))
             {
@@ -97,7 +97,7 @@ public partial class ResetPasswordViewModel : ViewModelBase
         }
         finally
         {
-            IsBusy = false;
+            IsLoading = false;
         }
     }
 }
