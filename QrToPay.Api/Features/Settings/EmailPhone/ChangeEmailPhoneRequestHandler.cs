@@ -40,6 +40,8 @@ public class ChangeEmailPhoneRequestHandler : IRequestHandler<ChangeEmailPhoneRe
 
             //User? existingUser = null;
 
+
+            //Tu można zastosować fabrykę czy jak się to zwie przekształcić te if-else w coś korzystniejszego i wydajeniejszego
             if (request.ChangeType == ChangeType.Email)
             {
                 User? existingUser = await _context.Users

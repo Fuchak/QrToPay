@@ -6,8 +6,16 @@ public class ChangeEmailPhoneRequestModelValidator : AbstractValidator<ChangeEma
 {
     public ChangeEmailPhoneRequestModelValidator()
     {
-        RuleFor(x => x.Password).NotEmpty().WithMessage("Hasło jest wymagane.");
-        RuleFor(x => x.ChangeType).IsInEnum().WithMessage("Nieprawidłowy typ zmiany.");
-        RuleFor(x => x.NewValue).NotEmpty().WithMessage("Nowa wartość jest wymagana.");
+        RuleFor(x => x.Password)
+            .NotEmpty()
+            .WithMessage("Hasło jest wymagane.");
+
+        RuleFor(x => x.ChangeType)
+            .IsInEnum()
+            .WithMessage("Nieprawidłowy typ zmiany.");
+
+        RuleFor(x => x.NewValue)
+            .NotEmpty()
+            .WithMessage("Nowa wartość jest wymagana.");
     }
 }

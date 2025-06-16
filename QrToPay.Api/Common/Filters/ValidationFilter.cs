@@ -20,9 +20,11 @@ public class ValidationFilter : IActionFilter
             if (argument == null) continue;
 
             Type validatorType = typeof(IValidator<>).MakeGenericType(argument.GetType());
+            
             if (_serviceProvider.GetService(validatorType) is not IValidator validator) continue;
 
             ValidationResult validationResult = validator.Validate(new ValidationContext<object>(argument));
+
             if (!validationResult.IsValid)
             {
                 context.Result = new BadRequestObjectResult(new { Message = validationResult.Errors });

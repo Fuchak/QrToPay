@@ -31,7 +31,7 @@ public class ScanPurchaseHandler : IRequestHandler<ScanPurchaseRequestModel, Res
                 return Result<SuccesMessageDto>.Failure("Użytkownik nie został znaleziony.", ErrorType.NotFound);
             }
 
-            if (response.AccountBalance < request.Price)
+            if (response.AccountBalance < request.Price) //To można lokalnie sprawdzać przecież przed wysłaniem tego do backendu
             {
                 return Result<SuccesMessageDto>.Failure("Niewystarczające środki na koncie.", ErrorType.BadRequest);
             }

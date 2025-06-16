@@ -13,11 +13,12 @@ public class HttpClientHelper
 
     public async Task<HttpClient> CreateAuthenticatedClientAsync()
     {
-        var jwtToken = await SecureStorage.Default.GetAsync(AppDataConst.AuthToken);
+        string? jwtToken = await SecureStorage.Default.GetAsync(AppDataConst.AuthToken);
         if (string.IsNullOrWhiteSpace(jwtToken))
             throw new UnauthorizedAccessException("Token JWT jest pusty lub nie został znaleziony.");
 
         HttpClient client = _httpClientFactory.CreateClient("ApiHttpClient");
+
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
 
         return client;

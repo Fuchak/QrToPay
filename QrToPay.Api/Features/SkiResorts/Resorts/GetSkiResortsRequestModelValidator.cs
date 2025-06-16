@@ -6,6 +6,8 @@ public class GetSkiResortsRequestModelValidator : AbstractValidator<GetSkiResort
 {
     public GetSkiResortsRequestModelValidator()
     {
-        RuleFor(x => x.CityName).NotEmpty().WithMessage("CityName jest wymagane.");
+        RuleFor(x => x.CityName)
+            .NotEmpty()
+            .WithMessage("Nazwa miasta jest wymagana.");
     }
 }

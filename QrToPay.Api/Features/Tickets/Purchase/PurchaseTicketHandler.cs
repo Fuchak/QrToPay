@@ -18,6 +18,8 @@ public class PurchaseTicketHandler : IRequestHandler<PurchaseTicketRequestModel,
         _currentUserService = currentUserService;
     }
 
+
+    //We could swap this into DAL or someother implementation of database connection
     public async Task<Result<PurchaseTicketDto>> Handle(PurchaseTicketRequestModel request, CancellationToken cancellationToken)
     {
         return await ResultHandler.HandleRequestAsync(async () =>

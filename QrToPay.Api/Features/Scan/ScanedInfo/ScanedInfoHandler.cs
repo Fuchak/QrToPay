@@ -19,12 +19,7 @@ public class ScanedInfoHandler : IRequestHandler<ScanedInfoRequestModel, Result<
     {
         return await ResultHandler.HandleRequestAsync(async () =>
         {
-            if (string.IsNullOrWhiteSpace(request.QrCode) || request.QrCode.Length < 11)
-            {
-                return Result<ScanedInfoDto>.Failure("Nieprawidłowy kod QR.", ErrorType.BadRequest);
-            }
-
-            var prefix = request.QrCode.Substring(3, 2); // Użycie dwóch liter jako prefixu Chyba to tak powinno chodzić jak trzeba ZAK to 3 i używamy 2 jako te prefixy
+            string prefix = request.QrCode.Substring(3, 2); // Użycie dwóch liter jako prefixu Chyba to tak powinno chodzić jak trzeba ZAK to 3 i używamy 2 jako te prefixy
 
             Dictionary<string, Func<Task<Result<ScanedInfoDto>>>> handlers = new()
             {

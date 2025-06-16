@@ -11,5 +11,5 @@ public class CurrentUserService
 
     public int UserId =>
        _httpContextAccessor.HttpContext?.Items["UserId"] as int?
-       ?? throw new InvalidOperationException("UserId nie jest dostępny w kontekście HTTP.");
+            ?? throw new InvalidOperationException("UserId nie jest dostępny w kontekście HTTP.");
 }

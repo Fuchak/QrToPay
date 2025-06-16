@@ -7,6 +7,8 @@ public class GetFunFairPricesRequestModelValidator : AbstractValidator<GetFunFai
 {
     public GetFunFairPricesRequestModelValidator()
     {
-        RuleFor(x => x.FunFairId).GreaterThan(0).WithMessage("FunFairId jest wymagany.");
+        RuleFor(x => x.FunFairId)
+            .GreaterThan(0)
+            .WithMessage("FunFairId jest wymagany.");
     }
 }

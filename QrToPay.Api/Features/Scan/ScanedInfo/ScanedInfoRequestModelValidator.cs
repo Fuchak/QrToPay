@@ -7,7 +7,10 @@ public class ScanedInfoRequestModelValidator : AbstractValidator<ScanedInfoReque
     public ScanedInfoRequestModelValidator()
     {
         RuleFor(x => x.QrCode)
-            .NotEmpty().WithMessage("Kod QR jest wymagany.")
-            .MinimumLength(11).WithMessage("Kod QR musi mieć co najmniej 11 znaków.");
+            .NotEmpty()
+            .WithMessage("Kod QR jest wymagany.")
+
+            .MinimumLength(11)
+            .WithMessage("Kod QR musi mieć co najmniej 11 znaków.");
     }
 }
